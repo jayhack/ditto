@@ -1,0 +1,1334 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gather — vibe preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Fraunces = variable serif w/ SOFT axis (wordmark + italic payoff);
+         Inter = small-caps setup + body sans;
+         JetBrains Mono = micro labels, ® mark, telemetry. -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..900,0..100;1,9..144,400..900,0..100&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --cream:   #f4efe3;
+        --bone:    #faf7ec;
+        --sage:    #b5bc9a;
+        --moss:    #7a8a66;
+        --pine:    #2b4d44;
+        --forest:  #142b22;
+        --cognac:  #b58a4b;
+        --ink:     #0e1a14;
+      }
+      html, body {
+        background: var(--cream);
+        color: var(--ink);
+        font-family: "Inter", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* === TYPOGRAPHY PRIMITIVES ============================== */
+
+      /* Fraunces — variable serif. We dial opsz + SOFT axes to get the
+         warm, almost-hand-drawn feel that stands in for a custom mark. */
+      .fraunces {
+        font-family: "Fraunces", "Times New Roman", serif;
+        font-variation-settings: "opsz" 144, "SOFT" 100;
+      }
+      .fraunces-italic {
+        font-family: "Fraunces", "Times New Roman", serif;
+        font-style: italic;
+        font-variation-settings: "opsz" 144, "SOFT" 100;
+      }
+      .fraunces-tight {
+        font-family: "Fraunces", "Times New Roman", serif;
+        font-style: italic;
+        font-variation-settings: "opsz" 96, "SOFT" 50;
+      }
+
+      /* The Studio Headline pattern */
+      .setup {
+        font-family: "Inter", sans-serif;
+        font-variant: all-small-caps;
+        letter-spacing: 0.08em;
+        font-weight: 500;
+        color: var(--ink);
+        line-height: 1;
+      }
+      .payoff {
+        font-family: "Fraunces", serif;
+        font-style: italic;
+        font-variation-settings: "opsz" 144, "SOFT" 100;
+        font-weight: 600;
+        color: var(--pine);
+        line-height: 0.95;
+      }
+      .payoff-bone { color: var(--bone); }
+
+      /* Mono uppercase tracked label — the workhorse caption */
+      .mono {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+      }
+      .mono-up {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        font-weight: 500;
+      }
+      .label-moss {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        font-weight: 500;
+        font-size: 11px;
+        color: var(--moss);
+      }
+
+      /* === THE WORDMARK ======================================= */
+      .wordmark {
+        font-family: "Fraunces", serif;
+        font-style: italic;
+        font-variation-settings: "opsz" 144, "SOFT" 100;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        line-height: 0.9;
+      }
+      .wordmark .reg {
+        font-family: "JetBrains Mono", monospace;
+        font-style: normal;
+        color: var(--cognac);
+        font-size: 0.30em;
+        vertical-align: super;
+        letter-spacing: 0;
+        font-weight: 500;
+        margin-left: 0.04em;
+      }
+
+      /* === THE SWEEP ========================================== */
+      /* The one signature compositional move: a sweeping arc from a top
+         corner down across to a bottom edge. Implemented as an inline
+         SVG with viewBox="0 0 100 100" and preserveAspectRatio="none"
+         so the curve scales to fit any container. CSS clip-path: path()
+         does not accept percentages, which is why we use SVG. */
+      .sweep-wrap {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .sweep-wrap svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      /* === BIG G — hero background letterform ================= */
+      .big-g {
+        font-family: "Fraunces", serif;
+        font-style: italic;
+        font-variation-settings: "opsz" 144, "SOFT" 100;
+        font-weight: 800;
+        color: var(--sage);
+        opacity: 0.32;
+        font-size: clamp(28rem, 56vw, 60rem);
+        line-height: 0.78;
+        letter-spacing: -0.06em;
+        user-select: none;
+        pointer-events: none;
+      }
+
+      /* === BUTTONS ============================================ */
+      .btn-primary {
+        background: var(--pine);
+        color: var(--bone);
+        padding: 14px 28px;
+        font-family: "Fraunces", serif;
+        font-style: italic;
+        font-variation-settings: "opsz" 144, "SOFT" 100;
+        font-weight: 600;
+        font-size: 15px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: background 160ms ease;
+      }
+      .btn-primary:hover { background: var(--forest); }
+      .btn-primary .arrow {
+        font-family: "JetBrains Mono", monospace;
+        font-style: normal;
+        font-size: 13px;
+      }
+      .btn-secondary {
+        background: transparent;
+        color: var(--ink);
+        padding: 12px 24px;
+        font-family: "Inter", sans-serif;
+        font-variant: all-small-caps;
+        letter-spacing: 0.08em;
+        font-weight: 600;
+        font-size: 13px;
+        border: 1.5px solid var(--ink);
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: background 160ms ease, color 160ms ease;
+      }
+      .btn-secondary:hover { background: var(--ink); color: var(--cream); }
+      .link-italic {
+        font-family: "Fraunces", serif;
+        font-style: italic;
+        font-variation-settings: "opsz" 144, "SOFT" 100;
+        font-weight: 600;
+        color: var(--pine);
+        border-bottom: 1px solid var(--cognac);
+        padding-bottom: 2px;
+        font-size: 16px;
+      }
+
+      /* === PILLS / CHIPS ====================================== */
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        background: var(--sage);
+        color: var(--forest);
+        border-radius: 999px;
+        font-family: "Inter", sans-serif;
+        font-variant: all-small-caps;
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: 0.06em;
+        line-height: 1;
+      }
+      .chip-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: var(--cognac);
+        display: inline-block;
+      }
+      .chip-light {
+        background: var(--bone);
+        color: var(--ink);
+        border: 1px solid color-mix(in srgb, var(--moss) 30%, transparent);
+      }
+
+      /* === CARDS ============================================= */
+      .card {
+        background: var(--bone);
+        border-radius: 24px;
+        border: 1px solid color-mix(in srgb, var(--moss) 20%, transparent);
+      }
+      .card-sage {
+        background: var(--sage);
+        border-radius: 24px;
+        border: 1px solid color-mix(in srgb, var(--forest) 18%, transparent);
+      }
+      .card-pine {
+        background: var(--pine);
+        color: var(--bone);
+        border-radius: 24px;
+      }
+      .card-pine-deep {
+        background: linear-gradient(180deg, var(--pine) 0%, var(--forest) 100%);
+        color: var(--bone);
+        border-radius: 24px;
+      }
+
+      /* === NAV ============================================== */
+      .nav-link {
+        position: relative;
+        padding-bottom: 4px;
+        color: var(--ink);
+        font-family: "Inter", sans-serif;
+        font-variant: all-small-caps;
+        letter-spacing: 0.08em;
+        font-weight: 500;
+        font-size: 13px;
+      }
+      .nav-link.is-active { color: var(--pine); }
+      .nav-link.is-active::after {
+        content: "";
+        position: absolute;
+        left: 0; right: 0; bottom: 0;
+        height: 1.5px;
+        background: var(--cognac);
+      }
+      .nav-link:hover { color: var(--pine); }
+
+      /* === LIVE DOT ========================================= */
+      .live-dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: var(--cognac);
+      }
+
+      /* === SECTION OPENER NUMBER ============================ */
+      .section-no {
+        font-family: "Fraunces", serif;
+        font-style: italic;
+        font-variation-settings: "opsz" 144, "SOFT" 100;
+        font-weight: 600;
+        font-size: clamp(3rem, 6vw, 4.5rem);
+        line-height: 0.9;
+        color: var(--pine);
+        letter-spacing: -0.04em;
+      }
+
+      /* === HAIRLINE ========================================= */
+      .moss-rule {
+        height: 1px;
+        background: color-mix(in srgb, var(--moss) 35%, transparent);
+      }
+      .ink-rule {
+        height: 1px;
+        background: var(--ink);
+      }
+
+      /* === MARGIN ITALIC CALLOUT ============================ */
+      .margin-italic {
+        border-left: 1.5px solid var(--pine);
+        padding: 4px 0 4px 18px;
+        font-family: "Fraunces", serif;
+        font-style: italic;
+        font-variation-settings: "opsz" 144, "SOFT" 100;
+        font-weight: 500;
+        color: var(--pine);
+        font-size: 18px;
+        line-height: 1.35;
+      }
+
+      /* === TINY STUDIO TICKER =============================== */
+      .ticker {
+        font-family: "JetBrains Mono", monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        font-size: 10.5px;
+        font-weight: 500;
+        color: var(--moss);
+      }
+      .ticker > * + *::before {
+        content: "·";
+        margin: 0 12px;
+        opacity: 0.6;
+      }
+
+      /* Page background — flat cream, no grain. */
+      .grain {
+        background-color: var(--cream);
+      }
+
+      /* === BILLBOARD MOCKUP ================================ */
+      /* The pine "out-of-home" panel used in the UX apps. Built as
+         a clip-path billboard with a sweep + portrait inside it. */
+      .billboard {
+        position: relative;
+        border-radius: 28px;
+        overflow: hidden;
+        background: linear-gradient(180deg, var(--pine) 0%, var(--forest) 100%);
+        aspect-ratio: 16 / 9;
+      }
+      /* Billboard sweep uses the same inline-SVG approach — see .sweep-wrap. */
+      .billboard .portrait {
+        position: absolute;
+        right: 6%;
+        top: 8%;
+        width: 36%;
+        height: 84%;
+        border-radius: 16px;
+        background:
+          radial-gradient(ellipse at 50% 35%, color-mix(in srgb, var(--sage) 60%, var(--cream) 40%) 0%, var(--sage) 60%, color-mix(in srgb, var(--sage) 70%, var(--forest) 30%) 100%);
+      }
+      /* Soft silhouette painted onto the portrait — abstract figure. */
+      .billboard .portrait::after {
+        content: "";
+        position: absolute;
+        left: 14%;
+        top: 14%;
+        width: 72%;
+        height: 86%;
+        background:
+          radial-gradient(ellipse 38% 22% at 50% 16%, color-mix(in srgb, var(--forest) 70%, var(--sage) 30%) 0%, transparent 70%),
+          radial-gradient(ellipse 70% 60% at 50% 78%, color-mix(in srgb, var(--forest) 65%, var(--sage) 35%) 0%, transparent 75%);
+      }
+
+      /* === PHOTO PLACEHOLDER (sage / pine swatch panels) ==== */
+      .photo {
+        position: relative;
+        border-radius: 18px;
+        overflow: hidden;
+        aspect-ratio: 4 / 5;
+        background: var(--sage);
+      }
+      .photo.is-pine {
+        background: linear-gradient(180deg, var(--pine) 0%, var(--forest) 100%);
+      }
+      .photo.is-bone {
+        background: var(--bone);
+        border: 1px solid color-mix(in srgb, var(--moss) 20%, transparent);
+      }
+      .photo .corner {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        font-family: "JetBrains Mono", monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        font-weight: 500;
+        font-size: 10.5px;
+      }
+
+      /* Soft abstract figure overlay used inside photo placeholders */
+      .figure {
+        position: absolute;
+        inset: 18% 12% 0 12%;
+        border-top-left-radius: 999px;
+        border-top-right-radius: 999px;
+      }
+      .figure.sage-fg {
+        background:
+          radial-gradient(ellipse 40% 20% at 50% 18%, color-mix(in srgb, var(--forest) 60%, var(--sage) 40%) 0%, transparent 70%),
+          radial-gradient(ellipse 70% 60% at 50% 78%, color-mix(in srgb, var(--forest) 55%, var(--sage) 45%) 0%, transparent 75%);
+      }
+      .figure.bone-fg {
+        background:
+          radial-gradient(ellipse 40% 20% at 50% 18%, color-mix(in srgb, var(--forest) 80%, var(--bone) 20%) 0%, transparent 70%),
+          radial-gradient(ellipse 70% 60% at 50% 78%, color-mix(in srgb, var(--forest) 75%, var(--bone) 25%) 0%, transparent 75%);
+      }
+      .figure.cream-fg {
+        background:
+          radial-gradient(ellipse 40% 20% at 50% 18%, color-mix(in srgb, var(--cream) 80%, transparent) 0%, transparent 70%),
+          radial-gradient(ellipse 70% 60% at 50% 78%, color-mix(in srgb, var(--cream) 70%, transparent) 0%, transparent 75%);
+      }
+    </style>
+  </head>
+
+  <body class="grain min-h-screen overflow-x-hidden">
+
+    <!-- ================================================================ -->
+    <!-- § IDENTITY                                                       -->
+    <!-- ================================================================ -->
+    <section class="relative">
+
+      <!-- Top studio ticker -->
+      <div class="border-b border-[color:var(--moss)]/20">
+        <div class="mx-auto flex max-w-7xl items-center justify-between px-8 py-3 ticker">
+          <div class="flex items-center gap-0">
+            <span>Studio · Brooklyn ↔ Mexico City</span>
+            <span>Est. 2019</span>
+            <span>Nº 04 / 03</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="live-dot"></span>
+            <span>All systems live · 03:42 EST</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top nav -->
+      <nav class="mx-auto flex max-w-7xl items-center justify-between px-8 pt-6">
+        <a href="#" class="wordmark text-[2rem] text-[var(--ink)] leading-none">
+          gather<span class="reg">®</span>
+        </a>
+        <div class="hidden items-center gap-10 md:flex">
+          <a href="#" class="nav-link is-active">Work</a>
+          <a href="#" class="nav-link">Studio</a>
+          <a href="#" class="nav-link">Journal</a>
+          <a href="#" class="nav-link">Index</a>
+        </div>
+        <a href="#" class="btn-secondary">Start a project <span class="mono">→</span></a>
+      </nav>
+
+      <!-- HERO: big G in the back, headline forward -->
+      <div class="relative mx-auto max-w-7xl px-8 pt-16 md:pt-24 pb-20">
+        <div class="absolute -left-[6vw] top-[2rem] hidden md:block big-g">g</div>
+
+        <div class="relative grid grid-cols-12 gap-8">
+          <div class="col-span-12 md:col-span-7">
+            <p class="label-moss mb-6">◯ &nbsp; A brand strategy studio for the long arc</p>
+            <h1 class="leading-none">
+              <span class="setup text-[clamp(3.2rem,7vw,5.6rem)]">From discovery</span><br/>
+              <em class="payoff text-[clamp(3.6rem,8.5vw,7rem)]">to lifetime value.</em>
+            </h1>
+
+            <p class="mt-8 max-w-xl text-[16px] leading-[1.6] text-[var(--ink)]">
+              Gather builds the brand, the language, and the systems behind
+              founder-led companies that intend to outlast the trend cycle.
+              We work in long arcs — strategy in spring, identity in summer,
+              the rest of the decade in print.
+            </p>
+
+            <div class="mt-10 flex flex-wrap items-center gap-4">
+              <a href="#" class="btn-primary">See current work <span class="arrow">→</span></a>
+              <a href="#" class="btn-secondary">Book a sit-down</a>
+              <a href="#" class="link-italic">Read the field journal &nbsp;→</a>
+            </div>
+
+            <div class="mt-10 flex flex-wrap gap-3">
+              <span class="chip"><span class="chip-dot"></span>Currently · Mast Roasters</span>
+              <span class="chip chip-light">Brand strategy</span>
+              <span class="chip chip-light">Identity systems</span>
+              <span class="chip chip-light">Packaging</span>
+              <span class="chip chip-light">Editorial</span>
+            </div>
+          </div>
+
+          <!-- Right column — a sweep panel + headshot row -->
+          <div class="col-span-12 md:col-span-5">
+            <div class="relative aspect-[3/4] w-full overflow-hidden rounded-[28px] bg-[var(--cream)]">
+              <!-- The Sweep — pine cutting the upper ~58% of the panel,
+                   curving down on the left and lifting back on the right. -->
+              <div class="sweep-wrap" aria-hidden="true">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <path d="M 0 0 L 100 0 L 100 56 C 78 70, 60 38, 38 52 C 22 62, 12 50, 0 64 Z" fill="#2B4D44"/>
+                </svg>
+              </div>
+              <!-- The gather wordmark — top-right, on pine -->
+              <div class="absolute right-6 top-6 text-right">
+                <p class="wordmark text-[1.6rem] text-[var(--bone)] leading-none">gather<span class="reg">®</span></p>
+                <p class="mono-up text-[10.5px] text-[var(--bone)] opacity-75 mt-2">Field Nº 04 · Mar 2026</p>
+              </div>
+              <!-- Italic payoff at the bottom — pine on cream -->
+              <div class="absolute left-6 right-6 bottom-6">
+                <p class="setup text-[13px] text-[var(--moss)]">Now &nbsp;·&nbsp; in the studio</p>
+                <p class="payoff text-[clamp(1.8rem,3.2vw,2.6rem)] mt-1">
+                  Growing<br/><em>micro brands.</em>
+                </p>
+                <div class="mt-4 flex items-center gap-2">
+                  <span class="live-dot"></span>
+                  <span class="mono-up text-[10.5px] text-[var(--moss)]">Honeyfield Co. · Wk 06 of 12</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Two thin info bars under the sweep -->
+            <div class="mt-4 grid grid-cols-2 gap-3">
+              <div class="card p-4">
+                <p class="label-moss">+38%</p>
+                <p class="setup text-[13px] mt-1">Repeat purchase</p>
+                <p class="mono text-[11px] mt-1 text-[var(--moss)]">Honeyfield · Q1 2026</p>
+              </div>
+              <div class="card p-4">
+                <p class="label-moss">LTV $94 → $147</p>
+                <p class="setup text-[13px] mt-1">Twelve-month arc</p>
+                <p class="mono text-[11px] mt-1 text-[var(--moss)]">Northwind Athletic</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hairline that closes Identity -->
+      <div class="mx-auto max-w-7xl px-8">
+        <div class="moss-rule"></div>
+      </div>
+    </section>
+
+
+    <!-- ================================================================ -->
+    <!-- § 01 / THEME SPECIFICATION                                       -->
+    <!-- ================================================================ -->
+    <section class="mx-auto max-w-7xl px-8 pt-20">
+      <div class="grid grid-cols-12 gap-8 items-end">
+        <div class="col-span-12 md:col-span-2">
+          <p class="section-no">§01</p>
+          <p class="label-moss mt-2">Theme spec</p>
+        </div>
+        <div class="col-span-12 md:col-span-7">
+          <h2 class="leading-none">
+            <span class="setup text-[clamp(2rem,4.2vw,3.4rem)]">The kit,</span>
+            <em class="payoff text-[clamp(2rem,4.2vw,3.4rem)]">on the page.</em>
+          </h2>
+        </div>
+        <div class="col-span-12 md:col-span-3">
+          <p class="text-[14px] leading-[1.55] text-[var(--ink)]">
+            Palette · Gradients · Typography · Components — lifted
+            verbatim from <span class="mono text-[var(--pine)]">prompt.md</span>.
+            Any client surface should be buildable from only this.
+          </p>
+        </div>
+      </div>
+      <div class="moss-rule mt-8"></div>
+    </section>
+
+
+    <!-- 01.1 — PALETTE -->
+    <section class="mx-auto max-w-7xl px-8 pt-12">
+      <div class="mb-4 flex items-baseline justify-between">
+        <p class="label-moss">◯ &nbsp; 01.1 / Palette</p>
+        <span class="mono text-[11px] text-[var(--moss)]">08 swatches · no substitutions</span>
+      </div>
+      <div class="grid grid-cols-2 gap-px overflow-hidden rounded-[20px] bg-[color:var(--moss)]/25 sm:grid-cols-4 md:grid-cols-8">
+        <div class="flex flex-col gap-1 p-5 text-[11px]" style="background:#f4efe3;color:#0e1a14">
+          <span class="setup text-[13px]">Cream</span>
+          <span class="mono text-[var(--moss)]">#F4EFE3</span>
+          <span class="mono text-[10px] text-[var(--moss)]">page bg</span>
+        </div>
+        <div class="flex flex-col gap-1 p-5 text-[11px]" style="background:#faf7ec;color:#0e1a14">
+          <span class="setup text-[13px]">Bone</span>
+          <span class="mono text-[var(--moss)]">#FAF7EC</span>
+          <span class="mono text-[10px] text-[var(--moss)]">panels</span>
+        </div>
+        <div class="flex flex-col gap-1 p-5 text-[11px]" style="background:#b5bc9a;color:#142b22">
+          <span class="setup text-[13px]">Sage</span>
+          <span class="mono">#B5BC9A</span>
+          <span class="mono text-[10px] opacity-80">brand block</span>
+        </div>
+        <div class="flex flex-col gap-1 p-5 text-[11px]" style="background:#7a8a66;color:#faf7ec">
+          <span class="setup text-[13px]">Moss</span>
+          <span class="mono opacity-90">#7A8A66</span>
+          <span class="mono text-[10px] opacity-70">labels · rules</span>
+        </div>
+        <div class="flex flex-col gap-1 p-5 text-[11px]" style="background:#2b4d44;color:#faf7ec">
+          <span class="setup text-[13px]">Pine</span>
+          <span class="mono opacity-90">#2B4D44</span>
+          <span class="mono text-[10px] opacity-70">display panel</span>
+        </div>
+        <div class="flex flex-col gap-1 p-5 text-[11px]" style="background:#142b22;color:#faf7ec">
+          <span class="setup text-[13px]">Forest</span>
+          <span class="mono opacity-90">#142B22</span>
+          <span class="mono text-[10px] opacity-70">footer · deep</span>
+        </div>
+        <div class="flex flex-col gap-1 p-5 text-[11px]" style="background:#b58a4b;color:#142b22">
+          <span class="setup text-[13px]">Cognac</span>
+          <span class="mono">#B58A4B</span>
+          <span class="mono text-[10px] opacity-80">® · live dot</span>
+        </div>
+        <div class="flex flex-col gap-1 p-5 text-[11px]" style="background:#0e1a14;color:#faf7ec">
+          <span class="setup text-[13px]">Ink</span>
+          <span class="mono opacity-90">#0E1A14</span>
+          <span class="mono text-[10px] opacity-70">body text</span>
+        </div>
+      </div>
+      <p class="mt-3 mono text-[11px] text-[var(--moss)]">
+        Cognac is rationed — used at most three times per viewport. Sage is the block, Pine is the display.
+      </p>
+    </section>
+
+
+    <!-- 01.2 — GRADIENTS / SWEEP -->
+    <section class="mx-auto max-w-7xl px-8 pt-14">
+      <div class="mb-4 flex items-baseline justify-between">
+        <p class="label-moss">◯ &nbsp; 01.2 / Gradients &amp; the sweep</p>
+        <span class="mono text-[11px] text-[var(--moss)]">02 gradients · 01 signature shape</span>
+      </div>
+      <div class="grid grid-cols-1 gap-5 md:grid-cols-3">
+
+        <!-- The Sweep gradient (card-hero) -->
+        <div>
+          <div class="h-28 rounded-[18px]" style="background:linear-gradient(135deg,#B5BC9A 0%,#B5BC9A 38%,#F4EFE3 38%,#F4EFE3 58%,#2B4D44 58%,#142B22 100%);"></div>
+          <p class="mt-3 mono text-[11px] text-[var(--moss)]">
+            linear-gradient(135°, sage 38%, cream 58%, pine→forest)
+          </p>
+          <p class="setup text-[13px] mt-1">The card-hero gradient</p>
+        </div>
+
+        <!-- Pine tonal -->
+        <div>
+          <div class="h-28 rounded-[18px]" style="background:linear-gradient(180deg,#2B4D44 0%,#142B22 100%);"></div>
+          <p class="mt-3 mono text-[11px] text-[var(--moss)]">
+            linear-gradient(180°, pine → forest)
+          </p>
+          <p class="setup text-[13px] mt-1">The display-panel tonal</p>
+        </div>
+
+        <!-- The Sweep — inline SVG with preserveAspectRatio="none" -->
+        <div>
+          <div class="relative h-28 overflow-hidden rounded-[18px] bg-[var(--cream)]">
+            <div class="sweep-wrap" aria-hidden="true">
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M 0 0 L 100 0 L 100 100 C 70 60, 30 30, 0 78 Z" fill="#B5BC9A"/>
+              </svg>
+            </div>
+          </div>
+          <p class="mt-3 mono text-[11px] text-[var(--moss)]">
+            &lt;path d="M 0 0 L 100 0 L 100 100 C 70 60, 30 30, 0 78 Z"/&gt;
+          </p>
+          <p class="setup text-[13px] mt-1">The sweep · sage on cream</p>
+        </div>
+
+        <!-- Flat sage -->
+        <div>
+          <div class="h-20 rounded-[18px]" style="background:#B5BC9A"></div>
+          <p class="mt-3 mono text-[11px] text-[var(--moss)]">flat · #B5BC9A · sage block</p>
+        </div>
+
+        <!-- Flat pine -->
+        <div>
+          <div class="h-20 rounded-[18px]" style="background:#2B4D44"></div>
+          <p class="mt-3 mono text-[11px] text-[var(--moss)]">flat · #2B4D44 · pine display</p>
+        </div>
+
+        <!-- Flat cream + cognac line -->
+        <div>
+          <div class="relative h-20 overflow-hidden rounded-[18px]" style="background:#F4EFE3">
+            <div class="absolute left-0 right-0 bottom-0 h-[2px]" style="background:#B58A4B"></div>
+          </div>
+          <p class="mt-3 mono text-[11px] text-[var(--moss)]">flat cream + a 2px cognac rule (active-state only)</p>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 01.3 — TYPOGRAPHY -->
+    <section class="mx-auto max-w-7xl px-8 pt-14">
+      <div class="mb-4 flex items-baseline justify-between">
+        <p class="label-moss">◯ &nbsp; 01.3 / Typography</p>
+        <span class="mono text-[11px] text-[var(--moss)]">2 families · 1 italic axis</span>
+      </div>
+      <div class="grid grid-cols-1 gap-px overflow-hidden rounded-[20px] bg-[color:var(--moss)]/25 md:grid-cols-3">
+
+        <div class="bg-[var(--bone)] p-7">
+          <p class="label-moss">Display + Wordmark</p>
+          <p class="fraunces-italic mt-4 text-[var(--ink)]" style="font-weight:700;font-size:clamp(2.4rem,5vw,3.5rem);line-height:0.95;">
+            Fraunces<span class="mono align-super text-[0.32em] text-[var(--cognac)] ml-1">®</span>
+          </p>
+          <p class="mono mt-4 text-[11px] text-[var(--moss)] leading-[1.55]">
+            opsz 144 · SOFT 100 · italic 600–800 · the warm, almost
+            hand-drawn quality that stands in for a custom mark.
+          </p>
+        </div>
+
+        <div class="bg-[var(--bone)] p-7">
+          <p class="label-moss">Sans (setup + body)</p>
+          <p class="setup mt-4 text-[clamp(1.4rem,2.8vw,2rem)] text-[var(--ink)]">
+            Inter · small caps
+          </p>
+          <p class="mt-3 text-[15px] leading-[1.55] text-[var(--ink)]" style="font-family:'Inter',sans-serif">
+            500 / 600 / 700. The setup half of every headline. 14–16px
+            body. Sentence-case for paragraph copy, small-caps for the
+            sans-half of the headline.
+          </p>
+        </div>
+
+        <div class="bg-[var(--bone)] p-7">
+          <p class="label-moss">Mono (labels)</p>
+          <p class="mono mt-4 text-[clamp(1.1rem,2vw,1.5rem)] uppercase tracking-[0.18em] text-[var(--pine)]">
+            JET ·&nbsp;Nº 04 / 03
+          </p>
+          <p class="mono mt-3 text-[11px] text-[var(--moss)] leading-[1.55]">
+            uppercase · tracking 0.18em · used for ®, prices, dates,
+            project numbers, and the studio ticker.
+          </p>
+        </div>
+      </div>
+
+      <!-- Headline pattern demo -->
+      <div class="mt-6 rounded-[20px] border border-[color:var(--moss)]/20 bg-[var(--bone)] p-8">
+        <p class="label-moss mb-5">The Studio Headline Pattern</p>
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div>
+            <h3 class="leading-none">
+              <span class="setup text-[clamp(1.6rem,3vw,2.2rem)]">From discovery</span><br/>
+              <em class="payoff text-[clamp(1.8rem,3.5vw,2.6rem)]">to lifetime value.</em>
+            </h3>
+          </div>
+          <div>
+            <h3 class="leading-none">
+              <span class="setup text-[clamp(1.6rem,3vw,2.2rem)]">Turn signals</span><br/>
+              <em class="payoff text-[clamp(1.8rem,3.5vw,2.6rem)]">into solutions.</em>
+            </h3>
+          </div>
+          <div>
+            <h3 class="leading-none">
+              <span class="setup text-[clamp(1.6rem,3vw,2.2rem)]">Growing</span><br/>
+              <em class="payoff text-[clamp(1.8rem,3.5vw,2.6rem)]">micro brands.</em>
+            </h3>
+          </div>
+        </div>
+        <p class="mt-6 mono text-[11px] text-[var(--moss)]">
+          Always Inter small-caps (Ink) above, Fraunces italic 600 (Pine) below. The italic does the emotional work.
+        </p>
+      </div>
+    </section>
+
+
+    <!-- 01.4 — COMPONENTS -->
+    <section class="mx-auto max-w-7xl px-8 pt-14 pb-20">
+      <div class="mb-4 flex items-baseline justify-between">
+        <p class="label-moss">◯ &nbsp; 01.4 / Components</p>
+        <span class="mono text-[11px] text-[var(--moss)]">Tailwind + hand-rolled</span>
+      </div>
+
+      <div class="grid grid-cols-1 gap-px overflow-hidden rounded-[20px] bg-[color:var(--moss)]/25 md:grid-cols-2">
+
+        <!-- Buttons + chips -->
+        <div class="bg-[var(--bone)] p-7">
+          <p class="label-moss">Buttons</p>
+          <div class="mt-5 flex flex-wrap items-center gap-3">
+            <a href="#" class="btn-primary">Start a project <span class="arrow">→</span></a>
+            <a href="#" class="btn-secondary">View work</a>
+            <a href="#" class="link-italic">Read the journal →</a>
+          </div>
+
+          <p class="label-moss mt-7">Chips · tags</p>
+          <div class="mt-3 flex flex-wrap gap-3">
+            <span class="chip"><span class="chip-dot"></span>In studio · Honeyfield</span>
+            <span class="chip chip-light">Brand strategy</span>
+            <span class="chip chip-light">Identity</span>
+            <span class="chip chip-light">Packaging</span>
+            <span class="chip chip-light">Editorial</span>
+          </div>
+
+          <p class="mono mt-6 text-[11px] text-[var(--moss)] leading-[1.55]">
+            // Primary = pine pill, Fraunces italic. Secondary = ink-outlined small caps.
+            // Active chip = cognac leading dot.
+          </p>
+        </div>
+
+        <!-- Inputs -->
+        <div class="bg-[var(--bone)] p-7">
+          <p class="label-moss">Inputs · selects</p>
+
+          <label class="setup mt-5 block text-[12px] text-[var(--moss)]">Your name</label>
+          <input
+            type="text"
+            value="Mira Okonkwo"
+            class="mt-1.5 block w-full rounded-[12px] border border-[color:var(--moss)]/40 bg-[var(--cream)] px-4 py-3 text-[14px] text-[var(--ink)] outline-none focus:border-[color:var(--pine)]"
+          />
+
+          <label class="setup mt-5 block text-[12px] text-[var(--moss)]">Project scope</label>
+          <select class="mt-1.5 block w-full rounded-[12px] border border-[color:var(--moss)]/40 bg-[var(--cream)] px-4 py-3 text-[14px] text-[var(--ink)] outline-none focus:border-[color:var(--pine)]">
+            <option>Brand strategy &amp; positioning</option>
+            <option>Identity system + packaging</option>
+            <option>Editorial &amp; long-form</option>
+            <option>Full arc · 12-month engagement</option>
+          </select>
+
+          <label class="setup mt-5 block text-[12px] text-[var(--moss)]">Email</label>
+          <input
+            type="email"
+            placeholder="you@yourcompany.co"
+            class="mt-1.5 block w-full rounded-[12px] border border-[color:var(--moss)]/40 bg-[var(--cream)] px-4 py-3 text-[14px] text-[var(--ink)] outline-none placeholder:text-[color:var(--moss)] focus:border-[color:var(--pine)]"
+          />
+        </div>
+
+        <!-- Margin-italic callout + stat tile -->
+        <div class="bg-[var(--bone)] p-7">
+          <p class="label-moss">Pull quote · margin italic</p>
+          <div class="mt-5 margin-italic">
+            We hire Gather for the second hundred customers, not the
+            first ten. The first hundred you discover; the next hundred
+            you have to earn.
+          </div>
+          <p class="mono mt-3 text-[11px] text-[var(--moss)]">— Lila Chen, founder of <span class="fraunces-italic text-[var(--pine)]">Reverie Skincare</span></p>
+        </div>
+
+        <!-- Sage card / pine card -->
+        <div class="bg-[var(--bone)] p-7">
+          <p class="label-moss">Cards</p>
+          <div class="mt-4 grid grid-cols-2 gap-3">
+            <div class="card-sage p-5">
+              <p class="setup text-[12px] text-[var(--forest)]">Sage card</p>
+              <p class="fraunces-italic mt-2 text-[var(--forest)]" style="font-weight:600;font-size:1.3rem;line-height:1;">
+                Long-arc<br/><em>strategy</em>
+              </p>
+            </div>
+            <div class="card-pine-deep p-5">
+              <p class="setup text-[12px] text-[var(--bone)]">Pine card</p>
+              <p class="fraunces-italic mt-2 text-[var(--bone)]" style="font-weight:600;font-size:1.3rem;line-height:1;">
+                Editorial<br/><em>systems</em>
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ================================================================ -->
+    <!-- § 02 / UX APPLICATIONS                                           -->
+    <!-- ================================================================ -->
+    <section class="mx-auto max-w-7xl px-8 pt-12">
+      <div class="grid grid-cols-12 gap-8 items-end">
+        <div class="col-span-12 md:col-span-2">
+          <p class="section-no">§02</p>
+          <p class="label-moss mt-2">UX applications</p>
+        </div>
+        <div class="col-span-12 md:col-span-7">
+          <h2 class="leading-none">
+            <span class="setup text-[clamp(2rem,4.2vw,3.4rem)]">Three surfaces,</span>
+            <em class="payoff text-[clamp(2rem,4.2vw,3.4rem)]">one studio kit.</em>
+          </h2>
+        </div>
+        <div class="col-span-12 md:col-span-3">
+          <p class="text-[14px] leading-[1.55] text-[var(--ink)]">
+            A studio index, a case-study spread, and a discovery
+            intake — each built from §01, no new colors, no new
+            components.
+          </p>
+        </div>
+      </div>
+      <div class="moss-rule mt-8"></div>
+    </section>
+
+
+    <!-- 02.1 — STUDIO INDEX (case work grid) -->
+    <section class="mx-auto max-w-7xl px-8 pt-12">
+      <div class="flex items-baseline justify-between">
+        <p class="label-moss">◯ &nbsp; 02.1 / UX — Studio index</p>
+        <span class="mono text-[11px] text-[var(--moss)]">12 / 38 projects shown</span>
+      </div>
+      <h3 class="mt-4 leading-none">
+        <span class="setup text-[clamp(1.8rem,3.4vw,2.6rem)]">Selected work,</span>
+        <em class="payoff text-[clamp(1.8rem,3.4vw,2.6rem)]">2019 — present.</em>
+      </h3>
+
+      <!-- Filter strip -->
+      <div class="mt-6 flex flex-wrap items-center justify-between gap-4 border-y border-[color:var(--moss)]/25 py-4">
+        <div class="flex flex-wrap gap-2">
+          <span class="chip"><span class="chip-dot"></span>All work</span>
+          <span class="chip chip-light">Food &amp; bev</span>
+          <span class="chip chip-light">Wellness</span>
+          <span class="chip chip-light">Outdoor</span>
+          <span class="chip chip-light">Publishing</span>
+        </div>
+        <div class="flex items-center gap-3 text-[var(--moss)]">
+          <span class="mono-up text-[10.5px]">Sort</span>
+          <a href="#" class="link-italic text-[14px]">Most recent →</a>
+        </div>
+      </div>
+
+      <!-- Case work grid -->
+      <div class="mt-10 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+
+        <!-- Card 1: Honeyfield Co. (sage) -->
+        <a href="#" class="block">
+          <div class="photo">
+            <span class="corner text-[var(--forest)]">Nº 04 / 01</span>
+            <div class="figure sage-fg"></div>
+            <span class="absolute right-4 top-4 chip"><span class="chip-dot"></span>In studio</span>
+          </div>
+          <div class="mt-4">
+            <p class="fraunces-italic text-[var(--ink)]" style="font-weight:700;font-size:1.5rem;line-height:1;">
+              Honeyfield Co.<span class="mono align-super text-[0.32em] text-[var(--cognac)] ml-1">®</span>
+            </p>
+            <p class="mt-2 setup text-[13px] text-[var(--moss)]">Cold-pressed honey · brooklyn</p>
+            <p class="mt-1 mono text-[11px] text-[var(--moss)]">Brand · Identity · Packaging &nbsp;·&nbsp; Mar 2026 — ongoing</p>
+          </div>
+        </a>
+
+        <!-- Card 2: Northwind Athletic (pine) -->
+        <a href="#" class="block">
+          <div class="photo is-pine">
+            <span class="corner text-[var(--bone)]">Nº 04 / 02</span>
+            <div class="figure bone-fg"></div>
+          </div>
+          <div class="mt-4">
+            <p class="fraunces-italic text-[var(--ink)]" style="font-weight:700;font-size:1.5rem;line-height:1;">
+              Northwind Athletic<span class="mono align-super text-[0.32em] text-[var(--cognac)] ml-1">®</span>
+            </p>
+            <p class="mt-2 setup text-[13px] text-[var(--moss)]">Endurance apparel · vermont</p>
+            <p class="mt-1 mono text-[11px] text-[var(--moss)]">Identity · Editorial &nbsp;·&nbsp; Nov 2025</p>
+          </div>
+        </a>
+
+        <!-- Card 3: Olive & Oak (cream/bone) -->
+        <a href="#" class="block">
+          <div class="photo is-bone">
+            <span class="corner text-[var(--moss)]">Nº 04 / 03</span>
+            <div class="figure cream-fg" style="background:radial-gradient(ellipse 40% 20% at 50% 18%, color-mix(in srgb, var(--moss) 65%, var(--bone) 35%) 0%, transparent 70%),radial-gradient(ellipse 70% 60% at 50% 78%, color-mix(in srgb, var(--moss) 60%, var(--bone) 40%) 0%, transparent 75%);"></div>
+          </div>
+          <div class="mt-4">
+            <p class="fraunces-italic text-[var(--ink)]" style="font-weight:700;font-size:1.5rem;line-height:1;">
+              Olive &amp; Oak Provisions<span class="mono align-super text-[0.32em] text-[var(--cognac)] ml-1">®</span>
+            </p>
+            <p class="mt-2 setup text-[13px] text-[var(--moss)]">Heritage pantry · oaxaca</p>
+            <p class="mt-1 mono text-[11px] text-[var(--moss)]">Brand strategy · Packaging &nbsp;·&nbsp; Aug 2025</p>
+          </div>
+        </a>
+
+        <!-- Card 4: Mast Roasters (sage) -->
+        <a href="#" class="block">
+          <div class="photo">
+            <span class="corner text-[var(--forest)]">Nº 04 / 04</span>
+            <div class="figure sage-fg"></div>
+          </div>
+          <div class="mt-4">
+            <p class="fraunces-italic text-[var(--ink)]" style="font-weight:700;font-size:1.5rem;line-height:1;">
+              Mast Roasters<span class="mono align-super text-[0.32em] text-[var(--cognac)] ml-1">®</span>
+            </p>
+            <p class="mt-2 setup text-[13px] text-[var(--moss)]">Single-origin coffee · portland</p>
+            <p class="mt-1 mono text-[11px] text-[var(--moss)]">Identity · Editorial &nbsp;·&nbsp; Jun 2025</p>
+          </div>
+        </a>
+
+        <!-- Card 5: Reverie Skincare (pine) -->
+        <a href="#" class="block">
+          <div class="photo is-pine">
+            <span class="corner text-[var(--bone)]">Nº 04 / 05</span>
+            <div class="figure bone-fg"></div>
+          </div>
+          <div class="mt-4">
+            <p class="fraunces-italic text-[var(--ink)]" style="font-weight:700;font-size:1.5rem;line-height:1;">
+              Reverie Skincare<span class="mono align-super text-[0.32em] text-[var(--cognac)] ml-1">®</span>
+            </p>
+            <p class="mt-2 setup text-[13px] text-[var(--moss)]">Clean botanical care · los angeles</p>
+            <p class="mt-1 mono text-[11px] text-[var(--moss)]">Brand · Packaging · Editorial &nbsp;·&nbsp; Apr 2025</p>
+          </div>
+        </a>
+
+        <!-- Card 6: Slow Atlas (bone) -->
+        <a href="#" class="block">
+          <div class="photo is-bone">
+            <span class="corner text-[var(--moss)]">Nº 04 / 06</span>
+            <div class="figure cream-fg" style="background:radial-gradient(ellipse 40% 20% at 50% 18%, color-mix(in srgb, var(--pine) 70%, var(--bone) 30%) 0%, transparent 70%),radial-gradient(ellipse 70% 60% at 50% 78%, color-mix(in srgb, var(--pine) 65%, var(--bone) 35%) 0%, transparent 75%);"></div>
+          </div>
+          <div class="mt-4">
+            <p class="fraunces-italic text-[var(--ink)]" style="font-weight:700;font-size:1.5rem;line-height:1;">
+              Slow Atlas Press<span class="mono align-super text-[0.32em] text-[var(--cognac)] ml-1">®</span>
+            </p>
+            <p class="mt-2 setup text-[13px] text-[var(--moss)]">Independent travel quarterly · lisbon</p>
+            <p class="mt-1 mono text-[11px] text-[var(--moss)]">Editorial system &nbsp;·&nbsp; Jan 2025</p>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+
+    <!-- 02.2 — CASE STUDY SPREAD (Honeyfield) -->
+    <section class="mx-auto max-w-7xl px-8 pt-20">
+      <div class="flex items-baseline justify-between">
+        <p class="label-moss">◯ &nbsp; 02.2 / UX — Case study spread</p>
+        <span class="mono text-[11px] text-[var(--moss)]">Honeyfield Co. · Mar 2026 — ongoing</span>
+      </div>
+
+      <!-- The Billboard moment — pine display panel with a bone sweep
+           carving out the left two-thirds, exactly like the airport
+           billboard reference in the brief. -->
+      <div class="mt-6 billboard">
+        <!-- The Sweep — bone cutting across the lower portion, lifting
+             on the right edge to a near-corner peak (a single quad-curve
+             that mimics a horizon line). -->
+        <div class="sweep-wrap" aria-hidden="true">
+          <svg viewBox="0 0 160 90" preserveAspectRatio="none">
+            <path d="M 0 90 L 0 50 C 24 30, 56 64, 88 38 C 110 22, 132 8, 160 0 L 160 90 Z" fill="#FAF7EC"/>
+          </svg>
+        </div>
+
+        <!-- Left text block sitting on the bone sweep -->
+        <div class="absolute left-[6%] top-[10%] right-[44%]">
+          <p class="setup text-[clamp(1.2rem,2vw,1.6rem)] text-[var(--ink)]">From discovery</p>
+          <p class="payoff text-[clamp(1.6rem,3.4vw,2.6rem)] mt-1" style="color:var(--pine)">to <em>lifetime</em> value.</p>
+        </div>
+        <div class="absolute left-[6%] bottom-[12%] right-[44%]">
+          <p class="setup text-[clamp(1.2rem,2vw,1.6rem)] text-[var(--ink)]">Growing</p>
+          <p class="payoff text-[clamp(1.6rem,3.4vw,2.6rem)] mt-1" style="color:var(--pine)"><em>micro brands.</em></p>
+        </div>
+
+        <!-- Right pine zone with portrait + gather mark -->
+        <div class="portrait"></div>
+        <div class="absolute right-[8%] top-[6%]">
+          <p class="wordmark text-[clamp(1.4rem,2.4vw,2rem)] text-[var(--bone)]">
+            gather<span class="reg">®</span>
+          </p>
+        </div>
+        <div class="absolute right-[8%] bottom-[8%] text-right">
+          <p class="mono-up text-[10.5px] text-[var(--bone)]">Out of home · Times Square</p>
+          <p class="mono-up text-[10.5px] text-[var(--bone)] opacity-70 mt-1">Wk 04 · 03 / 08</p>
+        </div>
+      </div>
+
+      <!-- Case study facts row -->
+      <div class="mt-10 grid grid-cols-12 gap-8">
+        <div class="col-span-12 md:col-span-4">
+          <p class="label-moss">The brief</p>
+          <h4 class="mt-3 leading-none">
+            <span class="setup text-[clamp(1.4rem,2.4vw,2rem)]">From farm-table</span><br/>
+            <em class="payoff text-[clamp(1.6rem,3vw,2.4rem)]">to nightstand jar.</em>
+          </h4>
+          <p class="mt-5 text-[15px] leading-[1.6] text-[var(--ink)]">
+            Honeyfield came to us in October with a strong DTC waitlist
+            and zero brand language. Six months later, the jar sits on
+            <span class="fraunces-italic text-[var(--pine)]">Saveur</span>,
+            <span class="fraunces-italic text-[var(--pine)]">Bon Appétit</span>,
+            and 38 specialty grocers — and the second hundred customers
+            are converting at twice the rate of the first hundred.
+          </p>
+          <div class="mt-6 margin-italic">
+            We didn't hire a brand studio. We hired a long-term
+            translator between the founder and the buyer.
+          </div>
+          <p class="mono mt-3 text-[11px] text-[var(--moss)]">— Theo Park, co-founder, Honeyfield Co.</p>
+        </div>
+
+        <!-- Stats grid -->
+        <div class="col-span-12 md:col-span-8">
+          <div class="grid grid-cols-2 gap-4 md:grid-cols-3">
+            <div class="card p-6">
+              <p class="label-moss">Repeat purchase</p>
+              <p class="fraunces mt-3" style="font-weight:600;font-size:clamp(2rem,3.4vw,2.6rem);line-height:0.95;color:var(--pine)">+38%</p>
+              <p class="mono mt-2 text-[11px] text-[var(--moss)]">Q1 2026 vs. Q4 2025</p>
+            </div>
+            <div class="card p-6">
+              <p class="label-moss">LTV</p>
+              <p class="fraunces mt-3" style="font-weight:600;font-size:clamp(2rem,3.4vw,2.6rem);line-height:0.95;color:var(--pine)">$147</p>
+              <p class="mono mt-2 text-[11px] text-[var(--moss)]">from $94 · twelve-month arc</p>
+            </div>
+            <div class="card p-6">
+              <p class="label-moss">Specialty grocers</p>
+              <p class="fraunces mt-3" style="font-weight:600;font-size:clamp(2rem,3.4vw,2.6rem);line-height:0.95;color:var(--pine)">38</p>
+              <p class="mono mt-2 text-[11px] text-[var(--moss)]">From 4 · NY, LA, PDX, Mex</p>
+            </div>
+            <div class="card-sage p-6">
+              <p class="setup text-[12px] text-[var(--forest)]">Press placements</p>
+              <p class="fraunces-italic mt-3 text-[var(--forest)]" style="font-weight:700;font-size:clamp(1.6rem,2.8vw,2.2rem);line-height:1;">
+                Saveur · BA<br/><em class="text-[var(--pine)]">+ NYT Mag.</em>
+              </p>
+            </div>
+            <div class="card-pine-deep p-6">
+              <p class="setup text-[12px] text-[var(--bone)]">Newsletter</p>
+              <p class="fraunces-italic mt-3 text-[var(--bone)]" style="font-weight:700;font-size:clamp(1.6rem,2.8vw,2.2rem);line-height:1;">
+                14,840<br/><em>opted-in</em>
+              </p>
+              <p class="mono mt-2 text-[11px] text-[var(--bone)] opacity-70">+216% in twelve weeks</p>
+            </div>
+            <div class="card p-6">
+              <p class="label-moss">Status</p>
+              <div class="mt-3 flex items-center gap-2">
+                <span class="live-dot"></span>
+                <p class="setup text-[14px] text-[var(--ink)]">In progress</p>
+              </div>
+              <p class="fraunces-italic mt-2 text-[var(--pine)]" style="font-weight:600;font-size:1.4rem;line-height:1;">
+                Wk 06<br/><em>of 12.</em>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 02.3 — DISCOVERY INTAKE (form / scope) -->
+    <section class="mx-auto max-w-7xl px-8 pt-20 pb-24">
+      <div class="flex items-baseline justify-between">
+        <p class="label-moss">◯ &nbsp; 02.3 / UX — Discovery intake</p>
+        <span class="mono text-[11px] text-[var(--moss)]">A short questionnaire, no commitment</span>
+      </div>
+      <h3 class="mt-4 leading-none">
+        <span class="setup text-[clamp(1.8rem,3.4vw,2.6rem)]">Tell us what you're</span>
+        <em class="payoff text-[clamp(1.8rem,3.4vw,2.6rem)]">trying to grow.</em>
+      </h3>
+
+      <div class="mt-10 grid grid-cols-12 gap-8">
+
+        <!-- Left: form -->
+        <div class="col-span-12 md:col-span-7">
+          <div class="card p-8">
+            <p class="label-moss">Discovery brief · Nº 04 / 03</p>
+
+            <div class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <div>
+                <label class="setup block text-[12px] text-[var(--moss)]">Your name</label>
+                <input type="text" value="Mira Okonkwo"
+                  class="mt-1.5 block w-full rounded-[12px] border border-[color:var(--moss)]/40 bg-[var(--cream)] px-4 py-3 text-[14px] text-[var(--ink)] outline-none focus:border-[color:var(--pine)]"/>
+              </div>
+              <div>
+                <label class="setup block text-[12px] text-[var(--moss)]">Company</label>
+                <input type="text" value="Honeyfield Co."
+                  class="mt-1.5 block w-full rounded-[12px] border border-[color:var(--moss)]/40 bg-[var(--cream)] px-4 py-3 text-[14px] text-[var(--ink)] outline-none focus:border-[color:var(--pine)]"/>
+              </div>
+            </div>
+
+            <label class="setup mt-6 block text-[12px] text-[var(--moss)]">What does success look like in 12 months?</label>
+            <textarea rows="4"
+              class="mt-1.5 block w-full rounded-[12px] border border-[color:var(--moss)]/40 bg-[var(--cream)] px-4 py-3 text-[14px] text-[var(--ink)] outline-none focus:border-[color:var(--pine)]"
+              >On 200 specialty shelves, a packaging redesign that survives the next 5 years, and a newsletter that pays for itself.</textarea>
+
+            <label class="setup mt-6 block text-[12px] text-[var(--moss)]">Where you are right now</label>
+            <div class="mt-2 flex flex-wrap gap-2">
+              <span class="chip"><span class="chip-dot"></span>Pre-launch waitlist</span>
+              <span class="chip chip-light">Just rebranded</span>
+              <span class="chip chip-light">Found product fit</span>
+              <span class="chip chip-light">Scaling distribution</span>
+              <span class="chip chip-light">Raising · Series A</span>
+            </div>
+
+            <label class="setup mt-6 block text-[12px] text-[var(--moss)]">Engagement length</label>
+            <select class="mt-1.5 block w-full rounded-[12px] border border-[color:var(--moss)]/40 bg-[var(--cream)] px-4 py-3 text-[14px] text-[var(--ink)] outline-none focus:border-[color:var(--pine)]">
+              <option>Short arc · 6 weeks (positioning sprint)</option>
+              <option selected>Standard arc · 12 weeks (brand + identity)</option>
+              <option>Long arc · 12 months (the full system)</option>
+            </select>
+
+            <div class="mt-8 flex flex-wrap items-center justify-between gap-4">
+              <p class="mono text-[11px] text-[var(--moss)]">By submitting, you agree we'll write you back within two business days.</p>
+              <a href="#" class="btn-primary">Send brief <span class="arrow">→</span></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: scope card + studio info -->
+        <div class="col-span-12 md:col-span-5">
+          <div class="card-pine-deep p-8">
+            <p class="setup text-[12px] text-[var(--bone)] opacity-80">What you'll get back</p>
+            <h4 class="mt-3 leading-none">
+              <span class="setup text-[clamp(1.2rem,2.2vw,1.6rem)] text-[var(--bone)]">A discovery doc</span><br/>
+              <em class="payoff payoff-bone text-[clamp(1.6rem,3vw,2.2rem)] mt-1">written, not pitched.</em>
+            </h4>
+
+            <ul class="mt-6 space-y-4">
+              <li class="flex gap-4">
+                <span class="mono-up text-[10.5px] text-[var(--cognac)] mt-1 shrink-0">01</span>
+                <p class="text-[14px] leading-[1.6] text-[var(--bone)]">
+                  A 6-page positioning sketch with one defensible
+                  promise and three things to never say again.
+                </p>
+              </li>
+              <li class="flex gap-4">
+                <span class="mono-up text-[10.5px] text-[var(--cognac)] mt-1 shrink-0">02</span>
+                <p class="text-[14px] leading-[1.6] text-[var(--bone)]">
+                  Three visual directions — sage, pine, cream — each
+                  with a wordmark sketch and a packaging mockup.
+                </p>
+              </li>
+              <li class="flex gap-4">
+                <span class="mono-up text-[10.5px] text-[var(--cognac)] mt-1 shrink-0">03</span>
+                <p class="text-[14px] leading-[1.6] text-[var(--bone)]">
+                  A 12-week roadmap, scoped to your actual constraints,
+                  with weekly check-ins on Wednesdays.
+                </p>
+              </li>
+            </ul>
+
+            <div class="mt-8 border-t border-[color:var(--bone)]/15 pt-5">
+              <p class="mono-up text-[10.5px] text-[var(--bone)] opacity-70">From</p>
+              <p class="fraunces-italic mt-1 text-[var(--bone)]" style="font-weight:700;font-size:1.8rem;line-height:1;">
+                $14,000<span class="mono align-super text-[0.32em] text-[var(--cognac)] ml-1">USD</span>
+              </p>
+              <p class="mono mt-2 text-[11px] text-[var(--bone)] opacity-70">Discovery brief · refundable against the engagement</p>
+            </div>
+          </div>
+
+          <!-- Studio meta -->
+          <div class="card mt-4 p-7">
+            <p class="label-moss">Studio</p>
+            <p class="fraunces-italic mt-3 text-[var(--ink)]" style="font-weight:700;font-size:1.6rem;line-height:1;">
+              gather<span class="mono align-super text-[0.32em] text-[var(--cognac)] ml-1">®</span>
+            </p>
+            <p class="mt-4 text-[14px] leading-[1.55] text-[var(--ink)]">
+              A nine-person brand studio with rooms in Brooklyn and
+              Mexico City. We take on six clients a year and ship a
+              quarterly print journal from each one.
+            </p>
+            <div class="mt-5 grid grid-cols-2 gap-4">
+              <div>
+                <p class="mono-up text-[10.5px] text-[var(--moss)]">Founded</p>
+                <p class="setup text-[14px] mt-1">2019 · brooklyn</p>
+              </div>
+              <div>
+                <p class="mono-up text-[10.5px] text-[var(--moss)]">Booked through</p>
+                <p class="setup text-[14px] mt-1">Q3 · 2026</p>
+              </div>
+              <div>
+                <p class="mono-up text-[10.5px] text-[var(--moss)]">Reach</p>
+                <p class="setup text-[14px] mt-1">studio@gather.co</p>
+              </div>
+              <div>
+                <p class="mono-up text-[10.5px] text-[var(--moss)]">Press kit</p>
+                <p class="setup text-[14px] mt-1"><a href="#" class="link-italic">Download &nbsp;→</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ================================================================ -->
+    <!-- § FOOTER / COLOPHON                                              -->
+    <!-- ================================================================ -->
+    <footer class="relative mt-10 overflow-hidden bg-[var(--forest)] text-[var(--bone)]">
+      <!-- Sweep across the top — cream curving down from the prior page
+           into the forest footer. Inline SVG so the curve scales to fit. -->
+      <div class="absolute inset-x-0 -top-1 h-[140px]" aria-hidden="true">
+        <svg viewBox="0 0 160 24" preserveAspectRatio="none" class="block w-full h-full">
+          <path d="M 0 0 L 160 0 L 160 8 C 130 22, 90 4, 60 18 C 32 30, 16 12, 0 22 Z" fill="#F4EFE3"/>
+        </svg>
+      </div>
+
+      <div class="relative mx-auto max-w-7xl px-8 pt-[140px] pb-12">
+        <!-- Big italic farewell line -->
+        <h2 class="leading-none">
+          <span class="setup text-[clamp(1.6rem,3vw,2.2rem)] text-[var(--bone)]">Let's</span>
+          <em class="payoff payoff-bone text-[clamp(2rem,5vw,4rem)]">gather.</em>
+        </h2>
+
+        <div class="mt-12 grid grid-cols-12 gap-8">
+          <div class="col-span-12 md:col-span-5">
+            <a href="#" class="wordmark text-[clamp(2.4rem,4vw,3.4rem)] text-[var(--bone)]">
+              gather<span class="reg">®</span>
+            </a>
+            <p class="mt-4 max-w-md text-[14px] leading-[1.6] text-[var(--bone)] opacity-80">
+              A brand strategy studio building the language and systems
+              behind founder-led companies that intend to outlast the
+              trend cycle.
+            </p>
+            <div class="mt-6 flex items-center gap-3">
+              <span class="live-dot"></span>
+              <span class="mono-up text-[10.5px] text-[var(--bone)] opacity-80">Currently booking · Q4 2026</span>
+            </div>
+          </div>
+
+          <div class="col-span-6 md:col-span-2">
+            <p class="mono-up text-[10.5px] text-[var(--bone)] opacity-60">Studio</p>
+            <ul class="mt-4 space-y-2 text-[14px]">
+              <li><a class="hover:text-[var(--cognac)]" href="#">Work</a></li>
+              <li><a class="hover:text-[var(--cognac)]" href="#">Journal</a></li>
+              <li><a class="hover:text-[var(--cognac)]" href="#">Index</a></li>
+              <li><a class="hover:text-[var(--cognac)]" href="#">Press kit</a></li>
+            </ul>
+          </div>
+
+          <div class="col-span-6 md:col-span-2">
+            <p class="mono-up text-[10.5px] text-[var(--bone)] opacity-60">Rooms</p>
+            <ul class="mt-4 space-y-2 text-[14px]">
+              <li>180 Bergen St.<br/><span class="opacity-70">Brooklyn · NY</span></li>
+              <li class="pt-2">Calle Colima 122<br/><span class="opacity-70">Roma Norte · CDMX</span></li>
+            </ul>
+          </div>
+
+          <div class="col-span-12 md:col-span-3">
+            <p class="mono-up text-[10.5px] text-[var(--bone)] opacity-60">Subscribe to the field journal</p>
+            <div class="mt-4 flex items-center gap-2">
+              <input
+                type="email"
+                placeholder="you@yourcompany.co"
+                class="block w-full rounded-[999px] border border-[color:var(--bone)]/30 bg-transparent px-4 py-3 text-[13px] text-[var(--bone)] outline-none placeholder:text-[color:var(--bone)]/50 focus:border-[color:var(--cognac)]"
+              />
+              <button class="btn-primary shrink-0" style="background:var(--cognac);color:var(--forest);">Join <span class="arrow">→</span></button>
+            </div>
+            <p class="mt-3 mono text-[11px] text-[var(--bone)] opacity-60">Quarterly · printed and emailed · no tracking pixels.</p>
+          </div>
+        </div>
+
+        <div class="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-[color:var(--bone)]/15 pt-6 ticker text-[color:var(--bone)] opacity-70">
+          <div class="flex items-center gap-0 [&>*+*]:before:content-['·'] [&>*+*]:before:mx-3 [&>*+*]:before:opacity-60">
+            <span>© 2019 — 2026 gather studio inc.</span>
+            <span>Nº 04 / 03</span>
+            <span>Built on cream paper</span>
+          </div>
+          <div>
+            <span>Vibe code · Gather · v1.0</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </body>
+</html>

@@ -841,6 +841,68 @@ export const VIBES: Vibe[] = [
       url: "https://kurzgesagt.org/",
     },
   },
+  {
+    slug: "gather",
+    name: "Gather",
+    tagline: "Cream paper, sage panels, italic-serif payoff — a brand studio at golden hour.",
+    description:
+      "A contemporary brand-strategy studio rendered on cream butcher-paper, with sage-olive blocks, a deep pine display panel, one ration of cognac warmth, and a custom-feeling italic-serif `gather®` wordmark. Every headline follows the studio's signature pattern — a sans small-caps setup answered by a Fraunces italic payoff (`From discovery / to lifetime value.`). One sweeping clip-path arc per major section does all the compositional work. Apply it to brand studio sites, founder-led DTC marketing pages, case-study spreads, editorial newsletters, anything that should feel calm, hand-set, italic where it counts, and built to outlast the trend cycle.",
+    tags: ["editorial", "brand-studio", "warm", "italic-serif"],
+    cardGradient:
+      "linear-gradient(135deg, #B5BC9A 0%, #B5BC9A 38%, #F4EFE3 38%, #F4EFE3 58%, #2B4D44 58%, #142B22 100%)",
+    cardForeground: "light",
+    palette: [
+      { name: "Cream", hex: "#F4EFE3" },
+      { name: "Bone", hex: "#FAF7EC" },
+      { name: "Sage", hex: "#B5BC9A" },
+      { name: "Moss", hex: "#7A8A66" },
+      { name: "Pine", hex: "#2B4D44" },
+      { name: "Forest", hex: "#142B22" },
+      { name: "Cognac", hex: "#B58A4B" },
+      { name: "Ink", hex: "#0E1A14" },
+    ],
+    fonts: {
+      display: '"Fraunces" (italic 600–800, opsz 144, SOFT 100)',
+      body: '"Inter", system-ui, sans-serif',
+      mono: '"JetBrains Mono", ui-monospace, monospace',
+    },
+    motifs: [
+      "The Studio Headline — Inter small-caps setup (Ink) + Fraunces italic payoff (Pine)",
+      "The Sweep — one sweeping clip-path arc per section, sage cutting cream",
+      "gather® wordmark — Fraunces italic 700 with SOFT 100 + Cognac mono ® superscript",
+      "Cognac live-dot — single 6px filled circle for active states (max 2 per viewport)",
+      "Pine display panel — deep pine→forest gradient with Bone italic type (the billboard moment)",
+      "Sage chip set — pill-shaped tags filled Sage; active chip carries a Cognac leading dot",
+      "Mono studio-strip — STUDIO · BROOKLYN ↔ MEXICO CITY · EST. 2019 · Nº 04 / 03",
+      "Margin-italic callout — Fraunces italic against a 1.5px Pine left-bar",
+      "The Big G — oversized italic Fraunces lowercase `g` in Sage/32 behind the hero, once per page",
+      "Realistic studio copy — Honeyfield Co., Northwind Athletic, Reverie Skincare, LTV $94→$147",
+    ],
+    kits: [
+      { label: "Tailwind CSS", url: "https://tailwindcss.com" },
+      {
+        label: "Google Fonts: Fraunces (opsz + SOFT variable), Inter, JetBrains Mono",
+        url: "https://fonts.google.com",
+      },
+      {
+        label: "No UI kit, no icon set — sweep arc, pill chips, italic wordmark only",
+      },
+    ],
+    shapes: [
+      "Logo = the wordmark itself — `gather®` in Fraunces italic 700 + SOFT 100 + Cognac mono ® super",
+      "Rounded everything on user surfaces — 24px cards, 999px pills/buttons, 12px inputs (only the page edge is square)",
+      "Buttons (primary): Pine pill + Bone Fraunces italic 600 + trailing mono `→` · hover Forest",
+      "Buttons (secondary): transparent + 1.5px Ink border + Inter 600 small-caps tracking 0.08em",
+      "The Sweep: one CSS clip-path arc per section · `path('M 0 0 L 100% 0 L 100% 100% C 70% 60%, 30% 30%, 0 78% Z')`",
+      "Allowed glyphs: → · ® · ◯ + the sweep · banned: drop shadows >2px, glass/blur, multi-stop pastels, emoji, lucide/heroicons, neon, chrome, 90° corners on user surfaces",
+    ],
+    previewHtml: "vibes/gather/preview.html",
+    promptMarkdown: "vibes/gather/prompt.md",
+    author: {
+      name: "After contemporary brand-studio identity work",
+      url: "https://github.com/jayhack/ditto",
+    },
+  },
 ];
 
 export function findVibe(slug: string | undefined): Vibe | undefined {
