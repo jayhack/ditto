@@ -1,0 +1,1521 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sakura — vibe preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Inter Tight = display wordmark; Inter = body;
+         JetBrains Mono = eyebrow + telemetry; Noto Serif JP = 櫻 kanji. -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+JP:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --petal: #fcf4f7;
+        --blush: #f8deea;
+        --sakura: #f5a6c7;
+        --plum: #ef6fa5;
+        --magenta: #e1318a;
+        --crimson: #b41c5e;
+        --heart: #5d0830;
+        --sumi: #1a0913;
+        --stone: #8b7280;
+      }
+      html, body {
+        background: var(--petal);
+        color: var(--sumi);
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .display {
+        font-family: "Inter Tight", "Helvetica Neue", Arial, sans-serif;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        line-height: 0.92;
+      }
+      .display-med {
+        font-family: "Inter Tight", sans-serif;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        line-height: 1;
+      }
+      .mono {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+      }
+      .mono-up {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.22em;
+      }
+      .eyebrow {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.32em;
+        font-size: 11px;
+        font-weight: 500;
+      }
+      .kanji {
+        font-family: "Noto Serif JP", serif;
+        font-weight: 600;
+      }
+
+      /* The signature: trailing ® superscript on every wordmark */
+      .reg {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.42em;
+        vertical-align: super;
+        line-height: 1;
+        font-weight: 500;
+        letter-spacing: 0;
+        margin-left: 0.08em;
+        color: var(--magenta);
+      }
+
+      /* The Heart bloom — the master radial */
+      .heart-bloom {
+        background: radial-gradient(
+          circle at 50% 50%,
+          #5d0830 0%,
+          #b41c5e 18%,
+          #e1318a 34%,
+          #ef6fa5 50%,
+          #f5a6c7 68%,
+          #f8deea 84%,
+          #fcf4f7 100%
+        );
+      }
+
+      /* Petal wash for hero backdrops + footer */
+      .petal-wash {
+        background: linear-gradient(180deg, #fcf4f7 0%, #f8deea 60%, #f5a6c7 100%);
+      }
+
+      /* ============================================================
+         The dot-grid module — the entire art system.
+         SVG provides per-sphere flat tints (one discrete color per dot).
+         A tiled mask + tiled sheen overlay adds 3D shading uniformly.
+         ============================================================ */
+      .bloom-wrap {
+        position: relative;
+        display: block;
+        width: 100%;
+      }
+      .bloom-wrap svg.bloom-tints {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      /* Tiled sheen + ambient shadow, masked to circles */
+      .bloom-wrap::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          radial-gradient(
+            circle at 33% 28%,
+            rgba(255, 255, 255, 0.78) 0%,
+            rgba(255, 255, 255, 0.22) 16%,
+            rgba(255, 255, 255, 0) 38%
+          ),
+          radial-gradient(
+            circle at 70% 80%,
+            rgba(26, 9, 19, 0.28) 0%,
+            rgba(26, 9, 19, 0) 38%
+          );
+        background-size:
+          var(--cell-w, 6.25%) var(--cell-h, 4.5454%),
+          var(--cell-w, 6.25%) var(--cell-h, 4.5454%);
+        -webkit-mask-image:
+          radial-gradient(circle, #000 47%, transparent 49%);
+        mask-image:
+          radial-gradient(circle, #000 47%, transparent 49%);
+        -webkit-mask-size: var(--cell-w, 6.25%) var(--cell-h, 4.5454%);
+        mask-size: var(--cell-w, 6.25%) var(--cell-h, 4.5454%);
+        -webkit-mask-repeat: repeat;
+        mask-repeat: repeat;
+      }
+
+      /* Petal info-band — the bottom of every hero, echoing the poster */
+      .petal-band {
+        background: var(--petal);
+        border-top: 1px solid var(--blush);
+        border-bottom: 1px solid var(--blush);
+      }
+
+      /* Buttons */
+      .btn-primary {
+        background: radial-gradient(circle at 30% 30%, #ef6fa5 0%, #e1318a 50%, #b41c5e 100%);
+        color: var(--petal);
+        font-family: "Inter", sans-serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.22em;
+        border-radius: 9999px;
+        box-shadow: 0 12px 28px -10px rgba(228, 49, 138, 0.55);
+        transition: background 0.2s ease;
+      }
+      .btn-primary:hover {
+        background: radial-gradient(circle at 50% 50%, #b41c5e 0%, #5d0830 100%);
+      }
+      .btn-secondary {
+        background: var(--petal);
+        color: var(--magenta);
+        border: 1px solid var(--magenta);
+        font-family: "Inter", sans-serif;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.22em;
+        border-radius: 9999px;
+        transition: all 0.2s ease;
+      }
+      .btn-secondary:hover {
+        background: var(--magenta);
+        color: var(--petal);
+      }
+      .btn-ghost {
+        color: var(--magenta);
+        font-family: "Inter", sans-serif;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.22em;
+        border-bottom: 1.5px solid var(--magenta);
+        padding-bottom: 2px;
+      }
+      .btn-ghost:hover { color: var(--crimson); border-color: var(--crimson); }
+
+      /* Pills + badges */
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--blush);
+        color: var(--magenta);
+        font-family: "Inter", sans-serif;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.22em;
+        font-size: 10px;
+        padding: 4px 11px;
+        border-radius: 9999px;
+      }
+      .pill .pill-dot {
+        width: 5px; height: 5px;
+        background: var(--magenta);
+        border-radius: 9999px;
+      }
+      .pill.heart { background: var(--heart); color: var(--petal); }
+      .pill.heart .pill-dot { background: var(--sakura); }
+      .pill.outline {
+        background: transparent;
+        border: 1px solid var(--sakura);
+        color: var(--crimson);
+      }
+
+      /* Cards — soft radii, Blush border, soft Sakura shadow, two corner dots */
+      .card {
+        position: relative;
+        background: var(--petal);
+        border: 1px solid var(--blush);
+        border-radius: 24px;
+        box-shadow: 0 24px 40px -16px rgba(245, 166, 199, 0.55);
+      }
+      .card::before, .card::after {
+        content: "";
+        position: absolute;
+        width: 6px; height: 6px;
+        border-radius: 9999px;
+        background: radial-gradient(circle at 30% 30%, #f5a6c7, #e1318a);
+      }
+      .card::before { top: 14px; left: 14px; }
+      .card::after { bottom: 14px; right: 14px; }
+
+      /* Card variant: heart background */
+      .card-heart {
+        background: var(--heart);
+        color: var(--petal);
+        border: 1px solid var(--crimson);
+        border-radius: 24px;
+        box-shadow: 0 24px 40px -16px rgba(93, 8, 48, 0.45);
+        position: relative;
+      }
+      .card-heart::before, .card-heart::after {
+        content: "";
+        position: absolute;
+        width: 6px; height: 6px;
+        border-radius: 9999px;
+        background: radial-gradient(circle at 30% 30%, #f5a6c7, #e1318a);
+      }
+      .card-heart::before { top: 14px; left: 14px; }
+      .card-heart::after { bottom: 14px; right: 14px; }
+
+      /* Petal-row divider — a row of 12px Blush spheres, replaces every <hr> */
+      .petal-row {
+        height: 14px;
+        background-image: radial-gradient(circle, var(--blush) 4px, transparent 5px);
+        background-size: 22px 14px;
+        background-position: 0 50%;
+        background-repeat: repeat-x;
+      }
+      .petal-row.sakura {
+        background-image: radial-gradient(circle, var(--sakura) 4px, transparent 5px);
+      }
+      .petal-row.magenta {
+        background-image: radial-gradient(circle, var(--magenta) 4px, transparent 5px);
+      }
+
+      /* Section ◉ bullet */
+      .bullet::before {
+        content: "◉";
+        color: var(--magenta);
+        margin-right: 10px;
+        font-size: 1em;
+        line-height: 1;
+      }
+
+      /* Inputs: bottom-border-only with focus indicator */
+      .input-line {
+        background: transparent;
+        border: none;
+        border-bottom: 1.5px solid var(--sakura);
+        padding: 8px 28px 8px 2px;
+        font-family: "Inter", sans-serif;
+        font-size: 15px;
+        color: var(--sumi);
+        width: 100%;
+        outline: none;
+        position: relative;
+      }
+      .input-line:focus {
+        border-bottom-color: var(--magenta);
+      }
+      .input-wrap {
+        position: relative;
+      }
+      .input-wrap::after {
+        content: "";
+        position: absolute;
+        right: 4px; bottom: 12px;
+        width: 6px; height: 6px;
+        border-radius: 9999px;
+        background: radial-gradient(circle at 30% 30%, #f5a6c7, #e1318a);
+        opacity: 0.55;
+      }
+
+      /* Tag separator (used in colophons) */
+      .sep {
+        display: inline-block;
+        width: 6px; height: 6px;
+        background: radial-gradient(circle at 30% 30%, #f5a6c7, #e1318a);
+        border-radius: 9999px;
+        margin: 0 10px 1px;
+        vertical-align: middle;
+      }
+
+      /* Tiny sphere (re-used everywhere as the icon system) */
+      .sphere {
+        display: inline-block;
+        border-radius: 9999px;
+        background:
+          radial-gradient(circle at 32% 28%, rgba(255,255,255,0.65), rgba(255,255,255,0) 38%),
+          radial-gradient(circle at 70% 80%, rgba(26,9,19,0.22), transparent 38%);
+        background-color: var(--sakura);
+      }
+
+      /* Section label */
+      .section-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.32em;
+        font-size: 11px;
+        color: var(--magenta);
+      }
+      .section-tag .num { color: var(--stone); }
+
+      /* Quote block (haiku) */
+      .haiku {
+        font-family: "Inter Tight", sans-serif;
+        font-weight: 500;
+        font-size: 21px;
+        line-height: 1.5;
+        color: var(--sumi);
+        letter-spacing: -0.01em;
+      }
+
+      /* Hide scrollbar for the petal-band ribbon */
+      .ribbon-scroll {
+        scrollbar-width: none;
+      }
+      .ribbon-scroll::-webkit-scrollbar { display: none; }
+
+      /* Custom font-feature settings on display */
+      .display, .display-med {
+        font-feature-settings: "ss01" 1, "ss03" 1;
+      }
+    </style>
+  </head>
+
+  <body class="relative min-h-screen overflow-x-hidden">
+    <!-- ============================================================= -->
+    <!-- § IDENTITY — masthead, hero dot-grid, Petal info-band         -->
+    <!-- ============================================================= -->
+    <section class="relative isolate">
+      <!-- Top navigation -->
+      <nav class="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
+        <div class="flex items-center gap-3">
+          <!-- 5x5 dot-grid logo mark -->
+          <svg width="36" height="36" viewBox="0 0 60 60" aria-hidden="true">
+            <g fill="#F8DEEA">
+              <circle cx="5"  cy="5"  r="5"/><circle cx="17" cy="5"  r="5"/>
+              <circle cx="41" cy="5"  r="5"/><circle cx="53" cy="5"  r="5"/>
+              <circle cx="5"  cy="17" r="5"/><circle cx="53" cy="17" r="5"/>
+              <circle cx="5"  cy="41" r="5"/><circle cx="53" cy="41" r="5"/>
+              <circle cx="5"  cy="53" r="5"/><circle cx="17" cy="53" r="5"/>
+              <circle cx="41" cy="53" r="5"/><circle cx="53" cy="53" r="5"/>
+            </g>
+            <g fill="#F5A6C7">
+              <circle cx="29" cy="5"  r="5"/><circle cx="29" cy="53" r="5"/>
+              <circle cx="5"  cy="29" r="5"/><circle cx="53" cy="29" r="5"/>
+              <circle cx="17" cy="17" r="5"/><circle cx="41" cy="17" r="5"/>
+              <circle cx="17" cy="41" r="5"/><circle cx="41" cy="41" r="5"/>
+            </g>
+            <g fill="#E1318A">
+              <circle cx="29" cy="17" r="5"/><circle cx="17" cy="29" r="5"/>
+              <circle cx="41" cy="29" r="5"/><circle cx="29" cy="41" r="5"/>
+            </g>
+            <circle cx="29" cy="29" r="5" fill="#5D0830"/>
+          </svg>
+          <span class="display-med text-[22px] text-[color:var(--sumi)]">
+            SAKURA<span class="reg">®</span>
+          </span>
+        </div>
+
+        <div class="hidden items-center gap-8 md:flex">
+          <a href="#" class="mono-up text-[11px] text-[color:var(--sumi)] hover:text-[color:var(--magenta)]">Atelier</a>
+          <a href="#" class="mono-up text-[11px] text-[color:var(--stone)] hover:text-[color:var(--magenta)]">Hanami</a>
+          <a href="#" class="mono-up text-[11px] text-[color:var(--stone)] hover:text-[color:var(--magenta)]">Saijiki</a>
+          <a href="#" class="mono-up text-[11px] text-[color:var(--stone)] hover:text-[color:var(--magenta)]">Press</a>
+        </div>
+
+        <span class="pill"><span class="pill-dot"></span>NO. 03 / 12</span>
+      </nav>
+
+      <!-- Hero -->
+      <div class="mx-auto max-w-6xl px-6 pb-8 pt-2">
+        <!-- Eyebrow row -->
+        <div class="flex flex-wrap items-baseline justify-between gap-3 pb-6">
+          <p class="eyebrow text-[color:var(--magenta)]">
+            ◉&nbsp;&nbsp;Inside Out the Color&nbsp;&nbsp;·&nbsp;&nbsp;Damonxart<span class="reg">®</span>
+          </p>
+          <p class="mono-up text-[11px] text-[color:var(--stone)]">
+            Spring · 春 · 2026 · 花見 № 03
+          </p>
+        </div>
+
+        <div class="grid items-stretch gap-10 md:grid-cols-[1.05fr_1fr]">
+          <!-- LEFT — the Heart dot-grid bloom (the signature) -->
+          <div class="relative">
+            <!-- Decorative corner mono labels -->
+            <p class="mono-up absolute -top-3 left-2 z-10 text-[10px] text-[color:var(--stone)]">↳ Plate 03</p>
+            <p class="mono-up absolute -top-3 right-2 z-10 text-[10px] text-[color:var(--stone)]">32×44 · 1408 dots</p>
+
+            <!-- The bloom — generated via SVG below + tiled sheen via ::after -->
+            <div
+              id="hero-bloom"
+              class="bloom-wrap heart-bloom"
+              style="--cell-w: 3.125%; --cell-h: 2.2727%; aspect-ratio: 640 / 880; border-radius: 12px; overflow: hidden;"
+            >
+              <svg
+                class="bloom-tints"
+                viewBox="0 0 640 880"
+                preserveAspectRatio="xMidYMid slice"
+                aria-hidden="true"
+              ></svg>
+            </div>
+
+            <!-- The Petal info-band, echoing the poster -->
+            <div class="petal-band -mt-px grid grid-cols-[1fr_auto] items-end gap-6 px-5 py-6">
+              <div>
+                <p class="mono-up text-[10px] text-[color:var(--sumi)]">Inside Out The Color</p>
+                <p class="mono text-[10px] text-[color:var(--stone)] mt-1">DAMONXART<span class="text-[color:var(--magenta)]">®</span></p>
+                <p class="kanji mt-3 text-[28px] leading-none text-[color:var(--crimson)]">櫻</p>
+              </div>
+              <div class="text-right">
+                <p class="display text-[48px] leading-none text-[color:var(--sumi)] md:text-[64px]">
+                  SAKURA<span class="reg">®</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT — display masthead + tagline + CTAs -->
+          <div class="flex flex-col justify-between gap-8 pt-2">
+            <div>
+              <p class="eyebrow text-[color:var(--stone)]">
+                ◉&nbsp;&nbsp;§ 00 / Identity
+              </p>
+              <h1 class="display mt-5 text-[clamp(4rem,11vw,8.5rem)] text-[color:var(--sumi)]">
+                SAKURA<span class="reg">®</span>
+              </h1>
+              <p class="kanji mt-2 text-[44px] leading-none text-[color:var(--crimson)]">櫻</p>
+              <p class="mt-6 max-w-md text-[17px] leading-relaxed text-[color:var(--sumi)]">
+                A meditative design system arranged as a single radial bloom of
+                <span class="text-[color:var(--magenta)] font-semibold">3D-rendered dots</span> — pale Petal at the
+                edges, Cherry Magenta in the middle, a deep Heart at the
+                center. One <span class="kanji text-[color:var(--crimson)]">櫻</span> per surface.
+              </p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3">
+              <a href="#" class="btn-primary inline-flex items-center gap-3 px-7 py-3.5 text-[12px]">
+                Begin Hanami
+                <span class="sphere" style="width:8px;height:8px;background-color:#FCF4F7"></span>
+              </a>
+              <a href="#" class="btn-secondary inline-flex items-center gap-3 px-7 py-3.5 text-[12px]">
+                Read kit
+              </a>
+            </div>
+
+            <!-- Stats sphere ribbon -->
+            <div class="grid grid-cols-3 gap-3">
+              <div>
+                <p class="mono-up text-[10px] text-[color:var(--stone)]">Dots</p>
+                <p class="display-med mt-1 text-[28px] text-[color:var(--sumi)]">1,408</p>
+              </div>
+              <div>
+                <p class="mono-up text-[10px] text-[color:var(--stone)]">Rings</p>
+                <p class="display-med mt-1 text-[28px] text-[color:var(--sumi)]">07</p>
+              </div>
+              <div>
+                <p class="mono-up text-[10px] text-[color:var(--stone)]">Heart</p>
+                <p class="display-med mt-1 text-[28px] text-[color:var(--crimson)]">#5D0830</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="petal-row mt-12"></div>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- § 01 — THEME SPECIFICATION                                    -->
+    <!-- ============================================================= -->
+    <section class="mx-auto max-w-6xl px-6 pt-10">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="section-tag">
+            <span class="num">§ 01</span> / Theme spec
+          </p>
+          <h2 class="display mt-5 text-[56px] text-[color:var(--sumi)] md:text-[72px]">
+            The Kit<span class="reg">®</span>
+          </h2>
+          <p class="mt-2 max-w-lg text-[15px] text-[color:var(--stone)]">
+            Palette · Gradients · Typography · Components — exactly as the
+            prompt prescribes, set in petal ink.
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="pill"><span class="pill-dot"></span>04 surfaces</span>
+          <span class="pill outline"><span class="pill-dot"></span>Locked</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 01.1 — PALETTE -->
+    <section class="mx-auto max-w-6xl px-6 pt-10">
+      <div class="mb-4 flex items-end justify-between">
+        <p class="section-tag"><span class="num">— 01.1</span> / Palette</p>
+        <p class="mono text-[11px] text-[color:var(--stone)]">08 swatches · prompt-locked</p>
+      </div>
+
+      <div class="card grid grid-cols-2 gap-3 p-5 sm:grid-cols-4 lg:grid-cols-8">
+        <!-- Each chip: filled sphere on Petal panel -->
+        <div class="rounded-2xl p-3 text-left" style="background:#FCF4F7;border:1px solid #F8DEEA">
+          <span class="sphere block" style="width:56px;height:56px;background-color:#FCF4F7;border:1px solid #F8DEEA"></span>
+          <p class="mono-up mt-3 text-[10px] text-[color:var(--sumi)]">Petal</p>
+          <p class="mono text-[10px] text-[color:var(--stone)]">#FCF4F7</p>
+        </div>
+        <div class="rounded-2xl p-3 text-left" style="background:#FCF4F7;border:1px solid #F8DEEA">
+          <span class="sphere block" style="width:56px;height:56px;background-color:#F8DEEA"></span>
+          <p class="mono-up mt-3 text-[10px] text-[color:var(--sumi)]">Blush</p>
+          <p class="mono text-[10px] text-[color:var(--stone)]">#F8DEEA</p>
+        </div>
+        <div class="rounded-2xl p-3 text-left" style="background:#FCF4F7;border:1px solid #F8DEEA">
+          <span class="sphere block" style="width:56px;height:56px;background-color:#F5A6C7"></span>
+          <p class="mono-up mt-3 text-[10px] text-[color:var(--sumi)]">Sakura</p>
+          <p class="mono text-[10px] text-[color:var(--stone)]">#F5A6C7</p>
+        </div>
+        <div class="rounded-2xl p-3 text-left" style="background:#FCF4F7;border:1px solid #F8DEEA">
+          <span class="sphere block" style="width:56px;height:56px;background-color:#EF6FA5"></span>
+          <p class="mono-up mt-3 text-[10px] text-[color:var(--sumi)]">Plum</p>
+          <p class="mono text-[10px] text-[color:var(--stone)]">#EF6FA5</p>
+        </div>
+        <div class="rounded-2xl p-3 text-left" style="background:#FCF4F7;border:1px solid #F8DEEA">
+          <span class="sphere block" style="width:56px;height:56px;background-color:#E1318A"></span>
+          <p class="mono-up mt-3 text-[10px] text-[color:var(--sumi)]">Magenta</p>
+          <p class="mono text-[10px] text-[color:var(--stone)]">#E1318A</p>
+        </div>
+        <div class="rounded-2xl p-3 text-left" style="background:#FCF4F7;border:1px solid #F8DEEA">
+          <span class="sphere block" style="width:56px;height:56px;background-color:#B41C5E"></span>
+          <p class="mono-up mt-3 text-[10px] text-[color:var(--sumi)]">Crimson</p>
+          <p class="mono text-[10px] text-[color:var(--stone)]">#B41C5E</p>
+        </div>
+        <div class="rounded-2xl p-3 text-left" style="background:#FCF4F7;border:1px solid #F8DEEA">
+          <span class="sphere block" style="width:56px;height:56px;background-color:#5D0830"></span>
+          <p class="mono-up mt-3 text-[10px] text-[color:var(--sumi)]">Heart</p>
+          <p class="mono text-[10px] text-[color:var(--stone)]">#5D0830</p>
+        </div>
+        <div class="rounded-2xl p-3 text-left" style="background:#FCF4F7;border:1px solid #F8DEEA">
+          <span class="sphere block" style="width:56px;height:56px;background-color:#1A0913"></span>
+          <p class="mono-up mt-3 text-[10px] text-[color:var(--sumi)]">Sumi</p>
+          <p class="mono text-[10px] text-[color:var(--stone)]">#1A0913</p>
+        </div>
+      </div>
+      <p class="mono mt-3 text-[11px] text-[color:var(--stone)]">
+        ◉ Petal + Blush occupy ≥ 65% of any surface · Magenta + Crimson + Heart ≤ 12% · one Heart bloom per viewport
+      </p>
+    </section>
+
+    <!-- 01.2 — GRADIENTS -->
+    <section class="mx-auto max-w-6xl px-6 pt-12">
+      <div class="mb-4 flex items-end justify-between">
+        <p class="section-tag"><span class="num">— 01.2</span> / Gradients</p>
+        <p class="mono text-[11px] text-[color:var(--stone)]">04 gradients · the entire color theory</p>
+      </div>
+
+      <div class="grid gap-5 md:grid-cols-2">
+        <!-- Heart bloom -->
+        <div class="card overflow-hidden p-0">
+          <div class="heart-bloom" style="height:160px"></div>
+          <div class="p-5">
+            <p class="mono-up text-[10px] text-[color:var(--magenta)]">Heart bloom · signature radial</p>
+            <p class="mono mt-2 text-[11px] text-[color:var(--stone)] leading-relaxed break-all">
+              radial-gradient(circle at 50% 50%, #5D0830 0%, #B41C5E 18%, #E1318A 34%, #EF6FA5 50%, #F5A6C7 68%, #F8DEEA 84%, #FCF4F7 100%)
+            </p>
+          </div>
+        </div>
+
+        <!-- Petal wash -->
+        <div class="card overflow-hidden p-0">
+          <div class="petal-wash" style="height:160px"></div>
+          <div class="p-5">
+            <p class="mono-up text-[10px] text-[color:var(--magenta)]">Petal wash · hero backdrop</p>
+            <p class="mono mt-2 text-[11px] text-[color:var(--stone)] leading-relaxed break-all">
+              linear-gradient(180deg, #FCF4F7 0%, #F8DEEA 60%, #F5A6C7 100%)
+            </p>
+          </div>
+        </div>
+
+        <!-- Dot sheen -->
+        <div class="card overflow-hidden p-0">
+          <div
+            style="
+              height:160px;
+              background-color: #E1318A;
+              background-image:
+                radial-gradient(circle at 32% 28%, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.18) 18%, transparent 42%),
+                radial-gradient(circle at 68% 78%, rgba(26,9,19,0.18) 0%, transparent 38%);
+            "
+          ></div>
+          <div class="p-5">
+            <p class="mono-up text-[10px] text-[color:var(--magenta)]">Dot sheen · 3D effect on each sphere</p>
+            <p class="mono mt-2 text-[11px] text-[color:var(--stone)] leading-relaxed break-all">
+              radial(32% 28%, rgba(255,255,255,.65) 0, transparent 42%), radial(68% 78%, rgba(26,9,19,.18) 0, transparent 38%)
+            </p>
+          </div>
+        </div>
+
+        <!-- CTA sheen -->
+        <div class="card overflow-hidden p-0">
+          <div
+            style="
+              height:160px;
+              background: radial-gradient(circle at 30% 30%, #EF6FA5 0%, #E1318A 50%, #B41C5E 100%);
+            "
+          ></div>
+          <div class="p-5">
+            <p class="mono-up text-[10px] text-[color:var(--magenta)]">CTA sheen · primary button only</p>
+            <p class="mono mt-2 text-[11px] text-[color:var(--stone)] leading-relaxed break-all">
+              radial-gradient(circle at 30% 30%, #EF6FA5 0%, #E1318A 50%, #B41C5E 100%)
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 01.3 — TYPOGRAPHY -->
+    <section class="mx-auto max-w-6xl px-6 pt-12">
+      <div class="mb-4 flex items-end justify-between">
+        <p class="section-tag"><span class="num">— 01.3</span> / Typography</p>
+        <p class="mono text-[11px] text-[color:var(--stone)]">04 faces · italic banned</p>
+      </div>
+
+      <div class="grid gap-5 md:grid-cols-4">
+        <div class="card p-6">
+          <p class="mono-up text-[10px] text-[color:var(--magenta)]">Display · Inter Tight</p>
+          <p class="display mt-4 text-[64px] leading-none text-[color:var(--sumi)]">Aa</p>
+          <p class="mono mt-4 text-[11px] text-[color:var(--stone)] leading-relaxed">
+            900 · uppercase · -0.02em · line-height 0.92
+          </p>
+        </div>
+        <div class="card p-6">
+          <p class="mono-up text-[10px] text-[color:var(--magenta)]">Body · Inter</p>
+          <p class="mt-4 text-[40px] leading-none text-[color:var(--sumi)]">Aa</p>
+          <p class="mono mt-4 text-[11px] text-[color:var(--stone)] leading-relaxed">
+            400 / 500 / 600 / 700 · 15–17px · line-height 1.55
+          </p>
+        </div>
+        <div class="card p-6">
+          <p class="mono-up text-[10px] text-[color:var(--magenta)]">Mono · JetBrains</p>
+          <p class="mono mt-4 text-[40px] leading-none text-[color:var(--crimson)]">Aa</p>
+          <p class="mono mt-4 text-[11px] text-[color:var(--stone)] leading-relaxed">
+            eyebrow 0.32em · labels 0.22em · uppercase
+          </p>
+        </div>
+        <div class="card p-6">
+          <p class="mono-up text-[10px] text-[color:var(--magenta)]">Kanji · Noto Serif JP</p>
+          <p class="kanji mt-4 text-[56px] leading-none text-[color:var(--crimson)]">櫻</p>
+          <p class="mono mt-4 text-[11px] text-[color:var(--stone)] leading-relaxed">
+            only 櫻 / 花見 / 春 / 月 · never body
+          </p>
+        </div>
+      </div>
+
+      <!-- Specimen showcase -->
+      <div class="card mt-5 p-8">
+        <p class="eyebrow text-[color:var(--stone)]">↳ Specimen · the SAKURA wordmark</p>
+        <div class="mt-4 grid items-baseline gap-6 md:grid-cols-[1fr_auto]">
+          <div>
+            <p class="display text-[clamp(3.5rem,9vw,7rem)] text-[color:var(--sumi)] leading-none">
+              SAKURA<span class="reg">®</span>
+            </p>
+            <p class="mono-up mt-3 text-[10px] text-[color:var(--stone)]">
+              Inter Tight 900 · uppercase · Sumi on Petal · no shadow, no outline, no fill effect
+            </p>
+          </div>
+          <p class="kanji text-[110px] leading-none text-[color:var(--crimson)]">櫻</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 01.4 — COMPONENTS -->
+    <section class="mx-auto max-w-6xl px-6 pt-12 pb-16">
+      <div class="mb-4 flex items-end justify-between">
+        <p class="section-tag"><span class="num">— 01.4</span> / Components</p>
+        <p class="mono text-[11px] text-[color:var(--stone)]">round everything · the dot is the icon</p>
+      </div>
+
+      <div class="grid gap-5 md:grid-cols-2">
+        <!-- Buttons + pills -->
+        <div class="card p-6">
+          <p class="mono-up text-[10px] text-[color:var(--magenta)]">Buttons · primary, secondary, ghost</p>
+          <div class="mt-5 flex flex-wrap items-center gap-3">
+            <button class="btn-primary px-7 py-3.5 text-[12px]">Begin Hanami</button>
+            <button class="btn-secondary px-7 py-3.5 text-[12px]">Read kit</button>
+            <button class="btn-ghost text-[12px]">Skip ›</button>
+          </div>
+
+          <p class="mono-up mt-7 text-[10px] text-[color:var(--magenta)]">Pills · badges</p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <span class="pill"><span class="pill-dot"></span>Live · 03:42</span>
+            <span class="pill outline"><span class="pill-dot"></span>Spring</span>
+            <span class="pill heart"><span class="pill-dot"></span>Heart panel</span>
+            <span class="pill"><span class="pill-dot"></span>NO. 03 / 12</span>
+          </div>
+
+          <div class="petal-row mt-6"></div>
+
+          <p class="mono mt-4 text-[11px] text-[color:var(--stone)]">
+            ◉ Round everything · primary radial-sheen · secondary 1px Magenta outline · ghost = Magenta underline only
+          </p>
+        </div>
+
+        <!-- Inputs + the small logo + corner-dots demo -->
+        <div class="card p-6">
+          <p class="mono-up text-[10px] text-[color:var(--magenta)]">Inputs · select · the focus sphere</p>
+
+          <div class="mt-5">
+            <label class="mono-up block text-[10px] text-[color:var(--stone)]">Sietch · sector</label>
+            <div class="input-wrap mt-1">
+              <input
+                type="text"
+                value="Ueno Park · 35.7148, 139.7733"
+                class="input-line"
+              />
+            </div>
+          </div>
+
+          <div class="mt-5">
+            <label class="mono-up block text-[10px] text-[color:var(--stone)]">Mood · today</label>
+            <div class="input-wrap mt-1">
+              <select class="input-line">
+                <option>Quiet · awake before dawn</option>
+                <option>Soft · steam on the window</option>
+                <option>Tender · petals on water</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="petal-row mt-6 sakura"></div>
+
+          <div class="mt-4 grid grid-cols-2 gap-4">
+            <div>
+              <p class="mono-up text-[10px] text-[color:var(--magenta)]">Logo mark</p>
+              <div class="mt-2 flex items-center gap-3">
+                <svg width="44" height="44" viewBox="0 0 60 60" aria-hidden="true">
+                  <g fill="#F8DEEA">
+                    <circle cx="5" cy="5" r="5"/><circle cx="17" cy="5" r="5"/>
+                    <circle cx="41" cy="5" r="5"/><circle cx="53" cy="5" r="5"/>
+                    <circle cx="5" cy="17" r="5"/><circle cx="53" cy="17" r="5"/>
+                    <circle cx="5" cy="41" r="5"/><circle cx="53" cy="41" r="5"/>
+                    <circle cx="5" cy="53" r="5"/><circle cx="17" cy="53" r="5"/>
+                    <circle cx="41" cy="53" r="5"/><circle cx="53" cy="53" r="5"/>
+                  </g>
+                  <g fill="#F5A6C7">
+                    <circle cx="29" cy="5" r="5"/><circle cx="29" cy="53" r="5"/>
+                    <circle cx="5" cy="29" r="5"/><circle cx="53" cy="29" r="5"/>
+                    <circle cx="17" cy="17" r="5"/><circle cx="41" cy="17" r="5"/>
+                    <circle cx="17" cy="41" r="5"/><circle cx="41" cy="41" r="5"/>
+                  </g>
+                  <g fill="#E1318A">
+                    <circle cx="29" cy="17" r="5"/><circle cx="17" cy="29" r="5"/>
+                    <circle cx="41" cy="29" r="5"/><circle cx="29" cy="41" r="5"/>
+                  </g>
+                  <circle cx="29" cy="29" r="5" fill="#5D0830"/>
+                </svg>
+                <span class="display-med text-[20px] text-[color:var(--sumi)]">
+                  SAKURA<span class="reg">®</span>
+                </span>
+              </div>
+            </div>
+            <div>
+              <p class="mono-up text-[10px] text-[color:var(--magenta)]">Card · corner dots</p>
+              <div class="card mt-2 p-3" style="border-radius:18px;box-shadow:none">
+                <p class="display-med text-[18px] text-[color:var(--sumi)]">Field guide</p>
+                <p class="mono text-[10px] text-[color:var(--stone)]">↳ two corner dots, one Heart</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="petal-row mx-auto mt-2 max-w-6xl px-6"></div>
+
+    <!-- ============================================================= -->
+    <!-- § 02.1 — HANAMI JOURNAL (花見ジャーナル)                        -->
+    <!-- ============================================================= -->
+    <section class="mx-auto max-w-6xl px-6 pt-14 pb-10">
+      <div class="mb-6 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p class="section-tag">
+            <span class="num">§ 02.1</span> / UX · Hanami journal
+          </p>
+          <h3 class="display mt-3 text-[44px] text-[color:var(--sumi)]">
+            HANAMI<span class="reg">®</span>
+          </h3>
+          <p class="kanji mt-1 text-[20px] text-[color:var(--crimson)]">花見ジャーナル</p>
+          <p class="mt-3 max-w-md text-[15px] text-[color:var(--stone)]">
+            A meditation journal that tracks the cherry-blossom cycle — peak
+            bloom, full bloom, falling petals — and lets you log a single
+            breath, a single line, per day.
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="pill"><span class="pill-dot"></span>Day 14 · Mankai 満開</span>
+          <span class="pill outline"><span class="pill-dot"></span>04:38 JST</span>
+        </div>
+      </div>
+
+      <div class="grid gap-5 md:grid-cols-[1.1fr_1fr]">
+        <!-- LEFT — Heart card with embedded mini dot-grid -->
+        <div class="card-heart p-7">
+          <div class="flex items-baseline justify-between">
+            <p class="mono-up text-[10px] text-[color:var(--sakura)]">↳ Today · Mankai</p>
+            <p class="mono text-[10px] text-[color:var(--blush)]">04.13 · 14 / 21</p>
+          </div>
+
+          <p class="display mt-5 text-[64px] leading-none text-[color:var(--petal)]">
+            FULL<br/>BLOOM<span class="reg">®</span>
+          </p>
+          <p class="kanji mt-3 text-[24px] text-[color:var(--sakura)]">満開</p>
+
+          <!-- Mini dot-grid inside the heart -->
+          <div
+            class="bloom-wrap heart-bloom mt-6 mx-auto"
+            style="
+              --cell-w: 7.6923%;
+              --cell-h: 7.1428%;
+              aspect-ratio: 13 / 14;
+              max-width: 260px;
+              border-radius: 8px;
+              overflow: hidden;
+              border: 1px solid #B41C5E;
+            "
+          >
+            <svg
+              class="bloom-tints"
+              viewBox="0 0 260 280"
+              preserveAspectRatio="xMidYMid slice"
+              data-mini-bloom
+              aria-hidden="true"
+            ></svg>
+          </div>
+
+          <div class="mt-6 grid grid-cols-3 gap-3 text-center">
+            <div>
+              <p class="mono-up text-[10px] text-[color:var(--sakura)]">Breath</p>
+              <p class="display-med mt-1 text-[24px] text-[color:var(--petal)]">5·5</p>
+            </div>
+            <div>
+              <p class="mono-up text-[10px] text-[color:var(--sakura)]">Streak</p>
+              <p class="display-med mt-1 text-[24px] text-[color:var(--petal)]">21d</p>
+            </div>
+            <div>
+              <p class="mono-up text-[10px] text-[color:var(--sakura)]">Petals</p>
+              <p class="display-med mt-1 text-[24px] text-[color:var(--petal)]">1,408</p>
+            </div>
+          </div>
+
+          <button class="btn-primary mt-6 w-full px-7 py-3.5 text-[12px]">
+            Begin 5-min breath
+          </button>
+        </div>
+
+        <!-- RIGHT — entries + timeline -->
+        <div class="card p-6">
+          <div class="flex items-baseline justify-between">
+            <p class="mono-up text-[10px] text-[color:var(--magenta)]">↳ Recent entries</p>
+            <p class="mono text-[10px] text-[color:var(--stone)]">06 of 21</p>
+          </div>
+
+          <ul class="mt-4 divide-y" style="border-color:#F8DEEA">
+            <li class="grid grid-cols-[auto_1fr_auto] items-center gap-4 py-3">
+              <span class="sphere" style="width:18px;height:18px;background-color:#5D0830"></span>
+              <div>
+                <p class="display-med text-[15px] text-[color:var(--sumi)]">Petals on the train track</p>
+                <p class="mono text-[10px] text-[color:var(--stone)]">↳ 04.13 · Mankai · 04:38 JST · 5·5 breath</p>
+              </div>
+              <span class="mono-up text-[10px] text-[color:var(--magenta)]">Day 14</span>
+            </li>
+            <li class="grid grid-cols-[auto_1fr_auto] items-center gap-4 py-3">
+              <span class="sphere" style="width:18px;height:18px;background-color:#B41C5E"></span>
+              <div>
+                <p class="display-med text-[15px] text-[color:var(--sumi)]">A bee, drunk in the cup</p>
+                <p class="mono text-[10px] text-[color:var(--stone)]">↳ 04.12 · Shichibu-zaki · 06:14 JST · 4·6 breath</p>
+              </div>
+              <span class="mono-up text-[10px] text-[color:var(--stone)]">Day 13</span>
+            </li>
+            <li class="grid grid-cols-[auto_1fr_auto] items-center gap-4 py-3">
+              <span class="sphere" style="width:18px;height:18px;background-color:#E1318A"></span>
+              <div>
+                <p class="display-med text-[15px] text-[color:var(--sumi)]">Wind, no rain, no decision</p>
+                <p class="mono text-[10px] text-[color:var(--stone)]">↳ 04.11 · Gobu-zaki · 05:52 JST · 5·5 breath</p>
+              </div>
+              <span class="mono-up text-[10px] text-[color:var(--stone)]">Day 12</span>
+            </li>
+            <li class="grid grid-cols-[auto_1fr_auto] items-center gap-4 py-3">
+              <span class="sphere" style="width:18px;height:18px;background-color:#EF6FA5"></span>
+              <div>
+                <p class="display-med text-[15px] text-[color:var(--sumi)]">Stone bench, warm at noon</p>
+                <p class="mono text-[10px] text-[color:var(--stone)]">↳ 04.10 · Sanbu-zaki · 11:08 JST · 6·6 breath</p>
+              </div>
+              <span class="mono-up text-[10px] text-[color:var(--stone)]">Day 11</span>
+            </li>
+            <li class="grid grid-cols-[auto_1fr_auto] items-center gap-4 py-3">
+              <span class="sphere" style="width:18px;height:18px;background-color:#F5A6C7"></span>
+              <div>
+                <p class="display-med text-[15px] text-[color:var(--sumi)]">First open buds · sakura-zensen</p>
+                <p class="mono text-[10px] text-[color:var(--stone)]">↳ 04.09 · Kaika · 06:02 JST · 5·5 breath</p>
+              </div>
+              <span class="mono-up text-[10px] text-[color:var(--stone)]">Day 10</span>
+            </li>
+            <li class="grid grid-cols-[auto_1fr_auto] items-center gap-4 py-3">
+              <span class="sphere" style="width:18px;height:18px;background-color:#F8DEEA"></span>
+              <div>
+                <p class="display-med text-[15px] text-[color:var(--sumi)]">Still, just twigs and weather</p>
+                <p class="mono text-[10px] text-[color:var(--stone)]">↳ 04.08 · Tsubomi · 07:21 JST · 4·4 breath</p>
+              </div>
+              <span class="mono-up text-[10px] text-[color:var(--stone)]">Day 09</span>
+            </li>
+          </ul>
+
+          <div class="petal-row mt-5"></div>
+
+          <!-- Bloom timeline -->
+          <p class="mono-up mt-5 text-[10px] text-[color:var(--magenta)]">↳ 21-day bloom cycle</p>
+          <div class="mt-3 grid grid-cols-[repeat(21,minmax(0,1fr))] items-center gap-1">
+            <!-- Use 21 spheres at increasing tint, then back down -->
+            <span class="sphere" style="width:100%;aspect-ratio:1;background-color:#F8DEEA"></span>
+            <span class="sphere" style="width:100%;aspect-ratio:1;background-color:#F8DEEA"></span>
+            <span class="sphere" style="width:100%;aspect-ratio:1;background-color:#F5A6C7"></span>
+            <span class="sphere" style="width:100%;aspect-ratio:1;background-color:#F5A6C7"></span>
+            <span class="sphere" style="width:100%;aspect-ratio:1;background-color:#EF6FA5"></span>
+            <span class="sphere" style="width:100%;aspect-ratio:1;background-color:#EF6FA5"></span>
+            <span class="sphere" style="width:100%;aspect-ratio:1;background-color:#E1318A"></span>
+            <span class="sphere" style="width:100%;aspect-ratio:1;background-color:#E1318A"></span>
+            <span class="sphere" style="width:100%;aspect-ratio:1;background-color:#B41C5E"></span>
+            <span class="sphere" style="width:100%;aspect-ratio:1;background-color:#B41C5E"></span>
+            <span class="sphere" style="width:100%;aspect-ratio:1;background-color:#5D0830;outline:2px solid #E1318A;outline-offset:2px"></span>
+            <span class="sphere" style="width:100%;aspect-ratio:1;background-color:#B41C5E"></span>
+            <span class="sphere" style="width:100%;aspect-ratio:1;background-color:#B41C5E"></span>
+            <span class="sphere" style="width:100%;aspect-ratio:1;background-color:#E1318A"></span>
+            <span class="sphere" style="width:100%;aspect-ratio:1;background-color:#EF6FA5"></span>
+            <span class="sphere" style="width:100%;aspect-ratio:1;background-color:#EF6FA5"></span>
+            <span class="sphere" style="width:100%;aspect-ratio:1;background-color:#F5A6C7"></span>
+            <span class="sphere" style="width:100%;aspect-ratio:1;background-color:#F5A6C7"></span>
+            <span class="sphere" style="width:100%;aspect-ratio:1;background-color:#F8DEEA"></span>
+            <span class="sphere" style="width:100%;aspect-ratio:1;background-color:#F8DEEA"></span>
+            <span class="sphere" style="width:100%;aspect-ratio:1;background-color:#FCF4F7;border:1px solid #F8DEEA"></span>
+          </div>
+          <div class="mt-2 grid grid-cols-[repeat(7,minmax(0,1fr))] text-center">
+            <span class="mono text-[9px] text-[color:var(--stone)]">蕾</span>
+            <span class="mono text-[9px] text-[color:var(--stone)]">開花</span>
+            <span class="mono text-[9px] text-[color:var(--stone)]">三分</span>
+            <span class="mono text-[9px] text-[color:var(--magenta)]">満開</span>
+            <span class="mono text-[9px] text-[color:var(--stone)]">散</span>
+            <span class="mono text-[9px] text-[color:var(--stone)]">葉桜</span>
+            <span class="mono text-[9px] text-[color:var(--stone)]">夏</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="petal-row mx-auto max-w-6xl px-6"></div>
+
+    <!-- ============================================================= -->
+    <!-- § 02.2 — SAIJIKI (歳時記) — A haiku reader                     -->
+    <!-- ============================================================= -->
+    <section class="mx-auto max-w-6xl px-6 pt-14 pb-10">
+      <div class="mb-6 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p class="section-tag">
+            <span class="num">§ 02.2</span> / UX · Saijiki
+          </p>
+          <h3 class="display mt-3 text-[44px] text-[color:var(--sumi)]">
+            SAIJIKI<span class="reg">®</span>
+          </h3>
+          <p class="kanji mt-1 text-[20px] text-[color:var(--crimson)]">歳時記 · 春の部</p>
+          <p class="mt-3 max-w-md text-[15px] text-[color:var(--stone)]">
+            A curated haiku reader organized by kigo (seasonal words). One poem
+            per card; one Heart per page; one ◉ per author.
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="pill"><span class="pill-dot"></span>Spring · 春</span>
+          <span class="pill outline"><span class="pill-dot"></span>04 of 96</span>
+        </div>
+      </div>
+
+      <!-- Season ribbon -->
+      <div class="card mb-5 flex items-center gap-2 overflow-x-auto p-3 ribbon-scroll">
+        <button class="pill" style="background:var(--heart);color:var(--petal)"><span class="pill-dot" style="background:var(--sakura)"></span>SAKURA · 桜</button>
+        <button class="pill"><span class="pill-dot"></span>UME · 梅</button>
+        <button class="pill"><span class="pill-dot"></span>TSUKI · 月</button>
+        <button class="pill"><span class="pill-dot"></span>WARABI · 蕨</button>
+        <button class="pill"><span class="pill-dot"></span>SUZUME · 雀</button>
+        <button class="pill"><span class="pill-dot"></span>SAMIDARE · 五月雨</button>
+        <button class="pill"><span class="pill-dot"></span>KOI · 鯉</button>
+        <button class="pill"><span class="pill-dot"></span>KAERU · 蛙</button>
+        <button class="pill"><span class="pill-dot"></span>HOTARU · 蛍</button>
+      </div>
+
+      <!-- Haiku cards -->
+      <div class="grid gap-5 md:grid-cols-3">
+        <!-- Poem 1 — Bashō -->
+        <article class="card p-7">
+          <div class="flex items-center justify-between">
+            <p class="mono-up text-[10px] text-[color:var(--magenta)]">◉ Bashō · 1686</p>
+            <p class="mono text-[10px] text-[color:var(--stone)]">№ 04 / 96</p>
+          </div>
+          <p class="haiku mt-5">
+            many many things<br/>
+            they bring to mind —<br/>
+            cherry blossoms
+          </p>
+          <p class="kanji mt-5 text-[18px] leading-relaxed text-[color:var(--crimson)]">
+            さまざまの<br/>
+            事おもひ出す<br/>
+            桜哉
+          </p>
+          <div class="petal-row mt-5"></div>
+          <div class="mt-4 flex items-center justify-between">
+            <p class="mono text-[10px] text-[color:var(--stone)]">kigo · sakura · 春</p>
+            <button class="btn-ghost text-[11px]">Hear it ›</button>
+          </div>
+        </article>
+
+        <!-- Poem 2 — Issa -->
+        <article class="card p-7">
+          <div class="flex items-center justify-between">
+            <p class="mono-up text-[10px] text-[color:var(--magenta)]">◉ Issa · 1819</p>
+            <p class="mono text-[10px] text-[color:var(--stone)]">№ 11 / 96</p>
+          </div>
+          <p class="haiku mt-5">
+            in this floating world<br/>
+            even the cherry blossoms<br/>
+            do not bloom in vain
+          </p>
+          <p class="kanji mt-5 text-[18px] leading-relaxed text-[color:var(--crimson)]">
+            うき世とて<br/>
+            むだは桜の<br/>
+            咲きにけり
+          </p>
+          <div class="petal-row mt-5"></div>
+          <div class="mt-4 flex items-center justify-between">
+            <p class="mono text-[10px] text-[color:var(--stone)]">kigo · sakura · 春</p>
+            <button class="btn-ghost text-[11px]">Hear it ›</button>
+          </div>
+        </article>
+
+        <!-- Poem 3 — Buson -->
+        <article class="card-heart p-7">
+          <div class="flex items-center justify-between">
+            <p class="mono-up text-[10px] text-[color:var(--sakura)]">◉ Buson · 1773 · TODAY</p>
+            <p class="mono text-[10px] text-[color:var(--blush)]">№ 22 / 96</p>
+          </div>
+          <p class="haiku mt-5 text-[color:var(--petal)]">
+            falling cherry blossoms —<br/>
+            the bell of evening<br/>
+            sounds far away
+          </p>
+          <p class="kanji mt-5 text-[18px] leading-relaxed text-[color:var(--sakura)]">
+            散る桜<br/>
+            残る桜も<br/>
+            散る桜
+          </p>
+          <div class="petal-row magenta mt-5"></div>
+          <div class="mt-4 flex items-center justify-between">
+            <p class="mono text-[10px] text-[color:var(--blush)]">kigo · chiru-zakura · 春</p>
+            <button class="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--sakura)]" style="border-bottom:1.5px solid var(--sakura);padding-bottom:2px">Read note ›</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <div class="petal-row mx-auto max-w-6xl px-6"></div>
+
+    <!-- ============================================================= -->
+    <!-- § 02.3 — ATELIER SAKURA (アトリエ桜) — Boutique catalog        -->
+    <!-- ============================================================= -->
+    <section class="mx-auto max-w-6xl px-6 pt-14 pb-16">
+      <div class="mb-6 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p class="section-tag">
+            <span class="num">§ 02.3</span> / UX · Atelier
+          </p>
+          <h3 class="display mt-3 text-[44px] text-[color:var(--sumi)]">
+            ATELIER<span class="reg">®</span>
+          </h3>
+          <p class="kanji mt-1 text-[20px] text-[color:var(--crimson)]">アトリエ桜 · Spring 2026</p>
+          <p class="mt-3 max-w-md text-[15px] text-[color:var(--stone)]">
+            A Spring 2026 lookbook for a Tokyo-based atelier. Each piece is
+            indexed by its dot-print: a small radial bloom rendered in the
+            piece's own color.
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="pill"><span class="pill-dot"></span>04 pieces</span>
+          <span class="pill outline"><span class="pill-dot"></span>Drop 03 / 12</span>
+        </div>
+      </div>
+
+      <!-- Product grid -->
+      <div class="grid gap-5 md:grid-cols-4">
+        <!-- Product 1 -->
+        <article class="card overflow-hidden p-0">
+          <div class="relative p-5" style="background:#F8DEEA">
+            <p class="mono-up absolute right-4 top-4 text-[10px] text-[color:var(--magenta)]">№ 03/12</p>
+            <div
+              class="bloom-wrap heart-bloom mx-auto"
+              style="
+                --cell-w: 12.5%;
+                --cell-h: 12.5%;
+                aspect-ratio: 1 / 1;
+                max-width: 140px;
+                border-radius: 9999px;
+                overflow: hidden;
+              "
+            >
+              <svg
+                class="bloom-tints"
+                viewBox="0 0 160 160"
+                preserveAspectRatio="xMidYMid slice"
+                data-mini-bloom
+                aria-hidden="true"
+              ></svg>
+            </div>
+          </div>
+          <div class="p-5">
+            <p class="display-med text-[18px] text-[color:var(--sumi)]">Haori · Mankai</p>
+            <p class="kanji text-[12px] text-[color:var(--crimson)]">羽織 · 満開</p>
+            <p class="mt-3 text-[13px] text-[color:var(--stone)]">Silk · hand-dyed indigo & crimson, lined Petal cotton.</p>
+            <div class="mt-4 flex items-center justify-between">
+              <p class="mono text-[12px] text-[color:var(--magenta)]">¥58,000</p>
+              <button class="btn-ghost text-[10px]">View ›</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Product 2 -->
+        <article class="card overflow-hidden p-0">
+          <div class="relative p-5" style="background:#FCF4F7">
+            <p class="mono-up absolute right-4 top-4 text-[10px] text-[color:var(--magenta)]">№ 07/12</p>
+            <div
+              class="bloom-wrap mx-auto"
+              style="
+                --cell-w: 12.5%;
+                --cell-h: 12.5%;
+                aspect-ratio: 1 / 1;
+                max-width: 140px;
+                border-radius: 9999px;
+                overflow: hidden;
+                background: radial-gradient(circle at 50% 50%, #1A0913 0%, #5D0830 28%, #B41C5E 55%, #EF6FA5 80%, #F8DEEA 100%);
+              "
+            >
+              <svg
+                class="bloom-tints"
+                viewBox="0 0 160 160"
+                preserveAspectRatio="xMidYMid slice"
+                data-mini-bloom
+                data-bloom-palette="dusk"
+                aria-hidden="true"
+              ></svg>
+            </div>
+          </div>
+          <div class="p-5">
+            <p class="display-med text-[18px] text-[color:var(--sumi)]">Obi · Yozakura</p>
+            <p class="kanji text-[12px] text-[color:var(--crimson)]">帯 · 夜桜</p>
+            <p class="mt-3 text-[13px] text-[color:var(--stone)]">Brocade · night-bloom palette, Sumi & Heart on Petal weft.</p>
+            <div class="mt-4 flex items-center justify-between">
+              <p class="mono text-[12px] text-[color:var(--magenta)]">¥84,000</p>
+              <button class="btn-ghost text-[10px]">View ›</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Product 3 -->
+        <article class="card overflow-hidden p-0">
+          <div class="relative p-5" style="background:#F5A6C7">
+            <p class="mono-up absolute right-4 top-4 text-[10px] text-[color:var(--heart)]">№ 02/12</p>
+            <div
+              class="bloom-wrap heart-bloom mx-auto"
+              style="
+                --cell-w: 12.5%;
+                --cell-h: 12.5%;
+                aspect-ratio: 1 / 1;
+                max-width: 140px;
+                border-radius: 9999px;
+                overflow: hidden;
+              "
+            >
+              <svg
+                class="bloom-tints"
+                viewBox="0 0 160 160"
+                preserveAspectRatio="xMidYMid slice"
+                data-mini-bloom
+                aria-hidden="true"
+              ></svg>
+            </div>
+          </div>
+          <div class="p-5">
+            <p class="display-med text-[18px] text-[color:var(--sumi)]">Tabi · Kaika</p>
+            <p class="kanji text-[12px] text-[color:var(--crimson)]">足袋 · 開花</p>
+            <p class="mt-3 text-[13px] text-[color:var(--stone)]">Cotton-linen · split-toe, Petal sole, Magenta single-stitch.</p>
+            <div class="mt-4 flex items-center justify-between">
+              <p class="mono text-[12px] text-[color:var(--magenta)]">¥12,500</p>
+              <button class="btn-ghost text-[10px]">View ›</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Product 4 — Heart variant -->
+        <article class="card-heart overflow-hidden p-0">
+          <div class="relative p-5" style="background:#5D0830">
+            <p class="mono-up absolute right-4 top-4 text-[10px] text-[color:var(--sakura)]">№ 11/12 · HEART</p>
+            <div
+              class="bloom-wrap heart-bloom mx-auto"
+              style="
+                --cell-w: 12.5%;
+                --cell-h: 12.5%;
+                aspect-ratio: 1 / 1;
+                max-width: 140px;
+                border-radius: 9999px;
+                overflow: hidden;
+                border: 1px solid #B41C5E;
+              "
+            >
+              <svg
+                class="bloom-tints"
+                viewBox="0 0 160 160"
+                preserveAspectRatio="xMidYMid slice"
+                data-mini-bloom
+                aria-hidden="true"
+              ></svg>
+            </div>
+          </div>
+          <div class="p-5">
+            <p class="display-med text-[18px] text-[color:var(--petal)]">Kōgō · Heart</p>
+            <p class="kanji text-[12px] text-[color:var(--sakura)]">香合 · 心</p>
+            <p class="mt-3 text-[13px] text-[color:var(--blush)]">Incense box · lacquered Heart, hand-painted Plum bloom on lid.</p>
+            <div class="mt-4 flex items-center justify-between">
+              <p class="mono text-[12px] text-[color:var(--sakura)]">¥138,000</p>
+              <button class="text-[10px] font-semibold uppercase tracking-[0.22em] text-[color:var(--sakura)]" style="border-bottom:1.5px solid var(--sakura);padding-bottom:2px">View ›</button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Detail row -->
+      <div class="card mt-8 grid gap-8 p-8 md:grid-cols-[1fr_1.4fr]">
+        <div>
+          <p class="mono-up text-[10px] text-[color:var(--magenta)]">↳ Featured · № 11 / 12</p>
+          <h4 class="display mt-3 text-[40px] leading-none text-[color:var(--sumi)]">
+            KŌGŌ<span class="reg">®</span>
+          </h4>
+          <p class="kanji mt-2 text-[18px] text-[color:var(--crimson)]">香合 · 心</p>
+          <p class="mt-4 text-[15px] text-[color:var(--sumi)]">
+            A lacquered incense box hand-painted with a single Heart bloom on
+            the lid. Cherry-wood interior, magnetic clasp. Ships in a Petal
+            cotton bag, hand-numbered to <span class="text-[color:var(--magenta)] font-semibold">12</span>.
+          </p>
+
+          <div class="petal-row mt-6"></div>
+
+          <ul class="mt-4 space-y-2 text-[13px] text-[color:var(--sumi)]">
+            <li class="bullet">Lacquered urushi · 12 layers, hand-rubbed.</li>
+            <li class="bullet">Lid painting · Heart bloom on Petal, Plum rim.</li>
+            <li class="bullet">Magnetic clasp · brass, 4mm flush.</li>
+            <li class="bullet">Edition · 12 pieces · hand-numbered, ribbon-tied.</li>
+          </ul>
+
+          <div class="mt-6 flex items-center gap-3">
+            <button class="btn-primary px-7 py-3.5 text-[12px]">Add to atelier · ¥138,000</button>
+            <button class="btn-secondary px-7 py-3.5 text-[12px]">Notify · 09 left</button>
+          </div>
+        </div>
+
+        <!-- A bigger Heart bloom in the detail panel -->
+        <div class="relative">
+          <p class="mono-up absolute -top-3 left-2 z-10 text-[10px] text-[color:var(--stone)]">↳ Lid plate · 18×18</p>
+          <p class="mono-up absolute -top-3 right-2 z-10 text-[10px] text-[color:var(--stone)]">324 dots · edition 11/12</p>
+          <div
+            class="bloom-wrap heart-bloom"
+            style="
+              --cell-w: 5.5555%;
+              --cell-h: 5.5555%;
+              aspect-ratio: 1 / 1;
+              border-radius: 12px;
+              overflow: hidden;
+              border: 1px solid #F8DEEA;
+            "
+          >
+            <svg
+              class="bloom-tints"
+              viewBox="0 0 360 360"
+              preserveAspectRatio="xMidYMid slice"
+              data-mini-bloom
+              aria-hidden="true"
+            ></svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- FOOTER / COLOPHON — the Petal info-band echoed                 -->
+    <!-- ============================================================= -->
+    <footer class="petal-wash mt-4">
+      <div class="mx-auto max-w-6xl px-6 py-12">
+        <div class="grid gap-8 md:grid-cols-[2fr_1fr_1fr_1fr]">
+          <div>
+            <div class="flex items-center gap-3">
+              <svg width="36" height="36" viewBox="0 0 60 60" aria-hidden="true">
+                <g fill="#F8DEEA">
+                  <circle cx="5"  cy="5"  r="5"/><circle cx="17" cy="5"  r="5"/>
+                  <circle cx="41" cy="5"  r="5"/><circle cx="53" cy="5"  r="5"/>
+                  <circle cx="5"  cy="17" r="5"/><circle cx="53" cy="17" r="5"/>
+                  <circle cx="5"  cy="41" r="5"/><circle cx="53" cy="41" r="5"/>
+                  <circle cx="5"  cy="53" r="5"/><circle cx="17" cy="53" r="5"/>
+                  <circle cx="41" cy="53" r="5"/><circle cx="53" cy="53" r="5"/>
+                </g>
+                <g fill="#F5A6C7">
+                  <circle cx="29" cy="5"  r="5"/><circle cx="29" cy="53" r="5"/>
+                  <circle cx="5"  cy="29" r="5"/><circle cx="53" cy="29" r="5"/>
+                  <circle cx="17" cy="17" r="5"/><circle cx="41" cy="17" r="5"/>
+                  <circle cx="17" cy="41" r="5"/><circle cx="41" cy="41" r="5"/>
+                </g>
+                <g fill="#E1318A">
+                  <circle cx="29" cy="17" r="5"/><circle cx="17" cy="29" r="5"/>
+                  <circle cx="41" cy="29" r="5"/><circle cx="29" cy="41" r="5"/>
+                </g>
+                <circle cx="29" cy="29" r="5" fill="#5D0830"/>
+              </svg>
+              <span class="display-med text-[22px] text-[color:var(--sumi)]">
+                SAKURA<span class="reg">®</span>
+              </span>
+              <span class="kanji text-[22px] text-[color:var(--crimson)]">櫻</span>
+            </div>
+            <p class="mt-4 max-w-md text-[14px] text-[color:var(--sumi)]">
+              A design system inspired by Damon Xu's <em>Inside Out the Color</em>
+              series — applied to hanami journals, haiku readers, and Tokyo
+              ateliers. One bloom per page, one Heart per surface.
+            </p>
+            <p class="mono-up mt-4 text-[10px] text-[color:var(--stone)]">
+              No. 03 / 12 · Spring 2026 · Edition of 12
+            </p>
+          </div>
+
+          <div>
+            <p class="mono-up text-[10px] text-[color:var(--magenta)]">Surfaces</p>
+            <ul class="mt-3 space-y-2 text-[14px] text-[color:var(--sumi)]">
+              <li><a href="#" class="hover:text-[color:var(--magenta)]">Hanami journal</a></li>
+              <li><a href="#" class="hover:text-[color:var(--magenta)]">Saijiki reader</a></li>
+              <li><a href="#" class="hover:text-[color:var(--magenta)]">Atelier catalog</a></li>
+            </ul>
+          </div>
+          <div>
+            <p class="mono-up text-[10px] text-[color:var(--magenta)]">Kit</p>
+            <ul class="mt-3 space-y-2 text-[14px] text-[color:var(--sumi)]">
+              <li><a href="#" class="hover:text-[color:var(--magenta)]">Palette</a></li>
+              <li><a href="#" class="hover:text-[color:var(--magenta)]">Gradients</a></li>
+              <li><a href="#" class="hover:text-[color:var(--magenta)]">Components</a></li>
+            </ul>
+          </div>
+          <div>
+            <p class="mono-up text-[10px] text-[color:var(--magenta)]">Press</p>
+            <ul class="mt-3 space-y-2 text-[14px] text-[color:var(--sumi)]">
+              <li><a href="#" class="hover:text-[color:var(--magenta)]">Damon Xu · DAMONXART®</a></li>
+              <li><a href="#" class="hover:text-[color:var(--magenta)]">Inside Out the Color</a></li>
+              <li><a href="#" class="hover:text-[color:var(--magenta)]">Prompt source</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="petal-row mt-10 magenta"></div>
+
+        <!-- The colophon strip — direct nod to the poster's bottom band -->
+        <div class="mt-10 grid grid-cols-[1fr_auto] items-end gap-6">
+          <div>
+            <p class="mono-up text-[10px] text-[color:var(--sumi)]">Inside Out The Color</p>
+            <p class="mono text-[10px] text-[color:var(--stone)] mt-1">
+              DAMONXART<span class="text-[color:var(--magenta)]">®</span><span class="sep"></span>NO. 03 / 12<span class="sep"></span>SPRING 2026
+            </p>
+            <p class="kanji mt-3 text-[24px] leading-none text-[color:var(--crimson)]">櫻</p>
+          </div>
+          <p class="display text-[64px] leading-none text-[color:var(--sumi)] md:text-[88px]">
+            SAKURA<span class="reg">®</span>
+          </p>
+        </div>
+      </div>
+      <!-- Sumi page-end strip -->
+      <div style="height:24px;background:var(--sumi)"></div>
+    </footer>
+
+    <!-- ============================================================= -->
+    <!-- Dot-grid generator                                            -->
+    <!-- ============================================================= -->
+    <script>
+      (function () {
+        // Render any SVG with class .bloom-tints into a grid of circles,
+        // each tinted by a discrete ring (sampled from the Heart bloom)
+        // based on its radial distance from center.
+
+        var HEART_RINGS = [
+          { stop: 0.06, fill: '#5D0830' }, // Heart
+          { stop: 0.18, fill: '#B41C5E' }, // Crimson
+          { stop: 0.34, fill: '#E1318A' }, // Magenta
+          { stop: 0.50, fill: '#EF6FA5' }, // Plum
+          { stop: 0.68, fill: '#F5A6C7' }, // Sakura
+          { stop: 0.84, fill: '#F8DEEA' }, // Blush
+          { stop: 1.10, fill: '#FCF4F7' }  // Petal
+        ];
+
+        var DUSK_RINGS = [
+          { stop: 0.06, fill: '#1A0913' },
+          { stop: 0.20, fill: '#5D0830' },
+          { stop: 0.38, fill: '#B41C5E' },
+          { stop: 0.56, fill: '#E1318A' },
+          { stop: 0.74, fill: '#EF6FA5' },
+          { stop: 0.90, fill: '#F5A6C7' },
+          { stop: 1.10, fill: '#F8DEEA' }
+        ];
+
+        function tint(rings, d) {
+          for (var i = 0; i < rings.length; i++) {
+            if (d <= rings[i].stop) return rings[i].fill;
+          }
+          return rings[rings.length - 1].fill;
+        }
+
+        function fillSvg(svg, opts) {
+          var vb = svg.viewBox && svg.viewBox.baseVal;
+          if (!vb || !vb.width || !vb.height) return;
+
+          var W = vb.width, H = vb.height;
+          var cols = opts.cols, rows = opts.rows;
+          var cellW = W / cols, cellH = H / rows;
+          var radius = Math.min(cellW, cellH) * 0.45;
+          var cx0 = cellW / 2, cy0 = cellH / 2;
+          var heartX = W / 2, heartY = H / 2;
+          var maxD = Math.sqrt(heartX * heartX + heartY * heartY);
+
+          var rings = opts.rings || HEART_RINGS;
+
+          // Build SVG markup as a string for speed.
+          var parts = [];
+          for (var r = 0; r < rows; r++) {
+            for (var c = 0; c < cols; c++) {
+              var cx = c * cellW + cx0;
+              var cy = r * cellH + cy0;
+              var d = Math.sqrt(
+                (cx - heartX) * (cx - heartX) + (cy - heartY) * (cy - heartY)
+              ) / maxD;
+              var fill = tint(rings, d);
+              parts.push(
+                '<circle cx="' + cx.toFixed(2) + '" cy="' + cy.toFixed(2)
+                + '" r="' + radius.toFixed(2) + '" fill="' + fill + '"/>'
+              );
+            }
+          }
+          svg.innerHTML = parts.join('');
+        }
+
+        // Hero — 32 x 44 = 1408 dots
+        var hero = document.querySelector('#hero-bloom .bloom-tints');
+        if (hero) {
+          fillSvg(hero, { cols: 32, rows: 44, rings: HEART_RINGS });
+        }
+
+        // Mini blooms — all data-mini-bloom svgs use 13 columns × N rows
+        // (cells are roughly square; the viewBox dictates the ratio)
+        var minis = document.querySelectorAll('svg[data-mini-bloom]');
+        minis.forEach(function (svg) {
+          var vb = svg.viewBox && svg.viewBox.baseVal;
+          if (!vb) return;
+          var aspect = vb.width / vb.height;
+          var cols, rows;
+          if (Math.abs(aspect - 1) < 0.05) {
+            cols = 13; rows = 13;
+          } else {
+            cols = 13;
+            rows = Math.round(13 / aspect);
+          }
+          var palette =
+            svg.getAttribute('data-bloom-palette') === 'dusk'
+              ? DUSK_RINGS
+              : HEART_RINGS;
+          fillSvg(svg, { cols: cols, rows: rows, rings: palette });
+        });
+      })();
+    </script>
+  </body>
+</html>

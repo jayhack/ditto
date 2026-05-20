@@ -1,0 +1,1128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Globule — vibe preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Archivo Black = giant grotesque letter; Playfair = editorial italics + masthead;
+         Inter = body + buttons; JetBrains Mono = telemetry / stamps. -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --paper:      #F2EAD0;
+        --paper-soft: #EFE3C2;
+        --ink:        #0A0908;
+        --cyan:       #2DC4D8;
+        --cyan-d:     #126974;
+        --lime:       #82E647;
+        --lime-d:     #316E1E;
+        --cobalt:     #2347C8;
+        --cobalt-d:   #102166;
+        --indigo:     #5B2EA0;
+        --indigo-d:   #2B1452;
+        --magenta:    #E04691;
+        --magenta-d:  #6E1A45;
+        --sun:        #F2D24A;
+        --sun-d:      #8E6A0C;
+      }
+      html, body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .display {
+        font-family: "Archivo Black", "Helvetica Neue", Arial, sans-serif;
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        line-height: 0.82;
+        text-transform: uppercase;
+      }
+      .serif {
+        font-family: "Playfair Display", "Times New Roman", serif;
+      }
+      .serif-italic {
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+      }
+      .mono {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+      }
+      .mono-label {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.22em;
+        font-size: 10px;
+      }
+      .masthead-caps {
+        font-family: "Playfair Display", serif;
+        font-weight: 400;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+      }
+
+      /* === SURFACES ===================================================== */
+      .paper {
+        background-color: var(--paper);
+        background-image:
+          radial-gradient(rgba(10, 9, 8, 0.05) 1px, transparent 1px),
+          radial-gradient(rgba(35, 71, 200, 0.04) 1px, transparent 1px);
+        background-size: 7px 7px, 11px 11px;
+        background-position: 0 0, 3px 4px;
+      }
+      .paper-soft {
+        background-color: var(--paper-soft);
+      }
+      .flow-strip {
+        background:
+          linear-gradient(135deg,
+            rgba(45, 196, 216, 0.10) 0%,
+            rgba(91, 46, 160, 0.10) 35%,
+            rgba(224, 70, 145, 0.10) 65%,
+            rgba(130, 230, 71, 0.08) 100%);
+      }
+      .ink-rule { border-top: 1px solid var(--ink); }
+      .ink-rule-2 { border-top: 2px solid var(--ink); }
+
+      /* === GLOBULE — the signature element ============================= */
+      .globule {
+        position: relative;
+        border-radius: 999px;
+        flex: 0 0 auto;
+        background:
+          radial-gradient(circle at 32% 28%,
+            rgba(255,255,255,0.85) 0%,
+            rgba(255,255,255,0.0) 24%),
+          radial-gradient(circle at 38% 32%,
+            var(--g-color) 0%,
+            var(--g-shade) 92%);
+        box-shadow:
+          inset -10px -14px 24px rgba(0,0,0,0.42),
+          inset 6px 4px 18px rgba(255,255,255,0.18),
+          0 8px 18px rgba(10,9,8,0.22);
+      }
+      .g-cyan    { --g-color: var(--cyan);    --g-shade: var(--cyan-d); }
+      .g-lime    { --g-color: var(--lime);    --g-shade: var(--lime-d); }
+      .g-cobalt  { --g-color: var(--cobalt);  --g-shade: var(--cobalt-d); }
+      .g-indigo  { --g-color: var(--indigo);  --g-shade: var(--indigo-d); }
+      .g-magenta { --g-color: var(--magenta); --g-shade: var(--magenta-d); }
+      .g-sun     { --g-color: var(--sun);     --g-shade: var(--sun-d); }
+      .g-ink     { --g-color: #2a2826;        --g-shade: #050505; }
+
+      /* Pattern globules — 1 in 4 max. */
+      .globule.zebra {
+        background:
+          radial-gradient(circle at 32% 28%,
+            rgba(255,255,255,0.55) 0%,
+            rgba(255,255,255,0.0) 26%),
+          repeating-linear-gradient(78deg,
+            var(--ink) 0 5px,
+            transparent 5px 12px),
+          radial-gradient(circle at 38% 32%,
+            var(--g-color) 0%,
+            var(--g-shade) 92%);
+      }
+      .globule.polka {
+        background:
+          radial-gradient(circle at 32% 28%,
+            rgba(255,255,255,0.55) 0%,
+            rgba(255,255,255,0.0) 26%),
+          radial-gradient(var(--ink) 2px, transparent 2.4px),
+          radial-gradient(circle at 38% 32%,
+            var(--g-color) 0%,
+            var(--g-shade) 92%);
+        background-size: auto, 9px 9px, auto;
+        background-position: 0 0, 2px 2px, 0 0;
+      }
+      .globule.halftone {
+        background:
+          radial-gradient(circle at 32% 28%,
+            rgba(255,255,255,0.85) 0%,
+            rgba(255,255,255,0.0) 24%),
+          radial-gradient(circle at 78% 72%,
+            var(--ink) 0%,
+            var(--ink) 18%,
+            transparent 60%),
+          radial-gradient(circle at 38% 32%,
+            var(--g-color) 0%,
+            var(--g-shade) 92%);
+      }
+
+      /* === BUTTONS ====================================================== */
+      .btn-ink {
+        display: inline-flex; align-items: center; gap: 10px;
+        background: var(--ink); color: var(--paper);
+        font-family: "Inter", sans-serif; font-weight: 600;
+        text-transform: uppercase; letter-spacing: 0.18em; font-size: 12px;
+        padding: 14px 22px; border: 1px solid var(--ink);
+        transition: gap .15s ease;
+      }
+      .btn-ink:hover { gap: 14px; }
+      .btn-ink .btn-globule {
+        width: 10px; height: 10px; border-radius: 999px; flex: 0 0 auto;
+        background:
+          radial-gradient(circle at 32% 28%, rgba(255,255,255,0.9), transparent 40%),
+          radial-gradient(circle at 50% 50%, var(--cyan), var(--cyan-d));
+      }
+      .btn-paper {
+        display: inline-flex; align-items: center; gap: 10px;
+        background: var(--paper); color: var(--ink);
+        font-family: "Inter", sans-serif; font-weight: 600;
+        text-transform: uppercase; letter-spacing: 0.18em; font-size: 12px;
+        padding: 14px 22px; border: 1.5px solid var(--ink);
+      }
+      .btn-paper:hover { background: var(--paper-soft); }
+      .btn-globule-cta {
+        display: inline-flex; align-items: center; gap: 12px;
+        padding: 12px 26px 12px 14px;
+        border-radius: 999px;
+        color: var(--paper);
+        font-family: "Inter", sans-serif; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.14em; font-size: 12px;
+        background:
+          radial-gradient(circle at 22% 24%,
+            rgba(255,255,255,0.65) 0%,
+            rgba(255,255,255,0.0) 35%),
+          radial-gradient(circle at 38% 32%, var(--magenta) 0%, var(--magenta-d) 100%);
+        box-shadow:
+          inset -6px -8px 14px rgba(0,0,0,0.32),
+          0 6px 14px rgba(10,9,8,0.25);
+      }
+
+      /* === PILLS / TAGS ================================================ */
+      .pill {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 6px 12px; border-radius: 999px;
+        background: var(--paper-soft);
+        font-family: "JetBrains Mono", monospace; font-weight: 500;
+        text-transform: uppercase; letter-spacing: 0.18em; font-size: 10px;
+        color: var(--ink);
+      }
+      .pill .dot {
+        width: 8px; height: 8px; border-radius: 999px; flex: 0 0 auto;
+        box-shadow: inset -2px -2px 3px rgba(0,0,0,0.4);
+      }
+      .ink-card {
+        background: var(--paper);
+        border: 1px solid var(--ink);
+        position: relative;
+      }
+      .ink-card-soft {
+        background: var(--paper-soft);
+        border: 1px solid var(--ink);
+        position: relative;
+      }
+      .ink-card-dark {
+        background: var(--ink);
+        color: var(--paper);
+        border: 1px solid var(--ink);
+        position: relative;
+      }
+
+      /* === DIVIDER WITH GLOBULE ======================================== */
+      .g-rule {
+        position: relative;
+        height: 1px;
+        background: var(--ink);
+        margin: 24px 0;
+      }
+      .g-rule::before {
+        content: "";
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 16px; height: 16px;
+        transform: translate(-50%, -50%);
+        border-radius: 999px;
+        background:
+          radial-gradient(circle at 32% 28%, rgba(255,255,255,0.85), rgba(255,255,255,0) 28%),
+          radial-gradient(circle at 38% 32%, var(--magenta), var(--magenta-d));
+        box-shadow:
+          inset -3px -4px 6px rgba(0,0,0,0.4),
+          0 2px 6px rgba(10,9,8,0.3);
+      }
+
+      /* === SECTION BADGE (N°2 / WIRTSCHAFT) ============================ */
+      .section-badge {
+        display: inline-flex; flex-direction: column; align-items: center;
+        gap: 6px;
+        padding: 18px 14px 14px;
+        background: var(--paper);
+        border: 1px solid var(--ink);
+        min-width: 132px;
+      }
+      .section-badge .badge-num {
+        font-family: "Playfair Display", serif;
+        font-weight: 700;
+        font-size: 48px;
+        line-height: 1;
+        color: var(--ink);
+      }
+      .section-badge .badge-num sup {
+        font-size: 0.42em;
+        vertical-align: 0.9em;
+      }
+      .section-badge .badge-caption {
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.22em;
+        font-size: 9px;
+      }
+
+      /* === INPUTS ====================================================== */
+      .input-line {
+        background: transparent;
+        border: none;
+        border-bottom: 1.5px solid var(--ink);
+        padding: 10px 2px;
+        color: var(--ink);
+        font-family: "Inter", sans-serif;
+        font-size: 14px;
+        width: 100%;
+        outline: none;
+      }
+      .input-line:focus { border-bottom-color: var(--magenta); }
+      .input-line::placeholder { color: rgba(10, 9, 8, 0.4); }
+
+      /* === HERO GIANT LETTER + CLUSTER ================================= */
+      .giant-letter {
+        font-family: "Archivo Black", sans-serif;
+        font-weight: 900;
+        line-height: 0.78;
+        letter-spacing: -0.06em;
+        color: var(--ink);
+      }
+      .vertical-caption {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        font-family: "Playfair Display", serif;
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: 0.42em;
+        color: var(--ink);
+      }
+
+      /* === Cluster layout helpers ===================================== */
+      .cluster {
+        position: relative;
+        width: 100%;
+      }
+      .cluster .globule {
+        position: absolute;
+      }
+
+      /* Hover lift on globules (gentle) */
+      .globule.hover-lift { transition: transform .25s ease; }
+      .globule.hover-lift:hover { transform: translateY(-3px); }
+
+      /* === Tiny CLI-style block (used in colophon) ===================== */
+      .stamp-block {
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        font-size: 9.5px;
+        line-height: 1.7;
+        color: var(--ink);
+      }
+    </style>
+  </head>
+
+  <body class="paper relative min-h-screen overflow-x-hidden">
+
+    <!-- ============================================================== -->
+    <!-- § IDENTITY                                                      -->
+    <!-- ============================================================== -->
+    <header class="relative">
+      <!-- Top masthead -->
+      <div class="border-b border-[var(--ink)]">
+        <div class="mx-auto max-w-7xl px-6 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-5">
+            <div class="masthead-caps text-[11px]">Juli · 2026 ·</div>
+            <div class="mono-label">№02 / Wirtschaft</div>
+          </div>
+          <div class="masthead-caps text-[11px] hidden sm:block">A Chromatic Quarterly</div>
+          <div class="mono-label hidden md:flex items-center gap-4">
+            <span>Issue</span><span>Archive</span><span>Subscribe</span>
+            <span class="inline-flex items-center gap-2">
+              <span class="dot" style="width:8px;height:8px;border-radius:999px;background:radial-gradient(circle at 32% 28%, rgba(255,255,255,0.85), transparent 38%), radial-gradient(circle at 50% 50%, var(--magenta), var(--magenta-d));"></span>
+              Live
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero: giant G + globule chain + section badge -->
+      <section class="relative isolate flow-strip overflow-hidden">
+        <div class="mx-auto max-w-7xl px-6 pt-8 pb-16 grid grid-cols-12 gap-4">
+          <!-- LEFT: Giant letter -->
+          <div class="col-span-12 md:col-span-7 relative">
+            <div class="masthead-caps text-[11px] mb-2">European Design × Business Dialogue</div>
+            <div class="relative flex items-start">
+              <div class="giant-letter" style="font-size: clamp(14rem, 32vw, 28rem);">G</div>
+              <!-- vertical caption inside G's counter -->
+              <div class="absolute" style="left: clamp(9rem, 21vw, 19rem); top: clamp(2.4rem, 5vw, 5rem);">
+                <div class="vertical-caption text-[clamp(0.9rem,1.2vw,1.4rem)]">Globule</div>
+              </div>
+              <!-- one anchor globule tucked into G counter -->
+              <div class="globule g-cyan absolute" style="width: clamp(56px, 7vw, 96px); height: clamp(56px, 7vw, 96px); top: clamp(1.5rem,2.5vw,3rem); left: clamp(7.5rem,17vw,15rem);"></div>
+            </div>
+
+            <p class="serif-italic text-xl md:text-2xl mt-6 max-w-lg">
+              A cultural quarterly for software — cream paper, monumental
+              type, and a glossy chromatic chain that twists through
+              everything it touches.
+            </p>
+
+            <div class="mt-7 flex flex-wrap gap-3 items-center">
+              <a href="#" class="btn-ink">
+                <span class="btn-globule"></span>
+                Read Issue №02
+              </a>
+              <a href="#" class="btn-paper">Browse the Archive →</a>
+              <span class="pill">
+                <span class="dot" style="background: radial-gradient(circle at 32% 28%, #fff, transparent 40%), radial-gradient(circle at 50% 50%, var(--lime), var(--lime-d));"></span>
+                12 contributors
+              </span>
+            </div>
+          </div>
+
+          <!-- RIGHT: globule cluster + section badge -->
+          <div class="col-span-12 md:col-span-5 relative">
+            <div class="relative h-[420px] md:h-[520px] cluster">
+              <!-- Diagonal chain of globules, top-right to bottom-left -->
+              <div class="globule g-lime"    style="top: 0px;   right: 0px;    width: 86px;  height: 86px;"></div>
+              <div class="globule g-cyan zebra" style="top: 40px;  right: 76px;  width: 70px;  height: 70px;"></div>
+              <div class="globule g-cobalt" style="top: 80px;  right: 12px;  width: 110px; height: 110px;"></div>
+              <div class="globule g-indigo halftone" style="top: 170px; right: 86px;  width: 96px;  height: 96px;"></div>
+              <div class="globule g-magenta polka" style="top: 220px; right: 0px;   width: 78px;  height: 78px;"></div>
+              <div class="globule g-sun"    style="top: 254px; right: 110px; width: 60px;  height: 60px;"></div>
+              <div class="globule g-cyan"   style="top: 308px; right: 36px;  width: 92px;  height: 92px;"></div>
+              <div class="globule g-magenta" style="top: 360px; right: 120px; width: 48px;  height: 48px;"></div>
+              <div class="globule g-lime zebra" style="top: 400px; right: 28px;  width: 64px;  height: 64px;"></div>
+              <div class="globule g-indigo" style="top: 444px; right: 96px;  width: 36px;  height: 36px;"></div>
+              <div class="globule g-cobalt" style="top: 470px; right: 22px;  width: 24px;  height: 24px;"></div>
+
+              <!-- Section badge -->
+              <div class="absolute section-badge" style="right: 0; bottom: 0;">
+                <div class="badge-num">N<sup>o</sup>2</div>
+                <div class="badge-caption">Wirtschaft</div>
+                <div class="w-8 h-px bg-[var(--ink)] my-1"></div>
+                <div class="badge-caption" style="letter-spacing: 0.18em;">19. & 20. Juli 2026</div>
+                <div class="badge-caption" style="letter-spacing: 0.18em;">Designforum · Wien</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom-left stamp -->
+        <div class="absolute left-6 bottom-4 stamp-block hidden md:block">
+          European<br/>
+          Design × Business<br/>
+          Dialogue 2026
+        </div>
+      </section>
+    </header>
+
+    <!-- ============================================================== -->
+    <!-- § 01 / THEME SPECIFICATION                                     -->
+    <!-- ============================================================== -->
+    <section class="mx-auto max-w-7xl px-6 pt-20 pb-6">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <div class="mono-label">§ 01 / Theme specification</div>
+          <h2 class="display text-6xl md:text-7xl mt-2">
+            The <span class="serif-italic" style="font-size: 0.78em; letter-spacing: 0; text-transform: none; line-height: 1; font-weight: 400;">chromatic</span> kit
+          </h2>
+        </div>
+        <p class="mono max-w-md text-xs" style="line-height:1.7">
+          &gt; Palette · gradients · type · components, exactly what
+          prompt.md prescribes — rendered.
+        </p>
+      </div>
+      <div class="g-rule"></div>
+    </section>
+
+    <!-- 01.1 — PALETTE ------------------------------------------------ -->
+    <section class="mx-auto max-w-7xl px-6 pb-14">
+      <div class="mb-4 flex items-center justify-between">
+        <div class="mono-label">◇ 01.1 / Palette</div>
+        <span class="mono-label">08 swatches</span>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 border border-[var(--ink)]" style="background: var(--ink);">
+        <div class="p-4" style="background:#F2EAD0; color: var(--ink); border-right:1px solid var(--ink);">
+          <div class="display text-base">Paper</div>
+          <div class="mono text-[11px] mt-1 opacity-70">#F2EAD0</div>
+          <div class="mono-label mt-3 opacity-50">PAGE BG</div>
+        </div>
+        <div class="p-4" style="background:#EFE3C2; color: var(--ink); border-right:1px solid var(--ink);">
+          <div class="display text-base">Paper Soft</div>
+          <div class="mono text-[11px] mt-1 opacity-70">#EFE3C2</div>
+          <div class="mono-label mt-3 opacity-50">ALT SURFACE</div>
+        </div>
+        <div class="p-4" style="background:#0A0908; color: var(--paper); border-right:1px solid var(--ink);">
+          <div class="display text-base">Ink</div>
+          <div class="mono text-[11px] mt-1 opacity-70">#0A0908</div>
+          <div class="mono-label mt-3 opacity-50">TYPE · BORDER</div>
+        </div>
+        <div class="p-4" style="background:#2DC4D8; color: var(--ink); border-right:1px solid var(--ink);">
+          <div class="display text-base">Cyan</div>
+          <div class="mono text-[11px] mt-1 opacity-80">#2DC4D8</div>
+          <div class="mono-label mt-3 opacity-70">GLOBULE 01</div>
+        </div>
+        <div class="p-4" style="background:#82E647; color: var(--ink); border-right:1px solid var(--ink);">
+          <div class="display text-base">Lime</div>
+          <div class="mono text-[11px] mt-1 opacity-80">#82E647</div>
+          <div class="mono-label mt-3 opacity-70">GLOBULE 02</div>
+        </div>
+        <div class="p-4" style="background:#2347C8; color: var(--paper); border-right:1px solid var(--ink);">
+          <div class="display text-base">Cobalt</div>
+          <div class="mono text-[11px] mt-1 opacity-80">#2347C8</div>
+          <div class="mono-label mt-3 opacity-70">GLOBULE 03</div>
+        </div>
+        <div class="p-4" style="background:#E04691; color: var(--paper); border-right:1px solid var(--ink);">
+          <div class="display text-base">Magenta</div>
+          <div class="mono text-[11px] mt-1 opacity-80">#E04691</div>
+          <div class="mono-label mt-3 opacity-70">GLOBULE 04</div>
+        </div>
+        <div class="p-4" style="background:#F2D24A; color: var(--ink);">
+          <div class="display text-base">Sun</div>
+          <div class="mono text-[11px] mt-1 opacity-80">#F2D24A</div>
+          <div class="mono-label mt-3 opacity-70">GLOBULE 05</div>
+        </div>
+      </div>
+      <div class="mt-3 mono-label opacity-60">Indigo · #5B2EA0 — sixth globule colour, used in clusters; see specimen below.</div>
+    </section>
+
+    <!-- 01.2 — GRADIENTS --------------------------------------------- -->
+    <section class="mx-auto max-w-7xl px-6 pb-14">
+      <div class="mb-4 mono-label">◇ 01.2 / Gradients & globule patterns</div>
+      <div class="grid gap-4 md:grid-cols-3">
+        <div class="ink-card">
+          <div class="h-24" style="background: linear-gradient(135deg, rgba(45,196,216,0.10) 0%, rgba(91,46,160,0.10) 35%, rgba(224,70,145,0.10) 65%, rgba(130,230,71,0.08) 100%), var(--paper);"></div>
+          <div class="p-3 border-t border-[var(--ink)]">
+            <div class="mono-label">Flow strip · 135°</div>
+            <div class="mono text-[10px] mt-1 opacity-70">linear-gradient(135deg, cyan/10, indigo/10, magenta/10, lime/8) · hero strip</div>
+          </div>
+        </div>
+        <div class="ink-card">
+          <div class="h-24 flex items-center justify-center" style="background: var(--paper-soft);">
+            <div class="globule g-cyan" style="width:64px;height:64px;"></div>
+          </div>
+          <div class="p-3 border-t border-[var(--ink)]">
+            <div class="mono-label">Globule core · radial</div>
+            <div class="mono text-[10px] mt-1 opacity-70">radial(white→0 + color→shade) + inset shadow + drop shadow</div>
+          </div>
+        </div>
+        <div class="ink-card">
+          <div class="h-24 flex items-center justify-center" style="background: var(--paper-soft);">
+            <div class="globule g-magenta zebra" style="width:64px;height:64px;"></div>
+          </div>
+          <div class="p-3 border-t border-[var(--ink)]">
+            <div class="mono-label">Zebra globule · 78°</div>
+            <div class="mono text-[10px] mt-1 opacity-70">repeating-linear(78deg, ink 0 5px, transparent 5 12) over core</div>
+          </div>
+        </div>
+        <div class="ink-card">
+          <div class="h-24 flex items-center justify-center" style="background: var(--paper-soft);">
+            <div class="globule g-lime polka" style="width:64px;height:64px;"></div>
+          </div>
+          <div class="p-3 border-t border-[var(--ink)]">
+            <div class="mono-label">Polka globule · 9px grid</div>
+            <div class="mono text-[10px] mt-1 opacity-70">radial(ink 2px, transparent 2.4) over core</div>
+          </div>
+        </div>
+        <div class="ink-card">
+          <div class="h-24 flex items-center justify-center" style="background: var(--paper-soft);">
+            <div class="globule g-sun halftone" style="width:64px;height:64px;"></div>
+          </div>
+          <div class="p-3 border-t border-[var(--ink)]">
+            <div class="mono-label">Halftone globule</div>
+            <div class="mono text-[10px] mt-1 opacity-70">radial(ink @78,72%) over core — one-side fade</div>
+          </div>
+        </div>
+        <div class="ink-card-dark p-4 flex flex-col justify-between">
+          <div>
+            <div class="mono-label" style="color: var(--cyan)">— Rule</div>
+            <div class="display text-lg mt-1">No flat panel in any globule colour.</div>
+          </div>
+          <div class="mono text-[10px] mt-3 opacity-70">Globule colours appear only as spheres, dots, and 1-pixel accents — never as a section background.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 01.3 — TYPOGRAPHY -------------------------------------------- -->
+    <section class="mx-auto max-w-7xl px-6 pb-14">
+      <div class="mb-4 mono-label">◇ 01.3 / Typography</div>
+      <div class="grid gap-4 md:grid-cols-12">
+        <div class="ink-card md:col-span-7 p-6">
+          <div class="mono-label opacity-60">Display · Archivo Black 900 · -0.04em · l-h 0.82</div>
+          <div class="display text-7xl md:text-8xl mt-2">Globule</div>
+          <div class="mt-4 mono-label opacity-60">Editorial italic · Playfair Display 400 italic</div>
+          <div class="serif-italic text-3xl mt-2">a chromatic quarterly for software</div>
+          <div class="mt-4 mono-label opacity-60">Masthead caps · Playfair 400 · 0.32em</div>
+          <div class="masthead-caps text-sm mt-2">Juli · 2026 · N°02 · Wirtschaft</div>
+        </div>
+        <div class="ink-card md:col-span-5 p-6">
+          <div class="mono-label opacity-60">Body · Inter 400/600</div>
+          <p class="mt-2 text-[15px] leading-relaxed">
+            Globule is what happens when a Designforum Wien quarterly
+            decides to ship software. Cream paper holds the page; a black
+            grotesque letter holds the eye; a glossy chromatic chain holds
+            the rhythm. Everything else is restraint.
+          </p>
+          <div class="mt-5 mono-label opacity-60">Mono telemetry · JetBrains Mono · 0.22em</div>
+          <div class="mono text-[10px] mt-2" style="letter-spacing:0.22em; text-transform:uppercase;">
+            &gt; Issue compiled 17.07.26 14:02 UTC · 88 plates · 12 contributors · 6 colours
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 01.4 — COMPONENTS -------------------------------------------- -->
+    <section class="mx-auto max-w-7xl px-6 pb-16">
+      <div class="mb-4 mono-label">◇ 01.4 / Components</div>
+      <div class="grid gap-4 md:grid-cols-12">
+        <!-- Buttons -->
+        <div class="ink-card md:col-span-5 p-6">
+          <div class="mono-label opacity-60">Buttons</div>
+          <div class="mt-4 flex flex-wrap items-center gap-3">
+            <a href="#" class="btn-ink"><span class="btn-globule"></span>Subscribe</a>
+            <a href="#" class="btn-paper">Browse →</a>
+            <a href="#" class="btn-globule-cta">
+              <span style="width:18px;height:18px;border-radius:999px;background:radial-gradient(circle at 32% 28%, rgba(255,255,255,0.9), transparent 40%), radial-gradient(circle at 50% 50%, var(--sun), var(--sun-d));box-shadow:inset -3px -4px 6px rgba(0,0,0,0.4);"></span>
+              Play Broadcast
+            </a>
+          </div>
+          <div class="mt-6 mono-label opacity-60">Pills</div>
+          <div class="mt-3 flex flex-wrap items-center gap-2">
+            <span class="pill"><span class="dot" style="background: radial-gradient(circle at 32% 28%, #fff, transparent 40%), radial-gradient(circle at 50% 50%, var(--cyan), var(--cyan-d));"></span>Aqua</span>
+            <span class="pill"><span class="dot" style="background: radial-gradient(circle at 32% 28%, #fff, transparent 40%), radial-gradient(circle at 50% 50%, var(--lime), var(--lime-d));"></span>Lime</span>
+            <span class="pill"><span class="dot" style="background: radial-gradient(circle at 32% 28%, #fff, transparent 40%), radial-gradient(circle at 50% 50%, var(--cobalt), var(--cobalt-d));"></span>Cobalt</span>
+            <span class="pill"><span class="dot" style="background: radial-gradient(circle at 32% 28%, #fff, transparent 40%), radial-gradient(circle at 50% 50%, var(--indigo), var(--indigo-d));"></span>Indigo</span>
+            <span class="pill"><span class="dot" style="background: radial-gradient(circle at 32% 28%, #fff, transparent 40%), radial-gradient(circle at 50% 50%, var(--magenta), var(--magenta-d));"></span>Magenta</span>
+            <span class="pill"><span class="dot" style="background: radial-gradient(circle at 32% 28%, #fff, transparent 40%), radial-gradient(circle at 50% 50%, var(--sun), var(--sun-d));"></span>Sun</span>
+          </div>
+        </div>
+
+        <!-- Inputs -->
+        <div class="ink-card md:col-span-4 p-6">
+          <div class="mono-label opacity-60">Inputs</div>
+          <div class="mt-4">
+            <div class="mono-label">— Email</div>
+            <input class="input-line mt-1" placeholder="agent@studio.example" />
+          </div>
+          <div class="mt-5">
+            <div class="mono-label">— Subscription</div>
+            <input class="input-line mt-1" placeholder="Quarterly · 4 issues / €48" />
+          </div>
+          <div class="mt-5 flex items-center gap-2">
+            <span class="pill"><span class="dot" style="background: radial-gradient(circle at 32% 28%, #fff, transparent 40%), radial-gradient(circle at 50% 50%, var(--magenta), var(--magenta-d));"></span>Focus border</span>
+          </div>
+        </div>
+
+        <!-- Card example -->
+        <div class="ink-card md:col-span-3 p-5 relative">
+          <div class="absolute -top-3 -right-3 globule g-indigo" style="width:36px;height:36px;"></div>
+          <div class="mono-label opacity-60">— Volume IV / Essay</div>
+          <div class="display text-2xl mt-2 leading-tight">Liquid Markets</div>
+          <div class="serif-italic mt-1 text-sm">how colour priced the spread</div>
+          <div class="mt-4 mono text-[10px] opacity-70">12 PP · INDIGO · pp. 42–53</div>
+        </div>
+
+        <!-- Globule sizes -->
+        <div class="ink-card md:col-span-12 p-6">
+          <div class="mono-label opacity-60">Globule scale — magnitude encoded by size</div>
+          <div class="mt-4 flex items-end gap-5 flex-wrap">
+            <div class="text-center"><div class="globule g-cyan" style="width:24px;height:24px;"></div><div class="mono text-[10px] mt-2 opacity-60">XS · 24</div></div>
+            <div class="text-center"><div class="globule g-lime" style="width:40px;height:40px;"></div><div class="mono text-[10px] mt-2 opacity-60">S · 40</div></div>
+            <div class="text-center"><div class="globule g-cobalt" style="width:64px;height:64px;"></div><div class="mono text-[10px] mt-2 opacity-60">M · 64</div></div>
+            <div class="text-center"><div class="globule g-indigo zebra" style="width:88px;height:88px;"></div><div class="mono text-[10px] mt-2 opacity-60">L · 88 · zebra</div></div>
+            <div class="text-center"><div class="globule g-magenta polka" style="width:112px;height:112px;"></div><div class="mono text-[10px] mt-2 opacity-60">XL · 112 · polka</div></div>
+            <div class="text-center"><div class="globule g-sun halftone" style="width:140px;height:140px;"></div><div class="mono text-[10px] mt-2 opacity-60">2XL · 140 · halftone</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- § 02 / UX APPLICATIONS                                          -->
+    <!-- ============================================================== -->
+    <section class="mx-auto max-w-7xl px-6 pt-10 pb-6">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <div class="mono-label">§ 02 / Applications</div>
+          <h2 class="display text-6xl md:text-7xl mt-2">
+            Pasted <span class="serif-italic" style="font-size:0.78em; letter-spacing:0; text-transform:none; font-weight:400;">into</span> real surfaces
+          </h2>
+        </div>
+        <p class="mono max-w-md text-xs" style="line-height:1.7">
+          &gt; Three concrete products built with the kit. No lorem ipsum.
+        </p>
+      </div>
+      <div class="g-rule"></div>
+    </section>
+
+    <!-- =============== 02.1 — ISSUE INDEX ============================ -->
+    <section class="mx-auto max-w-7xl px-6 pb-16">
+      <div class="mb-4 flex items-center justify-between">
+        <div class="mono-label">◇ 02.1 / Globule №02 · Wirtschaft — issue index</div>
+        <span class="mono-label">CULTURAL QUARTERLY</span>
+      </div>
+
+      <div class="ink-card p-8">
+        <!-- Masthead row -->
+        <div class="grid grid-cols-12 gap-4 items-start">
+          <div class="col-span-12 md:col-span-8 relative">
+            <div class="masthead-caps text-[11px]">Juli · 2026 · A Chromatic Quarterly</div>
+            <div class="display text-7xl md:text-8xl mt-2 flex items-start gap-4">
+              <span>Wirt</span>
+              <span class="globule g-cyan zebra mt-3" style="width:64px;height:64px;"></span>
+              <span>schaft</span>
+            </div>
+            <p class="serif-italic text-xl mt-4 max-w-xl">
+              Six essays on the price of attention, the colour of capital,
+              and the chain of decisions that connects a click to a market.
+            </p>
+            <div class="mt-5 flex items-center gap-3 flex-wrap">
+              <a class="btn-ink" href="#"><span class="btn-globule"></span>Open the Issue</a>
+              <span class="pill"><span class="dot" style="background: radial-gradient(circle at 32% 28%, #fff, transparent 40%), radial-gradient(circle at 50% 50%, var(--magenta), var(--magenta-d));"></span>06 essays · 88 plates</span>
+            </div>
+          </div>
+
+          <div class="col-span-12 md:col-span-4 flex md:justify-end">
+            <div class="section-badge">
+              <div class="badge-num">N<sup>o</sup>2</div>
+              <div class="badge-caption">Wirtschaft</div>
+              <div class="w-8 h-px bg-[var(--ink)] my-1"></div>
+              <div class="badge-caption" style="letter-spacing: 0.18em;">19. & 20. Juli 2026</div>
+              <div class="badge-caption" style="letter-spacing: 0.18em;">Designforum · Wien</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ink-rule-2 mt-8"></div>
+
+        <!-- Table of contents -->
+        <div class="mt-6 grid grid-cols-12 gap-x-6 mono-label opacity-60">
+          <div class="col-span-1">№</div>
+          <div class="col-span-1">·</div>
+          <div class="col-span-7">Essay</div>
+          <div class="col-span-2">Author</div>
+          <div class="col-span-1 text-right">pp.</div>
+        </div>
+        <div class="divide-y divide-[var(--ink)] mt-2 border-t border-[var(--ink)]">
+          <!-- Row 1 -->
+          <a href="#" class="grid grid-cols-12 gap-x-6 items-center py-4 hover:bg-[var(--paper-soft)]">
+            <div class="col-span-1 display text-2xl">01</div>
+            <div class="col-span-1"><div class="globule g-cyan" style="width:18px;height:18px;"></div></div>
+            <div class="col-span-7">
+              <div class="display text-2xl leading-tight">Liquidity, Cooled</div>
+              <div class="serif-italic text-sm mt-1 opacity-80">on the central bank that started speaking in colour</div>
+            </div>
+            <div class="col-span-2 text-sm">Hanne Schreiber</div>
+            <div class="col-span-1 text-right mono text-[12px]">12–23</div>
+          </a>
+          <!-- Row 2 -->
+          <a href="#" class="grid grid-cols-12 gap-x-6 items-center py-4 hover:bg-[var(--paper-soft)]">
+            <div class="col-span-1 display text-2xl">02</div>
+            <div class="col-span-1"><div class="globule g-lime zebra" style="width:18px;height:18px;"></div></div>
+            <div class="col-span-7">
+              <div class="display text-2xl leading-tight">The Acid Index</div>
+              <div class="serif-italic text-sm mt-1 opacity-80">a year inside Vienna's most aggressive ETF</div>
+            </div>
+            <div class="col-span-2 text-sm">Robert Pfaff</div>
+            <div class="col-span-1 text-right mono text-[12px]">24–35</div>
+          </a>
+          <!-- Row 3 -->
+          <a href="#" class="grid grid-cols-12 gap-x-6 items-center py-4 hover:bg-[var(--paper-soft)]">
+            <div class="col-span-1 display text-2xl">03</div>
+            <div class="col-span-1"><div class="globule g-cobalt" style="width:18px;height:18px;"></div></div>
+            <div class="col-span-7">
+              <div class="display text-2xl leading-tight">Cold Money, Hot Type</div>
+              <div class="serif-italic text-sm mt-1 opacity-80">designing a quarterly report nobody throws away</div>
+            </div>
+            <div class="col-span-2 text-sm">Studio Vorhang</div>
+            <div class="col-span-1 text-right mono text-[12px]">36–41</div>
+          </a>
+          <!-- Row 4 -->
+          <a href="#" class="grid grid-cols-12 gap-x-6 items-center py-4 hover:bg-[var(--paper-soft)]">
+            <div class="col-span-1 display text-2xl">04</div>
+            <div class="col-span-1"><div class="globule g-indigo halftone" style="width:18px;height:18px;"></div></div>
+            <div class="col-span-7">
+              <div class="display text-2xl leading-tight">Liquid Markets</div>
+              <div class="serif-italic text-sm mt-1 opacity-80">how colour priced the spread, then ran out of room</div>
+            </div>
+            <div class="col-span-2 text-sm">M. Kohl &amp; A. Berg</div>
+            <div class="col-span-1 text-right mono text-[12px]">42–53</div>
+          </a>
+          <!-- Row 5 -->
+          <a href="#" class="grid grid-cols-12 gap-x-6 items-center py-4 hover:bg-[var(--paper-soft)]">
+            <div class="col-span-1 display text-2xl">05</div>
+            <div class="col-span-1"><div class="globule g-magenta polka" style="width:18px;height:18px;"></div></div>
+            <div class="col-span-7">
+              <div class="display text-2xl leading-tight">The Attention Float</div>
+              <div class="serif-italic text-sm mt-1 opacity-80">advertising auctions priced like Vienna apartments</div>
+            </div>
+            <div class="col-span-2 text-sm">Iben Lassen</div>
+            <div class="col-span-1 text-right mono text-[12px]">54–67</div>
+          </a>
+          <!-- Row 6 -->
+          <a href="#" class="grid grid-cols-12 gap-x-6 items-center py-4 hover:bg-[var(--paper-soft)]">
+            <div class="col-span-1 display text-2xl">06</div>
+            <div class="col-span-1"><div class="globule g-sun" style="width:18px;height:18px;"></div></div>
+            <div class="col-span-7">
+              <div class="display text-2xl leading-tight">Yellow Paper</div>
+              <div class="serif-italic text-sm mt-1 opacity-80">notes from the last printed annual report</div>
+            </div>
+            <div class="col-span-2 text-sm">Tomasz Reiter</div>
+            <div class="col-span-1 text-right mono text-[12px]">68–81</div>
+          </a>
+        </div>
+
+        <!-- Footer strip -->
+        <div class="mt-6 flex items-center justify-between mono-label opacity-70">
+          <div>Edited by Sophia Lindblom · printed in Vienna · ISSN 2701-4480</div>
+          <div>Plates · 88 · Languages · DE / EN</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== 02.2 — KAPELLE FM (broadcast) ================ -->
+    <section class="mx-auto max-w-7xl px-6 pb-16">
+      <div class="mb-4 flex items-center justify-between">
+        <div class="mono-label">◇ 02.2 / Kapelle FM — chromatic broadcast</div>
+        <span class="mono-label">NOW ON AIR · 14:02 CEST</span>
+      </div>
+
+      <div class="ink-card overflow-hidden">
+        <div class="grid grid-cols-12">
+          <!-- Album / cluster art -->
+          <div class="col-span-12 md:col-span-5 relative flow-strip border-b md:border-b-0 md:border-r border-[var(--ink)] p-8 min-h-[480px]">
+            <div class="masthead-caps text-[11px]">Side A · 04 of 09</div>
+            <div class="display text-5xl mt-2 leading-none">Verre</div>
+            <div class="display text-5xl leading-none">Liquide</div>
+            <div class="serif-italic text-lg mt-2">— Marlene Aubrac, ‘78 reissue</div>
+
+            <!-- mini cluster -->
+            <div class="cluster mt-8 relative h-[260px]">
+              <div class="globule g-sun"    style="top: 8px;   left: 60px;  width: 96px;  height: 96px;"></div>
+              <div class="globule g-magenta halftone" style="top: 26px; left: 152px; width: 78px;  height: 78px;"></div>
+              <div class="globule g-cyan"   style="top: 90px;  left: 40px;  width: 64px;  height: 64px;"></div>
+              <div class="globule g-indigo polka" style="top: 110px; left: 120px; width: 88px;  height: 88px;"></div>
+              <div class="globule g-lime"   style="top: 178px; left: 76px;  width: 52px;  height: 52px;"></div>
+              <div class="globule g-cobalt zebra" style="top: 196px; left: 168px; width: 44px; height: 44px;"></div>
+            </div>
+
+            <div class="mt-6 flex items-center gap-3 flex-wrap">
+              <a class="btn-globule-cta" href="#">
+                <span style="width:18px;height:18px;border-radius:999px;background:radial-gradient(circle at 32% 28%, rgba(255,255,255,0.9), transparent 40%), radial-gradient(circle at 50% 50%, var(--magenta), var(--magenta-d));box-shadow:inset -3px -4px 6px rgba(0,0,0,0.4);"></span>
+                Tune In
+              </a>
+              <a class="btn-paper" href="#">Queue</a>
+            </div>
+          </div>
+
+          <!-- Now playing + tracklist -->
+          <div class="col-span-12 md:col-span-7 p-8">
+            <div class="flex items-end justify-between flex-wrap gap-3">
+              <div>
+                <div class="mono-label opacity-60">— Now playing</div>
+                <div class="display text-4xl mt-2">Quelques Sphères</div>
+                <div class="serif-italic mt-1 text-lg">Marlene Aubrac · from “Verre Liquide”, 1978</div>
+              </div>
+              <div class="text-right">
+                <div class="mono-label">04:12 / 06:48</div>
+                <div class="masthead-caps text-[11px] mt-1">Bitrate · 320</div>
+              </div>
+            </div>
+
+            <!-- Scrubber: ink rule + globule handle -->
+            <div class="relative mt-6">
+              <div class="h-px bg-[var(--ink)] w-full"></div>
+              <div class="absolute -top-[7px]" style="left: 62%;">
+                <div class="globule g-magenta" style="width:16px;height:16px;"></div>
+              </div>
+            </div>
+            <div class="mt-2 flex justify-between mono text-[10px] opacity-70">
+              <span>00:00</span>
+              <span>06:48</span>
+            </div>
+
+            <div class="ink-rule mt-8"></div>
+
+            <div class="mt-6 mono-label opacity-60">— Side A · queue</div>
+            <ul class="mt-3 divide-y divide-[var(--ink)] border-y border-[var(--ink)]">
+              <!-- Track 1 -->
+              <li class="grid grid-cols-12 items-center py-3 gap-x-3 hover:bg-[var(--paper-soft)]">
+                <div class="col-span-1 mono text-[12px]">01</div>
+                <div class="col-span-1"><div class="globule g-sun" style="width:14px;height:14px;"></div></div>
+                <div class="col-span-7">
+                  <div class="font-semibold text-[15px]">Cire Noire</div>
+                  <div class="serif-italic text-[12px] opacity-80">Marlene Aubrac</div>
+                </div>
+                <div class="col-span-2 mono text-[11px] opacity-70">04:12</div>
+                <div class="col-span-1 text-right mono text-[11px] opacity-70">14.2k</div>
+              </li>
+              <!-- Track 2 -->
+              <li class="grid grid-cols-12 items-center py-3 gap-x-3 hover:bg-[var(--paper-soft)]">
+                <div class="col-span-1 mono text-[12px]">02</div>
+                <div class="col-span-1"><div class="globule g-magenta halftone" style="width:14px;height:14px;"></div></div>
+                <div class="col-span-7">
+                  <div class="font-semibold text-[15px]">Sphère 1980</div>
+                  <div class="serif-italic text-[12px] opacity-80">Aubrac · Tovin (remix)</div>
+                </div>
+                <div class="col-span-2 mono text-[11px] opacity-70">05:33</div>
+                <div class="col-span-1 text-right mono text-[11px] opacity-70">28.7k</div>
+              </li>
+              <!-- Track 3 (now playing) -->
+              <li class="grid grid-cols-12 items-center py-3 gap-x-3" style="background: var(--paper-soft);">
+                <div class="col-span-1 display text-base">▶</div>
+                <div class="col-span-1"><div class="globule g-indigo polka" style="width:18px;height:18px;"></div></div>
+                <div class="col-span-7">
+                  <div class="font-semibold text-[15px]">Quelques Sphères</div>
+                  <div class="serif-italic text-[12px] opacity-80">Marlene Aubrac · now playing</div>
+                </div>
+                <div class="col-span-2 mono text-[11px] opacity-70">06:48</div>
+                <div class="col-span-1 text-right mono text-[11px] opacity-70">102.4k</div>
+              </li>
+              <!-- Track 4 -->
+              <li class="grid grid-cols-12 items-center py-3 gap-x-3 hover:bg-[var(--paper-soft)]">
+                <div class="col-span-1 mono text-[12px]">04</div>
+                <div class="col-span-1"><div class="globule g-cyan" style="width:14px;height:14px;"></div></div>
+                <div class="col-span-7">
+                  <div class="font-semibold text-[15px]">Glace Bleue</div>
+                  <div class="serif-italic text-[12px] opacity-80">Theo Reine</div>
+                </div>
+                <div class="col-span-2 mono text-[11px] opacity-70">03:54</div>
+                <div class="col-span-1 text-right mono text-[11px] opacity-70">9.1k</div>
+              </li>
+              <!-- Track 5 -->
+              <li class="grid grid-cols-12 items-center py-3 gap-x-3 hover:bg-[var(--paper-soft)]">
+                <div class="col-span-1 mono text-[12px]">05</div>
+                <div class="col-span-1"><div class="globule g-lime zebra" style="width:14px;height:14px;"></div></div>
+                <div class="col-span-7">
+                  <div class="font-semibold text-[15px]">Bourse · Live at Praterstern</div>
+                  <div class="serif-italic text-[12px] opacity-80">Aubrac &amp; the Wiener Chor</div>
+                </div>
+                <div class="col-span-2 mono text-[11px] opacity-70">08:22</div>
+                <div class="col-span-1 text-right mono text-[11px] opacity-70">5.7k</div>
+              </li>
+              <!-- Track 6 -->
+              <li class="grid grid-cols-12 items-center py-3 gap-x-3 hover:bg-[var(--paper-soft)]">
+                <div class="col-span-1 mono text-[12px]">06</div>
+                <div class="col-span-1"><div class="globule g-cobalt" style="width:14px;height:14px;"></div></div>
+                <div class="col-span-7">
+                  <div class="font-semibold text-[15px]">L'Ennui Doré</div>
+                  <div class="serif-italic text-[12px] opacity-80">Solange Mar</div>
+                </div>
+                <div class="col-span-2 mono text-[11px] opacity-70">04:48</div>
+                <div class="col-span-1 text-right mono text-[11px] opacity-70">17.0k</div>
+              </li>
+            </ul>
+
+            <div class="mt-5 flex items-center justify-between mono text-[10px] opacity-70">
+              <span>Listeners online · 8,412</span>
+              <span>Next set · 16:00 · DJ Krauthammer</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== 02.3 — KALENDER (exhibition agenda) ========== -->
+    <section class="mx-auto max-w-7xl px-6 pb-20">
+      <div class="mb-4 flex items-center justify-between">
+        <div class="mono-label">◇ 02.3 / Kalender — Designforum Wien · summer</div>
+        <span class="mono-label">19. JULI – 09. SEPT 2026</span>
+      </div>
+
+      <div class="ink-card p-8">
+        <div class="grid grid-cols-12 gap-4 items-start">
+          <div class="col-span-12 md:col-span-7">
+            <div class="masthead-caps text-[11px]">Kalender · Sommer 2026</div>
+            <div class="display text-6xl md:text-7xl mt-2">
+              Sieben <span class="serif-italic" style="font-size:0.78em;letter-spacing:0;text-transform:none;font-weight:400;">Wochen</span><br/>
+              im Forum
+            </div>
+            <p class="serif-italic text-lg mt-3 max-w-lg">
+              Lectures, screenings, workshops and one late-night
+              broadcast — sized on this page by the people we expect.
+            </p>
+          </div>
+          <div class="col-span-12 md:col-span-5">
+            <div class="ink-card-soft p-5">
+              <div class="mono-label opacity-60">— Legend</div>
+              <div class="mt-3 grid grid-cols-2 gap-y-2 gap-x-4 text-[12px]">
+                <div class="flex items-center gap-2"><div class="globule g-cyan" style="width:14px;height:14px;"></div><span>Lecture</span></div>
+                <div class="flex items-center gap-2"><div class="globule g-magenta" style="width:14px;height:14px;"></div><span>Broadcast</span></div>
+                <div class="flex items-center gap-2"><div class="globule g-lime" style="width:14px;height:14px;"></div><span>Workshop</span></div>
+                <div class="flex items-center gap-2"><div class="globule g-sun" style="width:14px;height:14px;"></div><span>Screening</span></div>
+                <div class="flex items-center gap-2"><div class="globule g-indigo" style="width:14px;height:14px;"></div><span>Panel</span></div>
+                <div class="flex items-center gap-2"><div class="globule g-cobalt" style="width:14px;height:14px;"></div><span>Opening</span></div>
+              </div>
+              <div class="mono-label opacity-60 mt-4">— Size = expected attendance</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ink-rule-2 mt-8"></div>
+
+        <!-- Timeline / globule chart -->
+        <div class="mt-8 relative">
+          <!-- Horizontal axis -->
+          <div class="absolute left-0 right-0 top-1/2 h-px bg-[var(--ink)]"></div>
+
+          <!-- Week markers -->
+          <div class="grid grid-cols-7 text-center mono-label opacity-60 mb-6">
+            <div>W 29</div><div>W 30</div><div>W 31</div><div>W 32</div><div>W 33</div><div>W 34</div><div>W 35</div>
+          </div>
+
+          <div class="relative h-[180px]">
+            <!-- Events as globules along the timeline -->
+            <div class="absolute" style="left: 4%; top: 36px;">
+              <div class="globule g-cobalt" style="width:64px;height:64px;"></div>
+              <div class="mono text-[10px] mt-2" style="letter-spacing:0.12em;">19.07 · Opening</div>
+            </div>
+            <div class="absolute" style="left: 14%; top: 76px;">
+              <div class="globule g-cyan zebra" style="width:36px;height:36px;"></div>
+              <div class="mono text-[10px] mt-2">22.07 · Lecture · M. Kohl</div>
+            </div>
+            <div class="absolute" style="left: 24%; top: 58px;">
+              <div class="globule g-lime" style="width:48px;height:48px;"></div>
+              <div class="mono text-[10px] mt-2">28.07 · Letterpress shop</div>
+            </div>
+            <div class="absolute" style="left: 36%; top: 90px;">
+              <div class="globule g-sun halftone" style="width:30px;height:30px;"></div>
+              <div class="mono text-[10px] mt-2">02.08 · Screening · Pop</div>
+            </div>
+            <div class="absolute" style="left: 46%; top: 24px;">
+              <div class="globule g-magenta" style="width:88px;height:88px;"></div>
+              <div class="mono text-[10px] mt-2">09.08 · Kapelle FM live</div>
+            </div>
+            <div class="absolute" style="left: 60%; top: 80px;">
+              <div class="globule g-indigo polka" style="width:42px;height:42px;"></div>
+              <div class="mono text-[10px] mt-2">15.08 · Panel · Markets</div>
+            </div>
+            <div class="absolute" style="left: 70%; top: 60px;">
+              <div class="globule g-cyan" style="width:56px;height:56px;"></div>
+              <div class="mono text-[10px] mt-2">22.08 · Lecture · I. Lassen</div>
+            </div>
+            <div class="absolute" style="left: 82%; top: 86px;">
+              <div class="globule g-lime zebra" style="width:34px;height:34px;"></div>
+              <div class="mono text-[10px] mt-2">30.08 · Bookbinding</div>
+            </div>
+            <div class="absolute" style="left: 92%; top: 50px;">
+              <div class="globule g-sun" style="width:50px;height:50px;"></div>
+              <div class="mono text-[10px] mt-2">06.09 · Final screening</div>
+            </div>
+          </div>
+
+          <!-- Days strip under axis -->
+          <div class="grid grid-cols-7 text-center mono text-[10px] opacity-70 mt-2">
+            <div>19.07</div><div>26.07</div><div>02.08</div><div>09.08</div><div>16.08</div><div>23.08</div><div>30.08</div>
+          </div>
+        </div>
+
+        <div class="g-rule"></div>
+
+        <!-- Detail row for the highlighted event -->
+        <div class="grid grid-cols-12 gap-6 items-start">
+          <div class="col-span-12 md:col-span-7">
+            <div class="mono-label opacity-60">— Highlight · 09.08.2026 · 21:00</div>
+            <div class="display text-4xl mt-2">Kapelle FM · Live at Designforum</div>
+            <p class="serif-italic text-base mt-2 max-w-lg">
+              Marlene Aubrac performs the full reissue of <i>Verre
+              Liquide</i> with the Wiener Chor and a six-piece glass
+              orchestra. Doors 20:30 · Bar open until 02:00.
+            </p>
+            <div class="mt-4 flex flex-wrap items-center gap-3">
+              <a href="#" class="btn-ink"><span class="btn-globule"></span>Reserve</a>
+              <a href="#" class="btn-paper">Map →</a>
+              <span class="pill"><span class="dot" style="background: radial-gradient(circle at 32% 28%, #fff, transparent 40%), radial-gradient(circle at 50% 50%, var(--magenta), var(--magenta-d));"></span>880 / 1,200 going</span>
+            </div>
+          </div>
+          <div class="col-span-12 md:col-span-5 ink-card-soft p-5">
+            <div class="mono-label opacity-60">— Door schedule</div>
+            <ul class="mt-3 divide-y divide-[var(--ink)] border-y border-[var(--ink)]">
+              <li class="flex items-center justify-between py-2 text-[13px]"><span>20:30 · Doors</span><span class="mono text-[11px]">Hof I</span></li>
+              <li class="flex items-center justify-between py-2 text-[13px]"><span>21:00 · Set one — “Cire Noire”</span><span class="mono text-[11px]">45 min</span></li>
+              <li class="flex items-center justify-between py-2 text-[13px]"><span>22:00 · Intermission · Bar</span><span class="mono text-[11px]">25 min</span></li>
+              <li class="flex items-center justify-between py-2 text-[13px]"><span>22:25 · Set two — “Sphère 1980”</span><span class="mono text-[11px]">55 min</span></li>
+              <li class="flex items-center justify-between py-2 text-[13px]"><span>23:45 · DJ Krauthammer</span><span class="mono text-[11px]">until 02:00</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- § FOOTER / COLOPHON                                             -->
+    <!-- ============================================================== -->
+    <footer class="border-t border-[var(--ink)]">
+      <div class="mx-auto max-w-7xl px-6 py-10 grid grid-cols-12 gap-6 items-start">
+        <div class="col-span-12 md:col-span-5">
+          <div class="flex items-center gap-3">
+            <div class="display text-6xl leading-none">G</div>
+            <div class="globule g-cyan" style="width:40px;height:40px;"></div>
+            <div>
+              <div class="display text-2xl leading-none">Globule</div>
+              <div class="serif-italic mt-1 text-sm">a chromatic quarterly</div>
+            </div>
+          </div>
+          <p class="mt-4 text-sm max-w-md opacity-80">
+            Designed in Vienna · printed in Stockholm · distributed in
+            ten cities. Issues are numbered, plates are signed, the
+            chain keeps growing.
+          </p>
+        </div>
+        <div class="col-span-6 md:col-span-3">
+          <div class="mono-label opacity-60">— Issue</div>
+          <ul class="mt-2 space-y-1 text-sm">
+            <li>№02 · Wirtschaft (current)</li>
+            <li>№01 · Musik</li>
+            <li>№00 · Vorwort</li>
+            <li>Subscribe · €48 / year</li>
+          </ul>
+        </div>
+        <div class="col-span-6 md:col-span-2">
+          <div class="mono-label opacity-60">— Studio</div>
+          <ul class="mt-2 space-y-1 text-sm">
+            <li>About</li>
+            <li>Contributors</li>
+            <li>Calls open</li>
+            <li>Contact</li>
+          </ul>
+        </div>
+        <div class="col-span-12 md:col-span-2">
+          <div class="stamp-block">
+            European<br/>
+            Design × Business<br/>
+            Dialogue 2026<br/>
+            <br/>
+            ISSN 2701-4480<br/>
+            Vienna · MMXXVI
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-[var(--ink)]">
+        <div class="mx-auto max-w-7xl px-6 py-3 flex items-center justify-between mono-label opacity-70">
+          <div>© Globule 2026 · No reuse without printed permission.</div>
+          <div class="flex items-center gap-2">
+            <span>Built with cream paper · ink · six globules</span>
+            <span class="dot" style="width:8px;height:8px;border-radius:999px;background: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.85), transparent 40%), radial-gradient(circle at 50% 50%, var(--cyan), var(--cyan-d));"></span>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </body>
+</html>
