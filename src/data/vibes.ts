@@ -903,6 +903,67 @@ export const VIBES: Vibe[] = [
       url: "https://github.com/jayhack/ditto",
     },
   },
+  {
+    slug: "animated",
+    name: "Animated",
+    tagline: "Mineral-soft canvases, biological 3D, stencil heads, wobbly-pill UI.",
+    description:
+      "A nature-aligned venture studio printed on mineral-soft paper. Each section gets its own pale-tinted canvas — sage mineral, dusty lavender, meadow green, cream — interrupted by one big 3D biological subject (driftwood with moss, anemone clusters, lichen mats) the type either floats over or cuts through. A quiet Fraunces serif hero pairs with bold Workbench stencil-cut section heads. Every control is a wobbly pill-blob with asymmetric border-radius, and a single ration of Citron yellow-green carries all the CTAs. Best for venture-studio sites, bio-tech monographs, climate funds, brand pages for any company whose pitch is 'we work with nature, not against it'.",
+    tags: ["organic", "editorial", "nature", "pill-blob"],
+    cardGradient:
+      "linear-gradient(135deg, #A8B0A6 0%, #A8B0A6 26%, #BAB5D1 26%, #BAB5D1 52%, #DDE4C4 52%, #DDE4C4 78%, #DEE89E 78%, #DEE89E 100%)",
+    cardForeground: "dark",
+    palette: [
+      { name: "Mineral", hex: "#A8B0A6" },
+      { name: "Lavender", hex: "#BAB5D1" },
+      { name: "Meadow", hex: "#DDE4C4" },
+      { name: "Cream", hex: "#FAF8F0" },
+      { name: "Citron", hex: "#DEE89E" },
+      { name: "Sap", hex: "#C9D49C" },
+      { name: "Slate", hex: "#5C6660" },
+      { name: "Ink", hex: "#0E1612" },
+    ],
+    fonts: {
+      display: '"Fraunces", "Cormorant Garamond", serif',
+      body: '"Inter", system-ui, sans-serif',
+      mono: '"JetBrains Mono", ui-monospace, monospace',
+    },
+    motifs: [
+      "Mineral hero canvas with serif headline floated over a CSS driftwood subject + Citron/Sap moss dots",
+      "Workbench stencil-cut display heads (BLED 0, SCAN 0) anchoring every section — sentence case, never bold",
+      "Floating chip badges with mono uppercase labels + 1px dashed Slate halo offset 4px outward",
+      "Numbered mono section index — 001/ ABOUT · 002/ MISSION · 006/ TEAM — paired with each stencil head",
+      "Wobbly pill-blob buttons — asymmetric border-radius `36px 28px 38px 26px / 28px 22px 30px 24px` on every control",
+      "Citron CTA pill — the only saturated color in the layout, max one per section",
+      "Dashed perimeter brackets — super-thin 1px Slate Ls in each corner of every major panel",
+      "Biological CSS subjects per canvas — driftwood (mineral), anemone (lavender), lichen mat (meadow), cell cluster (cream)",
+      "Duotone portrait treatment — Sap → Citron gradient multiply-blended over grayscale headshots",
+      "Cookie banner styled as a stacked wobbly pill at the hero's bottom-left, never dismissable in the preview",
+    ],
+    kits: [
+      { label: "Tailwind CSS", url: "https://tailwindcss.com" },
+      {
+        label: "Google Fonts: Fraunces, Workbench, Inter, JetBrains Mono",
+        url: "https://fonts.google.com",
+      },
+      {
+        label: "No UI kit, no icon set — wobbly pills, dashed halos, biological CSS subjects only",
+      },
+    ],
+    shapes: [
+      "Logo = `animated` wordmark in Workbench stencil, wrapped in a Cream wobbly-pill capsule with 1px Slate border",
+      "Wobbly pill-blob radius for every interactive control · 28px rounded-card radius for static surfaces · perfect circles only for biological dots",
+      "Buttons (primary): Citron fill + Ink mono uppercase 12px tracked 0.22em + trailing `+` or `⌄` glyph · hover lifts to Sap",
+      "Buttons (secondary): Cream fill + 1px Slate border + Slate mono uppercase 11px · the chip / nav style",
+      "Allowed glyphs: + · ⌄ · → · ↗ · ● — banned: emoji, lucide, heroicons, chrome, neon glow, italic display, all-caps display, hard 90° corners on UI",
+    ],
+    previewHtml: "vibes/animated/preview.html",
+    promptMarkdown: "vibes/animated/prompt.md",
+    author: {
+      name: "After anima.studio",
+      url: "https://github.com/jayhack/ditto",
+    },
+  },
 ];
 
 export function findVibe(slug: string | undefined): Vibe | undefined {
