@@ -903,6 +903,67 @@ export const VIBES: Vibe[] = [
       url: "https://github.com/jayhack/ditto",
     },
   },
+  {
+    slug: "fresh-start",
+    name: "Fresh Start",
+    tagline: "Paper cream, one Marigold pill, italic emphasis, amber-glow night mode.",
+    description:
+      "A wellness-tech brand shot at golden hour. Paper-cream canvases hold serif headlines with italic emphasis on the brand promise (*device*, *outside*, *slow*), a floating nav cluster lives top-right, a Marigold ORDER NOW pill is the only saturated color on every viewport, and a circular textPath stamp badges special editions. One starburst radial divides the vision section, three thin stroke icons explain the device (no eye-strain / extended battery / backlight optional), and the page flips to a Charcoal night-mode finale where the device's amber glow takes over. Closes on a giant lowercase `hearth` Marigold wordmark. Best for slow-tech product launches, calm-tech wellness brands, e-reader / paper-display devices, anything that should feel like a present someone gives you for a fresh start.",
+    tags: ["wellness", "warm", "outdoor", "minimal"],
+    cardGradient:
+      "linear-gradient(135deg, #F5EFE6 0%, #F5EFE6 35%, #F0962D 35%, #F0962D 62%, #2A2218 62%, #0F0C08 100%)",
+    cardForeground: "dark",
+    palette: [
+      { name: "Paper", hex: "#F5EFE6" },
+      { name: "Cream Warm", hex: "#EDE3D2" },
+      { name: "Marigold", hex: "#F0962D" },
+      { name: "Marigold Deep", hex: "#C97818" },
+      { name: "Amber Glow", hex: "#FFB74D" },
+      { name: "Moss", hex: "#4A5836" },
+      { name: "Coffee", hex: "#2A2218" },
+      { name: "Charcoal", hex: "#0F0C08" },
+    ],
+    fonts: {
+      display: '"Newsreader", "Source Serif Pro", Georgia, serif',
+      body: '"Inter", system-ui, sans-serif',
+      mono: '"JetBrains Mono", ui-monospace, monospace',
+    },
+    motifs: [
+      "Marigold ORDER NOW pill — full-round, 4px Coffee soft drop shadow, mono uppercase Coffee text + trailing → arrow",
+      "Floating nav cluster top-right — Paper-fill 28px-radius pill holding text links + the Marigold CTA, sticky and persistent",
+      "Newsletter chip bottom-right — Paper fill with 1.5px Marigold border, serif 'Newsletter' + mono GET UPDATES · NO SPAM",
+      "Italic-emphasis serif headlines — Newsreader roman with 1–3 italic words carrying the brand promise (*device*, *outside*, *slow*)",
+      "Giant lowercase wordmark — Hanken Grotesk 800 'hearth' at clamp(7rem, 18vw, 16rem) Marigold on Charcoal, the page closer",
+      "Circular stamp badge — Marigold disc + Marigold-Deep offset ring + SVG textPath wrapping 'LIMITED ★ FAMILY ★ COLLECTION'",
+      "Starburst radial — 24–32 thin tapered black lines from a center point, the once-per-page vision divider",
+      "3-icon stroke comparison row — 1.5px hand-drawn-looking eye / battery / sun icons with body labels in a Paper card",
+      "Night-mode amber-glow section — Charcoal canvas with the device's screen lit by the amber radial gradient",
+      "Realistic product copy — Hearth H-1 (fictional), 10.5in Live Paper, MediaTek Helio G99, 8000mAh, original testimonials",
+    ],
+    kits: [
+      { label: "Tailwind CSS", url: "https://tailwindcss.com" },
+      {
+        label: "Google Fonts: Newsreader (opsz), Hanken Grotesk, Inter, JetBrains Mono",
+        url: "https://fonts.google.com",
+      },
+      {
+        label: "No UI kit, no icon set — hand-rolled SVG stroke icons, textPath stamp, starburst lines",
+      },
+    ],
+    shapes: [
+      "Logo = `hearth` wordmark in Hanken Grotesk 800 lowercase Marigold · monogram variant = lowercase `h` in a 36px Marigold disc",
+      "Fully-rounded pills (999px) for every interactive control · 18–24px rounded cards · 110px circular stamp · perfect-square photo crops banned (always 20px round)",
+      "Buttons (primary): Marigold fill + Coffee mono uppercase 12–13px tracked 0.18em + trailing → · soft 4px Coffee shadow · hover Marigold Deep",
+      "Buttons (page-closer): min-width 220px, paired with a centered mono 'Ships within 3–5 business days' subline",
+      "Allowed glyphs: → · ✕ · ★ — banned: emoji, lucide, heroicons, chrome, neon glow, italic in body or button text, Marigold on body type, hard 90° corners on UI",
+    ],
+    previewHtml: "vibes/fresh-start/preview.html",
+    promptMarkdown: "vibes/fresh-start/prompt.md",
+    author: {
+      name: "After daylightcomputer.com",
+      url: "https://github.com/jayhack/ditto",
+    },
+  },
 ];
 
 export function findVibe(slug: string | undefined): Vibe | undefined {
