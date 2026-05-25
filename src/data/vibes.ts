@@ -903,6 +903,68 @@ export const VIBES: Vibe[] = [
       url: "https://github.com/jayhack/ditto",
     },
   },
+  {
+    slug: "reason",
+    name: "Reason",
+    tagline: "Coffee-dark editorial typesetting, lit by one ember of ochre.",
+    description:
+      "A developer tool's documentation typeset by a 1960s book designer at 2 a.m. Espresso-black pages, parchment-cream text, transitional-serif headlines with one or two italic words pulled into ember orange, JetBrains Mono small-caps section marks (§ 00 · REASONIX), hairline Hearth rules between thoughts, and a Cask-gradient terminal window standing in for the hero illustration. Editorial stat blocks with italic-serif numbers + mono captions, a single Ember dot logo, and ration-strict color use — Ember appears in italic display words and the prompt `›`, nothing else. Apply it to AI coding agents, CLI marketing pages, technical docs, manifestos, anything that should feel like a printed essay accidentally compiled to a binary.",
+    tags: ["editorial", "terminal", "dark", "serif-italic"],
+    cardGradient:
+      "linear-gradient(135deg, #14100C 0%, #1C1612 45%, #2A1F18 70%, #3A2C20 86%, #D97639 100%)",
+    cardForeground: "light",
+    palette: [
+      { name: "Espresso", hex: "#14100C" },
+      { name: "Coffee", hex: "#1C1612" },
+      { name: "Cask", hex: "#241B15" },
+      { name: "Hearth", hex: "#3A2C20" },
+      { name: "Ember", hex: "#D97639" },
+      { name: "Flame", hex: "#E89055" },
+      { name: "Parchment", hex: "#E8DFCC" },
+      { name: "Bone", hex: "#F4ECD8" },
+    ],
+    fonts: {
+      display: '"Newsreader", "Source Serif Pro", "Georgia", serif',
+      body: '"Inter", system-ui, sans-serif',
+      mono: '"JetBrains Mono", ui-monospace, monospace',
+    },
+    motifs: [
+      "The Reasoned Headline — Newsreader roman sentence with one or two italic Ember words (`DeepSeek`, `agent`)",
+      "Section marks `§ 00 · REASONIX` with ember numeral, mono uppercase tracked 0.22em",
+      "Hairline 1px Hearth rules between every section — never thicker, never dashed",
+      "Dot logo — 10px Ember filled circle + Reasonix mono wordmark + `DS · V0.51.0` lockup",
+      "Terminal window — Cask-gradient card with macOS traffic-lights (Ember + amber + dark)",
+      "Terminal prompts — `›` in Ember for user input, `●` for status, `…` for in-progress (never `$`)",
+      "Editorial stat blocks — italic Newsreader number + mono unit + mono small-caps caption (`94%` · CACHE HIT)",
+      "Bilingual `EN · 中文` toggle with Noto Sans SC for the CJK character",
+      "Active-nav underline — 1.5px Ember rule, never ember fill",
+      "Realistic dev-tool copy — `npx reasonix code`, `deepseek-v4-flash`, `cache: 94.2% hit · cost: $0.043` — no lorem ipsum",
+    ],
+    kits: [
+      { label: "Tailwind CSS", url: "https://tailwindcss.com" },
+      {
+        label: "Google Fonts: Newsreader, Inter, JetBrains Mono, Noto Sans SC",
+        url: "https://fonts.google.com",
+      },
+      {
+        label: "Inspired by esengine.github.io/DeepSeek-Reasonix",
+        url: "https://esengine.github.io/DeepSeek-Reasonix/",
+      },
+    ],
+    shapes: [
+      "Logo mark = 10px Ember filled disc + Reasonix mono wordmark — no monogram, no glyph beyond the dot",
+      "Squarish corners — 2px on cards, 4px on buttons, 999px only on language toggle pills and the dot",
+      "Buttons: 4px radius · primary = Bone fill + Espresso text + trailing mono `→` · secondary = transparent + 1px Parchment/18 border",
+      "Inputs: bottom-border-only 1px Hearth, focus = Ember bottom-border, transparent background",
+      "Allowed glyphs: ● · › · § · → · ◯ + macOS traffic-lights · banned: emoji, lucide, heroicons, glass/blur, neon glow, rounded-full pills, drop shadows >2px",
+    ],
+    previewHtml: "vibes/reason/preview.html",
+    promptMarkdown: "vibes/reason/prompt.md",
+    author: {
+      name: "Inspired by DeepSeek-Reasonix",
+      url: "https://esengine.github.io/DeepSeek-Reasonix/",
+    },
+  },
 ];
 
 export function findVibe(slug: string | undefined): Vibe | undefined {

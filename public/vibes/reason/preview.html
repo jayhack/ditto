@@ -1,0 +1,1101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reason — vibe preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Newsreader = transitional serif w/ gorgeous italics (display + ember payoff);
+         Inter = body sans + button labels;
+         JetBrains Mono = small-caps labels, terminal, telemetry;
+         Noto Sans SC = the single CJK character in the EN · 中文 toggle. -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --espresso:   #14100C;
+        --coffee:     #1C1612;
+        --cask:       #241B15;
+        --hearth:     #3A2C20;
+        --hearth-2:   #4A382A;
+        --ember:      #D97639;
+        --flame:      #E89055;
+        --parchment:  #E8DFCC;
+        --bone:       #F4ECD8;
+        --muted:      #8A7F6D;
+      }
+      html, body {
+        background: var(--espresso);
+        color: var(--parchment);
+        font-family: "Inter", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* === TYPOGRAPHY PRIMITIVES ============================== */
+      .serif {
+        font-family: "Newsreader", "Source Serif Pro", "Georgia", serif;
+        font-variation-settings: "opsz" 32;
+        font-weight: 500;
+      }
+      .serif-tight {
+        font-family: "Newsreader", "Source Serif Pro", "Georgia", serif;
+        font-variation-settings: "opsz" 18;
+        font-weight: 500;
+      }
+      .serif-it {
+        font-family: "Newsreader", "Source Serif Pro", "Georgia", serif;
+        font-style: italic;
+        font-variation-settings: "opsz" 32;
+        font-weight: 500;
+      }
+
+      /* Ember italic — THE signature emphasis */
+      .ember-it {
+        font-family: "Newsreader", serif;
+        font-style: italic;
+        font-weight: 500;
+        font-variation-settings: "opsz" 32;
+        color: var(--ember);
+      }
+
+      /* Mono uppercase tracked label */
+      .mono {
+        font-family: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+      }
+      .mono-up {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.22em;
+        font-weight: 500;
+        font-size: 11px;
+      }
+      .mono-up-sm {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.22em;
+        font-weight: 500;
+        font-size: 10px;
+      }
+
+      /* Body color helpers */
+      .text-parchment    { color: var(--parchment); }
+      .text-bone         { color: var(--bone); }
+      .text-ember        { color: var(--ember); }
+      .text-flame        { color: var(--flame); }
+      .text-muted        { color: rgba(232, 223, 204, 0.55); }
+      .text-muted-2      { color: rgba(232, 223, 204, 0.40); }
+
+      .bg-espresso  { background-color: var(--espresso); }
+      .bg-coffee    { background-color: var(--coffee); }
+      .bg-cask      { background-color: var(--cask); }
+      .bg-hearth    { background-color: var(--hearth); }
+      .bg-ember     { background-color: var(--ember); }
+      .bg-bone      { background-color: var(--bone); }
+      .bg-parchment { background-color: var(--parchment); }
+
+      .border-hearth     { border-color: var(--hearth); }
+      .border-hearth-2   { border-color: var(--hearth-2); }
+      .border-parchment-15 { border-color: rgba(232, 223, 204, 0.15); }
+      .divide-hearth > * + * { border-top: 1px solid var(--hearth); }
+
+      /* The hero ember-coffee gradient (used once per page) */
+      .hero-gradient {
+        background:
+          radial-gradient(circle at 88% 92%, rgba(217, 118, 57, 0.35) 0%, transparent 58%),
+          linear-gradient(135deg, #14100C 0%, #1C1612 45%, #2A1F18 70%, #3A2C20 86%, #D97639 100%);
+      }
+
+      /* The cask raised-panel gradient (terminal + billboard cards) */
+      .cask-gradient {
+        background: linear-gradient(180deg, #241B15 0%, #14100C 100%);
+      }
+
+      /* Hairline rule used between sections */
+      .hairline { height: 1px; background: var(--hearth); }
+
+      /* The dot logo */
+      .dot-logo {
+        display: inline-block;
+        width: 10px; height: 10px;
+        background: var(--ember);
+        border-radius: 999px;
+      }
+
+      /* The macOS-style traffic lights */
+      .traffic-lights {
+        display: inline-flex; gap: 6px; align-items: center;
+      }
+      .traffic-lights > span {
+        width: 10px; height: 10px; border-radius: 999px;
+        display: block;
+      }
+      .tl-r { background: #D97639; }
+      .tl-y { background: #E8A45A; opacity: 0.55; }
+      .tl-g { background: #3A2C20; }
+
+      /* The blinking cursor block */
+      @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+      .cursor {
+        display: inline-block;
+        width: 7px; height: 14px;
+        background: var(--ember);
+        vertical-align: -2px;
+        animation: blink 1.05s steps(1, start) infinite;
+      }
+
+      /* The active-link ember underline */
+      .nav-link {
+        position: relative;
+        color: rgba(232, 223, 204, 0.72);
+        padding-bottom: 2px;
+      }
+      .nav-link:hover { color: var(--bone); }
+      .nav-link.active {
+        color: var(--bone);
+      }
+      .nav-link.active::after {
+        content: "";
+        position: absolute;
+        left: 0; right: 0;
+        bottom: -4px;
+        height: 1.5px;
+        background: var(--ember);
+      }
+
+      /* Buttons */
+      .btn-primary {
+        background: var(--bone);
+        color: var(--espresso);
+        font-family: "Inter", sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 10px 18px;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.15s ease;
+      }
+      .btn-primary:hover { background: #FFFFFF; }
+      .btn-secondary {
+        background: transparent;
+        color: var(--parchment);
+        font-family: "Inter", sans-serif;
+        font-weight: 500;
+        font-size: 14px;
+        padding: 10px 18px;
+        border: 1px solid rgba(232, 223, 204, 0.18);
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: border-color 0.15s ease, background 0.15s ease;
+      }
+      .btn-secondary:hover {
+        border-color: rgba(232, 223, 204, 0.42);
+        background: rgba(232, 223, 204, 0.03);
+      }
+
+      /* Card primitive */
+      .card {
+        background: var(--coffee);
+        border: 1px solid var(--hearth);
+        border-radius: 2px;
+      }
+      .card-cask {
+        background: linear-gradient(180deg, #241B15 0%, #1A140F 100%);
+        border: 1px solid var(--hearth);
+        border-radius: 2px;
+      }
+
+      /* Section mark */
+      .section-mark {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 500;
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(232, 223, 204, 0.55);
+      }
+      .section-mark .num { color: var(--ember); }
+
+      /* CJK character (Noto Sans SC for the language toggle) */
+      .cjk { font-family: "Noto Sans SC", "PingFang SC", sans-serif; }
+
+      /* A subtle parchment-paper noise texture overlay on the body */
+      .grain::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.04;
+        background-image:
+          radial-gradient(circle at 12% 18%, rgba(232, 223, 204, 0.5) 0 1px, transparent 1.5px),
+          radial-gradient(circle at 78% 62%, rgba(232, 223, 204, 0.5) 0 1px, transparent 1.5px),
+          radial-gradient(circle at 45% 90%, rgba(232, 223, 204, 0.5) 0 1px, transparent 1.5px);
+        background-size: 6px 6px, 8px 8px, 10px 10px;
+        z-index: 1;
+      }
+
+      /* Pill / tag */
+      .pill {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 4px 10px;
+        border: 1px solid var(--hearth);
+        border-radius: 999px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        color: var(--parchment);
+      }
+      .pill.active { border-color: var(--ember); color: var(--bone); }
+      .pill .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--ember); display: block; }
+
+      /* Stat block */
+      .stat-num {
+        font-family: "Newsreader", serif;
+        font-style: italic;
+        font-weight: 500;
+        font-variation-settings: "opsz" 72;
+        line-height: 0.95;
+        color: var(--bone);
+      }
+      .stat-unit {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 14px;
+        color: var(--ember);
+        vertical-align: super;
+        margin-left: 2px;
+        letter-spacing: 0.04em;
+      }
+      .stat-caption {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(232, 223, 204, 0.45);
+      }
+      .stat-cell {
+        padding-left: 20px;
+        padding-right: 20px;
+        border-right: 1px solid rgba(58, 44, 32, 0.7);
+      }
+      .stat-cell:first-child { padding-left: 0; }
+      .stat-cell-last { border-right: none; padding-right: 0; }
+      @media (max-width: 639px) {
+        .stat-cell:nth-child(2n) { border-right: none; padding-right: 0; }
+        .stat-cell:nth-child(2n+1) { padding-left: 0; }
+      }
+
+      /* Terminal */
+      .term-bar {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--hearth);
+      }
+      .term-body {
+        padding: 16px 18px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12.5px;
+        line-height: 1.65;
+        color: var(--parchment);
+      }
+      .term-body .p { color: var(--ember); }
+      .term-body .muted { color: rgba(232, 223, 204, 0.55); }
+      .term-body .ok { color: var(--flame); }
+      .term-body .dim-bullet { color: var(--ember); }
+
+      /* Index / table */
+      .idx-row {
+        display: grid;
+        grid-template-columns: 48px 1fr 120px 88px;
+        align-items: baseline;
+        padding: 14px 0;
+        border-top: 1px solid var(--hearth);
+      }
+      .idx-row:first-child { border-top: none; }
+      .idx-num {
+        font-family: "JetBrains Mono", monospace;
+        color: var(--ember);
+        font-size: 12px;
+        letter-spacing: 0.18em;
+      }
+      .idx-title {
+        font-family: "Newsreader", serif;
+        font-size: 17px;
+        color: var(--bone);
+      }
+      .idx-cmd {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        color: rgba(232, 223, 204, 0.65);
+      }
+      .idx-size {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        color: rgba(232, 223, 204, 0.5);
+        text-align: right;
+      }
+
+      /* Plan card */
+      .plan-card {
+        background: var(--coffee);
+        border: 1px solid var(--hearth);
+        border-radius: 2px;
+        padding: 22px 22px 26px;
+        position: relative;
+      }
+      .plan-card.featured {
+        background: linear-gradient(180deg, #241B15 0%, #1A140F 100%);
+        border: 1px solid var(--ember);
+      }
+      .plan-card.featured::before {
+        content: "RECOMMENDED";
+        position: absolute;
+        top: -10px; left: 22px;
+        background: var(--ember);
+        color: var(--espresso);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: 0.22em;
+        padding: 3px 8px;
+        border-radius: 2px;
+      }
+    </style>
+  </head>
+
+  <body class="grain relative min-h-screen overflow-x-hidden">
+
+    <!-- ============================================================= -->
+    <!-- § IDENTITY                                                     -->
+    <!-- ============================================================= -->
+
+    <!-- Top navigation bar -->
+    <header class="relative z-10 border-b border-hearth">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <!-- Dot logo + wordmark -->
+        <a href="#" class="flex items-center gap-3" aria-label="Reasonix">
+          <span class="dot-logo"></span>
+          <span class="mono font-semibold text-bone text-[14px] tracking-[0.04em]">Reasonix</span>
+          <span class="mono-up text-muted-2 hidden sm:inline">DS · V0.51.0</span>
+        </a>
+
+        <!-- Center nav -->
+        <nav class="mono-up hidden gap-7 md:flex">
+          <a class="nav-link" href="#install">Install</a>
+          <a class="nav-link active" href="#how">How it works</a>
+          <a class="nav-link" href="#features">Features</a>
+          <a class="nav-link" href="#config">Config</a>
+          <a class="nav-link" href="#guide">Guide</a>
+        </nav>
+
+        <!-- Right cluster -->
+        <div class="flex items-center gap-3">
+          <!-- Language toggle EN · 中文 -->
+          <div class="mono-up flex items-center overflow-hidden rounded-[3px] border border-hearth">
+            <span class="bg-hearth px-2 py-1 text-bone">EN</span>
+            <span class="cjk px-2 py-1 text-muted-2 tracking-normal">中文</span>
+          </div>
+          <a class="btn-secondary hidden sm:inline-flex" href="#">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.05-.49.05-.49.81.06 1.24.83 1.24.83.72 1.23 1.88.88 2.34.67.07-.52.28-.88.51-1.08-1.78-.2-3.65-.89-3.65-3.96 0-.87.31-1.59.83-2.15-.08-.2-.36-1.03.08-2.14 0 0 .67-.21 2.2.82a7.66 7.66 0 0 1 4 0c1.53-1.03 2.2-.82 2.2-.82.44 1.11.16 1.94.08 2.14.52.56.83 1.28.83 2.15 0 3.08-1.87 3.75-3.66 3.95.29.25.54.74.54 1.49v2.21c0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+            </svg>
+            GitHub
+          </a>
+          <a class="btn-primary" href="#">
+            Download desktop
+            <span aria-hidden>→</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero section -->
+    <section class="hero-gradient relative">
+      <div class="mx-auto max-w-6xl px-6 pt-8 pb-20">
+        <!-- Section mark row -->
+        <div class="flex items-center justify-between">
+          <span class="section-mark"><span class="num">§ 00</span> · REASONIX</span>
+          <div class="hairline mx-6 hidden flex-1 md:block"></div>
+          <span class="section-mark text-right">V0.51.0 · <span class="num">OPEN SOURCE</span></span>
+        </div>
+
+        <div class="mt-14 grid gap-12 md:grid-cols-[1.25fr_1fr]">
+          <!-- LEFT — the Reasoned Headline -->
+          <div>
+            <h1 class="serif text-bone text-[clamp(2.6rem,6.2vw,5.2rem)] leading-[1.04] tracking-[-0.01em]">
+              A <span class="ember-it">DeepSeek</span>-<br/>
+              native coding <span class="ember-it">agent</span>,<br/>
+              for your terminal.
+            </h1>
+
+            <p class="mt-8 max-w-xl text-[15.5px] leading-[1.7] text-parchment/85">
+              Reasonix talks straight to <span class="mono text-bone">api.deepseek.com</span>.
+              The loop is append-only, engineered around DeepSeek's byte-stable
+              prefix cache — long sessions hold 90%+ cache hit and input-token
+              cost collapses to ~1/5. Terminal-first, leave it running.
+            </p>
+
+            <div class="mt-9 flex flex-wrap items-center gap-3">
+              <a class="btn-primary" href="#">Get started <span aria-hidden>→</span></a>
+              <a class="btn-secondary" href="#">Download desktop</a>
+            </div>
+
+            <!-- Editorial stat row -->
+            <div class="mt-16 border-t border-hearth pt-7">
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-y-6">
+                <div class="stat-cell">
+                  <div class="stat-num text-[44px]">94<span class="stat-unit">%</span></div>
+                  <div class="stat-caption mt-2">Cache hit</div>
+                </div>
+                <div class="stat-cell">
+                  <div class="stat-num text-[44px]">2.5<span class="stat-unit">×</span></div>
+                  <div class="stat-caption mt-2">Cost down</div>
+                </div>
+                <div class="stat-cell">
+                  <div class="stat-num text-[44px]">2837</div>
+                  <div class="stat-caption mt-2">Tests</div>
+                </div>
+                <div class="stat-cell stat-cell-last">
+                  <div class="stat-num text-[44px]">MIT</div>
+                  <div class="stat-caption mt-2">License</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT — the terminal window -->
+          <aside class="card-cask self-start">
+            <div class="term-bar">
+              <span class="traffic-lights" aria-hidden>
+                <span class="tl-r"></span><span class="tl-y"></span><span class="tl-g"></span>
+              </span>
+              <span class="mono text-[11px] text-muted">~/app · reasonix code</span>
+              <span class="mono-up text-[10px] flex gap-3">
+                <span class="text-bone">Session</span>
+                <span class="text-muted-2">Events</span>
+              </span>
+            </div>
+            <div class="term-body">
+              <div><span class="p">›</span> npx reasonix code</div>
+              <div class="muted mt-1"><span class="dim-bullet">●</span> reasonix 0.51.0 · model: <span class="text-bone">deepseek-v4-flash</span> · workspace: ~/app</div>
+              <div class="muted"><span class="dim-bullet">●</span> cache: 94.2% hit · session: 18m23s · cost: <span class="text-bone">$0.043</span></div>
+              <div class="mt-4"><span class="p">›</span> fix the cache miss in <span class="ok">vector-store.ts</span></div>
+              <div class="muted mt-1">… thinking · 4 tools loaded · 2 file ops queued</div>
+              <div class="muted">… ran <span class="text-bone">read_file(vector-store.ts:38–96)</span></div>
+              <div class="muted">… ran <span class="text-bone">grep(symbol="LRUCache")</span></div>
+              <div class="muted mt-1"><span class="dim-bullet">●</span> patch ready · 1 file · +14 −6 lines</div>
+              <div class="mt-3"><span class="p">›</span> apply<span class="cursor"></span></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- § 01 / THEME SPECIFICATION                                     -->
+    <!-- ============================================================= -->
+    <section class="border-t border-hearth bg-espresso">
+      <div class="mx-auto max-w-6xl px-6 py-20">
+
+        <!-- Section opener -->
+        <div class="flex items-center justify-between">
+          <span class="section-mark"><span class="num">§ 01</span> · THE KIT</span>
+          <div class="hairline mx-6 hidden flex-1 md:block"></div>
+          <span class="section-mark text-right">PALETTE · GRADIENTS · TYPE · COMPONENTS</span>
+        </div>
+
+        <h2 class="serif text-bone mt-8 text-[clamp(2rem,4.6vw,3.6rem)] leading-[1.06] max-w-3xl">
+          The whole kit, <span class="ember-it">set in lead</span><br/>before a single page goes to press.
+        </h2>
+
+        <!-- 01.1 / PALETTE -->
+        <div class="mt-16">
+          <div class="flex items-baseline justify-between border-b border-hearth pb-3">
+            <span class="mono-up"><span class="text-ember">01.1</span> &nbsp;·&nbsp; Palette</span>
+            <span class="mono text-[11px] text-muted-2">8 swatches</span>
+          </div>
+
+          <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div class="card p-3">
+              <div class="h-14 w-full" style="background:#14100C;border:1px solid rgba(232,223,204,0.12)"></div>
+              <div class="mt-3 flex items-baseline justify-between">
+                <span class="mono-up-sm text-bone">Espresso</span>
+                <span class="mono text-[10px] text-muted">#14100C</span>
+              </div>
+            </div>
+            <div class="card p-3">
+              <div class="h-14 w-full" style="background:#1C1612"></div>
+              <div class="mt-3 flex items-baseline justify-between">
+                <span class="mono-up-sm text-bone">Coffee</span>
+                <span class="mono text-[10px] text-muted">#1C1612</span>
+              </div>
+            </div>
+            <div class="card p-3">
+              <div class="h-14 w-full" style="background:#241B15"></div>
+              <div class="mt-3 flex items-baseline justify-between">
+                <span class="mono-up-sm text-bone">Cask</span>
+                <span class="mono text-[10px] text-muted">#241B15</span>
+              </div>
+            </div>
+            <div class="card p-3">
+              <div class="h-14 w-full" style="background:#3A2C20"></div>
+              <div class="mt-3 flex items-baseline justify-between">
+                <span class="mono-up-sm text-bone">Hearth</span>
+                <span class="mono text-[10px] text-muted">#3A2C20</span>
+              </div>
+            </div>
+            <div class="card p-3">
+              <div class="h-14 w-full" style="background:#D97639"></div>
+              <div class="mt-3 flex items-baseline justify-between">
+                <span class="mono-up-sm text-bone">Ember</span>
+                <span class="mono text-[10px] text-muted">#D97639</span>
+              </div>
+            </div>
+            <div class="card p-3">
+              <div class="h-14 w-full" style="background:#E89055"></div>
+              <div class="mt-3 flex items-baseline justify-between">
+                <span class="mono-up-sm text-bone">Flame</span>
+                <span class="mono text-[10px] text-muted">#E89055</span>
+              </div>
+            </div>
+            <div class="card p-3">
+              <div class="h-14 w-full" style="background:#E8DFCC"></div>
+              <div class="mt-3 flex items-baseline justify-between">
+                <span class="mono-up-sm text-bone">Parchment</span>
+                <span class="mono text-[10px] text-muted">#E8DFCC</span>
+              </div>
+            </div>
+            <div class="card p-3">
+              <div class="h-14 w-full" style="background:#F4ECD8"></div>
+              <div class="mt-3 flex items-baseline justify-between">
+                <span class="mono-up-sm text-bone">Bone</span>
+                <span class="mono text-[10px] text-muted">#F4ECD8</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 01.2 / GRADIENTS -->
+        <div class="mt-16">
+          <div class="flex items-baseline justify-between border-b border-hearth pb-3">
+            <span class="mono-up"><span class="text-ember">01.2</span> &nbsp;·&nbsp; Gradients</span>
+            <span class="mono text-[11px] text-muted-2">2 only, ever</span>
+          </div>
+
+          <div class="mt-6 grid gap-4 md:grid-cols-2">
+            <div>
+              <div class="hero-gradient h-32 border border-hearth"></div>
+              <div class="mt-3 flex items-baseline justify-between">
+                <span class="mono-up text-bone">Hero · ember-coffee</span>
+                <span class="mono text-[10px] text-muted">135deg · 5 stops</span>
+              </div>
+              <p class="mono text-[10.5px] mt-2 text-muted leading-relaxed break-all">
+                linear-gradient(135deg, #14100C 0%, #1C1612 45%, #2A1F18 70%, #3A2C20 86%, #D97639 100%)
+              </p>
+            </div>
+            <div>
+              <div class="cask-gradient h-32 border border-hearth"></div>
+              <div class="mt-3 flex items-baseline justify-between">
+                <span class="mono-up text-bone">Cask · raised panel</span>
+                <span class="mono text-[10px] text-muted">180deg · 2 stops</span>
+              </div>
+              <p class="mono text-[10.5px] mt-2 text-muted leading-relaxed break-all">
+                linear-gradient(180deg, #241B15 0%, #14100C 100%)
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 01.3 / TYPOGRAPHY -->
+        <div class="mt-16">
+          <div class="flex items-baseline justify-between border-b border-hearth pb-3">
+            <span class="mono-up"><span class="text-ember">01.3</span> &nbsp;·&nbsp; Typography</span>
+            <span class="mono text-[11px] text-muted-2">3 voices</span>
+          </div>
+
+          <div class="mt-6 grid gap-px bg-hearth md:grid-cols-3">
+            <div class="bg-coffee p-7">
+              <p class="mono-up text-muted">Display · Newsreader</p>
+              <p class="serif text-bone mt-3 text-[42px] leading-[1]">Aa</p>
+              <p class="serif-it text-ember mt-2 text-[42px] leading-[1]">Aa</p>
+              <p class="mono text-[10.5px] mt-4 text-muted leading-relaxed">
+                opsz 32 · weight 500 · roman + italic · italic carries ember
+              </p>
+            </div>
+            <div class="bg-coffee p-7">
+              <p class="mono-up text-muted">Body · Inter</p>
+              <p class="text-bone mt-3 text-[26px] leading-[1.15]" style="font-weight:500">Hand-tuned</p>
+              <p class="text-parchment mt-1 text-[14.5px] leading-[1.55]">
+                Sentence case for body copy. 14–16px on Espresso reads AAA.
+                Never set body in italic — that's a display-only treatment.
+              </p>
+            </div>
+            <div class="bg-coffee p-7">
+              <p class="mono-up text-muted">Mono · JetBrains</p>
+              <p class="mono text-bone mt-3 text-[20px] tracking-[0.04em]">$ reasonix</p>
+              <p class="mono-up mt-3 text-bone">§ 02 · TERMINAL FIRST</p>
+              <p class="mono text-[10.5px] mt-4 text-muted leading-relaxed">
+                500 · uppercase · tracked 0.22em · captions, labels, telemetry
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 01.4 / COMPONENTS -->
+        <div class="mt-16">
+          <div class="flex items-baseline justify-between border-b border-hearth pb-3">
+            <span class="mono-up"><span class="text-ember">01.4</span> &nbsp;·&nbsp; Components</span>
+            <span class="mono text-[11px] text-muted-2">Buttons · pills · inputs · cards</span>
+          </div>
+
+          <div class="mt-6 grid gap-px bg-hearth md:grid-cols-2">
+            <!-- Buttons + pills -->
+            <div class="bg-coffee p-7">
+              <p class="mono-up text-muted">Buttons &amp; pills</p>
+              <div class="mt-5 flex flex-wrap items-center gap-3">
+                <button class="btn-primary">Get started <span aria-hidden>→</span></button>
+                <button class="btn-secondary">Download</button>
+                <button class="btn-secondary" style="border-color:var(--hearth-2)">View on GitHub</button>
+              </div>
+              <div class="mt-6 flex flex-wrap items-center gap-2">
+                <span class="pill active"><span class="dot"></span>v0.51.0</span>
+                <span class="pill">MIT</span>
+                <span class="pill">DeepSeek-V4</span>
+                <span class="pill">Open Source</span>
+              </div>
+              <p class="mono-up mt-7 text-muted">Active link · ember underline</p>
+              <p class="mt-2"><a class="nav-link active mono-up" href="#">How it works</a></p>
+            </div>
+
+            <!-- Inputs + section label -->
+            <div class="bg-coffee p-7">
+              <p class="mono-up text-muted">Inputs &amp; markers</p>
+              <label class="mono-up mt-5 block text-muted">API key</label>
+              <input
+                type="text"
+                value="sk-deepseek-7H9c2A4f6B1d8E3g5J0kLm"
+                class="mono mt-2 block w-full border-0 border-b border-hearth bg-transparent py-2 px-0 text-[13px] text-bone outline-none focus:border-[#D97639]"
+              />
+              <p class="mono text-[10px] text-muted-2 mt-2">Bottom-border only · focus = ember</p>
+
+              <p class="mono-up mt-7 text-muted">Section mark</p>
+              <div class="mt-2 flex items-baseline justify-between border-b border-hearth pb-2">
+                <span class="section-mark"><span class="num">§ 02</span> · TERMINAL FIRST</span>
+                <span class="mono text-[10px] text-muted-2">1px hairline rule</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- § 02 / UX APPLICATIONS                                         -->
+    <!-- ============================================================= -->
+    <section class="border-t border-hearth bg-espresso">
+      <div class="mx-auto max-w-6xl px-6 py-20">
+
+        <div class="flex items-center justify-between">
+          <span class="section-mark"><span class="num">§ 02</span> · IN PRODUCTION</span>
+          <div class="hairline mx-6 hidden flex-1 md:block"></div>
+          <span class="section-mark text-right">INSTALL · SESSION · MODELS</span>
+        </div>
+
+        <h2 class="serif text-bone mt-8 text-[clamp(2rem,4.6vw,3.6rem)] leading-[1.06] max-w-3xl">
+          Three surfaces, all <span class="ember-it">composed</span><br/>from the kit above.
+        </h2>
+
+        <!-- 02.1 / INSTALL GUIDE -->
+        <div class="mt-16">
+          <div class="flex items-baseline justify-between border-b border-hearth pb-3">
+            <span class="mono-up"><span class="text-ember">02.1</span> &nbsp;·&nbsp; UX · Install guide</span>
+            <span class="mono text-[11px] text-muted-2">EST. READ: 3 MIN · 4 STEPS</span>
+          </div>
+
+          <div class="mt-7 grid gap-8 md:grid-cols-[1.05fr_1fr]">
+            <!-- Index of steps -->
+            <div>
+              <h3 class="serif-tight text-bone text-[28px] leading-[1.15]">
+                Get Reasonix on your machine <span class="ember-it">in four steps</span>.
+              </h3>
+              <p class="mt-4 text-[14.5px] text-parchment/80 leading-[1.65]">
+                Reasonix is a single binary you point at any working directory.
+                On first run it reads <span class="mono text-bone">~/.reasonix/config.toml</span>,
+                pulls your DeepSeek key, and opens an append-only session.
+              </p>
+
+              <div class="mt-7">
+                <div class="idx-row">
+                  <span class="idx-num">01</span>
+                  <div>
+                    <div class="idx-title">Install the binary</div>
+                    <div class="mono text-[12px] text-muted mt-1">brew install reasonix · 7.2 MB</div>
+                  </div>
+                  <span class="idx-cmd">brew install</span>
+                  <span class="idx-size">7.2 MB</span>
+                </div>
+                <div class="idx-row">
+                  <span class="idx-num">02</span>
+                  <div>
+                    <div class="idx-title">Add your DeepSeek key</div>
+                    <div class="mono text-[12px] text-muted mt-1">reasonix login · stored in keychain</div>
+                  </div>
+                  <span class="idx-cmd">reasonix login</span>
+                  <span class="idx-size">~/.config</span>
+                </div>
+                <div class="idx-row">
+                  <span class="idx-num">03</span>
+                  <div>
+                    <div class="idx-title">Open a session in your repo</div>
+                    <div class="mono text-[12px] text-muted mt-1">cd ~/app &amp;&amp; reasonix code</div>
+                  </div>
+                  <span class="idx-cmd">reasonix code</span>
+                  <span class="idx-size">v0.51.0</span>
+                </div>
+                <div class="idx-row">
+                  <span class="idx-num">04</span>
+                  <div>
+                    <div class="idx-title">Leave it running</div>
+                    <div class="mono text-[12px] text-muted mt-1">cache holds 90%+ · cost collapses to ~1/5</div>
+                  </div>
+                  <span class="idx-cmd">— ongoing —</span>
+                  <span class="idx-size">∞</span>
+                </div>
+              </div>
+
+              <div class="mt-8 flex flex-wrap gap-3">
+                <a class="btn-primary" href="#">Read the install docs <span aria-hidden>→</span></a>
+                <a class="btn-secondary" href="#">npm registry</a>
+              </div>
+            </div>
+
+            <!-- Sample config.toml -->
+            <aside class="card-cask">
+              <div class="term-bar">
+                <span class="traffic-lights" aria-hidden>
+                  <span class="tl-r"></span><span class="tl-y"></span><span class="tl-g"></span>
+                </span>
+                <span class="mono text-[11px] text-muted">~/.reasonix/config.toml</span>
+                <span class="mono-up text-[10px] text-muted-2">TOML</span>
+              </div>
+              <div class="term-body">
+                <div class="muted"># Reasonix · v0.51.0 · default profile</div>
+                <div class="mt-3"><span class="text-bone">[provider]</span></div>
+                <div>name = <span class="ok">"deepseek"</span></div>
+                <div>endpoint = <span class="ok">"https://api.deepseek.com"</span></div>
+                <div>cache_strategy = <span class="ok">"prefix-byte-stable"</span></div>
+
+                <div class="mt-3"><span class="text-bone">[model]</span></div>
+                <div>id = <span class="ok">"deepseek-v4-flash"</span></div>
+                <div>max_ctx = <span class="text-bone">131072</span></div>
+                <div>thinking = <span class="text-bone">true</span></div>
+
+                <div class="mt-3"><span class="text-bone">[session]</span></div>
+                <div>append_only = <span class="text-bone">true</span></div>
+                <div>autosave = <span class="ok">"60s"</span></div>
+                <div>workspace = <span class="ok">"~/app"</span></div>
+
+                <div class="mt-3"><span class="text-bone">[tools]</span></div>
+                <div>shell = <span class="text-bone">true</span></div>
+                <div>read_file = <span class="text-bone">true</span></div>
+                <div>write_file = <span class="text-bone">true</span></div>
+                <div>grep = <span class="text-bone">true</span></div>
+
+                <div class="muted mt-4"># <span class="dim-bullet">●</span> config valid · ~/.reasonix/config.toml · 612 B</div>
+              </div>
+            </aside>
+          </div>
+        </div>
+
+        <!-- 02.2 / LIVE SESSION TRANSCRIPT -->
+        <div class="mt-20">
+          <div class="flex items-baseline justify-between border-b border-hearth pb-3">
+            <span class="mono-up"><span class="text-ember">02.2</span> &nbsp;·&nbsp; UX · Live session</span>
+            <span class="mono text-[11px] text-muted-2">SESSION 18M23S · CACHE 94.2%</span>
+          </div>
+
+          <article class="card-cask mt-7">
+            <header class="flex flex-wrap items-baseline justify-between gap-3 border-b border-hearth px-6 py-4">
+              <div class="flex items-baseline gap-3">
+                <span class="dot-logo" style="vertical-align:middle"></span>
+                <span class="mono-up text-bone">Live · reasonix code</span>
+                <span class="mono text-[11px] text-muted">~/app · deepseek-v4-flash</span>
+              </div>
+              <span class="mono text-[11px] text-muted-2">18:23 · cost <span class="text-bone">$0.043</span> · in 12.4K · out 3.1K</span>
+            </header>
+
+            <div class="grid divide-x divide-hearth md:grid-cols-[1.4fr_1fr]">
+              <!-- Transcript -->
+              <div class="term-body">
+                <div><span class="p">›</span> read the failing test in <span class="ok">tests/agent/loop.spec.ts</span> and tell me what changed</div>
+                <div class="muted mt-2">… ran <span class="text-bone">read_file(tests/agent/loop.spec.ts:1–140)</span> &nbsp;<span class="text-muted-2">12ms</span></div>
+                <div class="muted">… ran <span class="text-bone">git log --since=2d -- tests/agent/loop.spec.ts</span> &nbsp;<span class="text-muted-2">38ms</span></div>
+                <div class="muted">… <span class="text-bone">3 reasoning steps</span> · 412 tokens · prefix hit 96.1%</div>
+                <div class="mt-3 text-bone">
+                  The new assertion at line 87 expects the loop to emit a
+                  <span class="mono text-flame">"cache_miss"</span> event on the second pass.
+                  Yesterday's commit <span class="mono">f3a2c1d</span> moved that emit
+                  inside the <span class="mono text-flame">try</span> block, so it's
+                  swallowed when the upstream throws.
+                </div>
+                <div class="mt-3"><span class="p">›</span> patch it so the event always fires</div>
+                <div class="muted mt-2">… drafted patch · <span class="text-bone">src/agent/loop.ts</span> · +5 −2 lines</div>
+                <div class="muted">… ran <span class="text-bone">pnpm test tests/agent/loop.spec.ts</span> &nbsp;<span class="text-muted-2">1.84s</span></div>
+                <div class="mt-2 text-bone"><span class="dim-bullet">●</span> 24 / 24 passed · ready to commit?</div>
+                <div class="mt-4"><span class="p">›</span> commit "fix(loop): always emit cache_miss"<span class="cursor"></span></div>
+              </div>
+
+              <!-- Side rail — tools & telemetry -->
+              <div class="p-6">
+                <p class="mono-up text-muted">Tools loaded</p>
+                <ul class="mt-3 space-y-2">
+                  <li class="flex items-center justify-between"><span class="mono text-[12px] text-bone">read_file</span><span class="mono text-[10px] text-muted">14 calls</span></li>
+                  <li class="flex items-center justify-between"><span class="mono text-[12px] text-bone">write_file</span><span class="mono text-[10px] text-muted">3 calls</span></li>
+                  <li class="flex items-center justify-between"><span class="mono text-[12px] text-bone">shell</span><span class="mono text-[10px] text-muted">22 calls</span></li>
+                  <li class="flex items-center justify-between"><span class="mono text-[12px] text-bone">grep</span><span class="mono text-[10px] text-muted">9 calls</span></li>
+                  <li class="flex items-center justify-between"><span class="mono text-[12px] text-bone">git</span><span class="mono text-[10px] text-muted">7 calls</span></li>
+                </ul>
+
+                <p class="mono-up text-muted mt-7">Telemetry</p>
+                <div class="mt-3 grid grid-cols-2 gap-x-4 gap-y-3">
+                  <div>
+                    <div class="stat-num text-[28px]">94.2<span class="stat-unit text-[11px]">%</span></div>
+                    <div class="stat-caption mt-1">Cache hit</div>
+                  </div>
+                  <div>
+                    <div class="stat-num text-[28px]">412<span class="stat-unit text-[11px]">MS</span></div>
+                    <div class="stat-caption mt-1">P50 latency</div>
+                  </div>
+                  <div>
+                    <div class="stat-num text-[28px]">$0.043</div>
+                    <div class="stat-caption mt-1">Spent</div>
+                  </div>
+                  <div>
+                    <div class="stat-num text-[28px]">18m</div>
+                    <div class="stat-caption mt-1">Session</div>
+                  </div>
+                </div>
+
+                <p class="mono-up text-muted mt-7">Recent files</p>
+                <ul class="mt-3 space-y-1 mono text-[11.5px] text-bone">
+                  <li>src/agent/loop.ts</li>
+                  <li>tests/agent/loop.spec.ts</li>
+                  <li>src/cache/prefix-store.ts</li>
+                  <li>scripts/benchmark.ts</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- 02.3 / MODELS · PLANS -->
+        <div class="mt-20 pb-6">
+          <div class="flex items-baseline justify-between border-b border-hearth pb-3">
+            <span class="mono-up"><span class="text-ember">02.3</span> &nbsp;·&nbsp; UX · Models &amp; plans</span>
+            <span class="mono text-[11px] text-muted-2">PRICED PER MILLION TOKENS</span>
+          </div>
+
+          <h3 class="serif-tight text-bone mt-7 text-[32px] leading-[1.1] max-w-2xl">
+            Pick a reasoning <span class="ember-it">profile</span> — Reasonix routes
+            every prompt to the cheapest model that can answer it.
+          </h3>
+
+          <div class="mt-9 grid gap-5 md:grid-cols-3">
+            <!-- Plan 1: Hobby -->
+            <div class="plan-card">
+              <div class="flex items-baseline justify-between">
+                <span class="mono-up text-muted">§ Hobby</span>
+                <span class="mono text-[10px] text-muted-2">v4-flash</span>
+              </div>
+              <h4 class="serif text-bone mt-4 text-[28px] leading-[1.1]">
+                Free, <span class="ember-it">forever</span>.
+              </h4>
+              <div class="mt-5 flex items-baseline gap-2">
+                <span class="stat-num text-[44px]">$0</span>
+                <span class="mono text-[11px] text-muted">/ month · BYO key</span>
+              </div>
+              <ul class="mt-5 space-y-2 text-[13.5px] text-parchment/85">
+                <li class="flex gap-2"><span class="text-ember">›</span><span>Local CLI, full terminal UX</span></li>
+                <li class="flex gap-2"><span class="text-ember">›</span><span>DeepSeek-V4 Flash routing</span></li>
+                <li class="flex gap-2"><span class="text-ember">›</span><span>Append-only session log on disk</span></li>
+                <li class="flex gap-2"><span class="text-ember">›</span><span>Community Discord, no SLA</span></li>
+              </ul>
+              <button class="btn-secondary mt-7 w-full justify-center">Install free</button>
+            </div>
+
+            <!-- Plan 2: Studio (featured) -->
+            <div class="plan-card featured">
+              <div class="flex items-baseline justify-between">
+                <span class="mono-up text-bone">§ Studio</span>
+                <span class="mono text-[10px] text-muted-2">v4 + r1-pro</span>
+              </div>
+              <h4 class="serif text-bone mt-4 text-[28px] leading-[1.1]">
+                For working <span class="ember-it">engineers</span>.
+              </h4>
+              <div class="mt-5 flex items-baseline gap-2">
+                <span class="stat-num text-[44px]">$18</span>
+                <span class="mono text-[11px] text-muted">/ seat · per month</span>
+              </div>
+              <ul class="mt-5 space-y-2 text-[13.5px] text-parchment/90">
+                <li class="flex gap-2"><span class="text-ember">›</span><span>Auto-routing across V4 + R1-Pro</span></li>
+                <li class="flex gap-2"><span class="text-ember">›</span><span>Shared prefix cache across machines</span></li>
+                <li class="flex gap-2"><span class="text-ember">›</span><span>Desktop app, hooks, status line</span></li>
+                <li class="flex gap-2"><span class="text-ember">›</span><span>Usage-capped tokens billed at cost</span></li>
+              </ul>
+              <button class="btn-primary mt-7 w-full justify-center">Start a Studio trial <span aria-hidden>→</span></button>
+            </div>
+
+            <!-- Plan 3: Atelier -->
+            <div class="plan-card">
+              <div class="flex items-baseline justify-between">
+                <span class="mono-up text-muted">§ Atelier</span>
+                <span class="mono text-[10px] text-muted-2">on-prem</span>
+              </div>
+              <h4 class="serif text-bone mt-4 text-[28px] leading-[1.1]">
+                For teams that <span class="ember-it">self-host</span>.
+              </h4>
+              <div class="mt-5 flex items-baseline gap-2">
+                <span class="stat-num text-[44px]">Custom</span>
+              </div>
+              <ul class="mt-5 space-y-2 text-[13.5px] text-parchment/85">
+                <li class="flex gap-2"><span class="text-ember">›</span><span>Air-gapped deployment</span></li>
+                <li class="flex gap-2"><span class="text-ember">›</span><span>Bring your own model gateway</span></li>
+                <li class="flex gap-2"><span class="text-ember">›</span><span>SAML, audit log, RBAC</span></li>
+                <li class="flex gap-2"><span class="text-ember">›</span><span>Dedicated solutions engineer</span></li>
+              </ul>
+              <button class="btn-secondary mt-7 w-full justify-center">Talk to sales</button>
+            </div>
+          </div>
+
+          <!-- Model index table -->
+          <div class="mt-12 card overflow-hidden">
+            <div class="border-b border-hearth px-6 py-3 flex items-baseline justify-between">
+              <span class="mono-up text-bone">§ Model index</span>
+              <span class="mono text-[11px] text-muted-2">4 models · all DeepSeek-native</span>
+            </div>
+            <div class="px-6">
+              <div class="grid grid-cols-[1fr_120px_120px_120px_88px] gap-4 border-b border-hearth py-3 mono-up text-muted">
+                <span>Model</span>
+                <span class="text-right">Ctx</span>
+                <span class="text-right">In · / 1M</span>
+                <span class="text-right">Out · / 1M</span>
+                <span class="text-right">Status</span>
+              </div>
+              <div class="grid grid-cols-[1fr_120px_120px_120px_88px] gap-4 border-b border-hearth py-4 items-baseline">
+                <div>
+                  <div class="serif-tight text-bone text-[17px]">deepseek-v4-flash</div>
+                  <div class="mono text-[11px] text-muted mt-0.5">Default · fastest · cache-friendly</div>
+                </div>
+                <span class="mono text-[12px] text-bone text-right">131K</span>
+                <span class="serif-it text-bone text-[18px] text-right">$0.07</span>
+                <span class="serif-it text-bone text-[18px] text-right">$0.28</span>
+                <span class="mono-up text-flame text-right">Live</span>
+              </div>
+              <div class="grid grid-cols-[1fr_120px_120px_120px_88px] gap-4 border-b border-hearth py-4 items-baseline">
+                <div>
+                  <div class="serif-tight text-bone text-[17px]">deepseek-r1-pro</div>
+                  <div class="mono text-[11px] text-muted mt-0.5">Reasoning · best at long traces</div>
+                </div>
+                <span class="mono text-[12px] text-bone text-right">200K</span>
+                <span class="serif-it text-bone text-[18px] text-right">$0.55</span>
+                <span class="serif-it text-bone text-[18px] text-right">$2.19</span>
+                <span class="mono-up text-flame text-right">Live</span>
+              </div>
+              <div class="grid grid-cols-[1fr_120px_120px_120px_88px] gap-4 border-b border-hearth py-4 items-baseline">
+                <div>
+                  <div class="serif-tight text-bone text-[17px]">deepseek-v3-coder</div>
+                  <div class="mono text-[11px] text-muted mt-0.5">Long-context refactors · 200K window</div>
+                </div>
+                <span class="mono text-[12px] text-bone text-right">200K</span>
+                <span class="serif-it text-bone text-[18px] text-right">$0.14</span>
+                <span class="serif-it text-bone text-[18px] text-right">$0.56</span>
+                <span class="mono-up text-flame text-right">Live</span>
+              </div>
+              <div class="grid grid-cols-[1fr_120px_120px_120px_88px] gap-4 py-4 items-baseline">
+                <div>
+                  <div class="serif-tight text-bone text-[17px]">deepseek-v4-vision</div>
+                  <div class="mono text-[11px] text-muted mt-0.5">Multimodal · diagrams, screenshots</div>
+                </div>
+                <span class="mono text-[12px] text-bone text-right">131K</span>
+                <span class="serif-it text-bone text-[18px] text-right">$0.18</span>
+                <span class="serif-it text-bone text-[18px] text-right">$0.72</span>
+                <span class="mono-up text-muted text-right">Beta</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- COLOPHON / FOOTER                                              -->
+    <!-- ============================================================= -->
+    <footer class="border-t border-hearth bg-espresso">
+      <div class="mx-auto max-w-6xl px-6 py-12">
+        <div class="flex flex-wrap items-baseline justify-between gap-4 border-b border-hearth pb-6">
+          <a href="#" class="flex items-center gap-3" aria-label="Reasonix">
+            <span class="dot-logo"></span>
+            <span class="mono font-semibold text-bone text-[14px]">Reasonix</span>
+            <span class="mono-up text-muted-2">DS · V0.51.0 · MIT</span>
+          </a>
+          <p class="serif-it text-parchment text-[16px]">Set in Newsreader &amp; <span class="ember-it">compiled</span> at 02:18 AM.</p>
+        </div>
+
+        <div class="mt-6 grid gap-6 md:grid-cols-4">
+          <div>
+            <p class="mono-up text-muted">§ Project</p>
+            <ul class="mt-3 space-y-1.5 text-[13.5px] text-parchment/80">
+              <li><a href="#">About</a></li>
+              <li><a href="#">Changelog</a></li>
+              <li><a href="#">Roadmap</a></li>
+              <li><a href="#">Manifesto</a></li>
+            </ul>
+          </div>
+          <div>
+            <p class="mono-up text-muted">§ Docs</p>
+            <ul class="mt-3 space-y-1.5 text-[13.5px] text-parchment/80">
+              <li><a href="#">Install</a></li>
+              <li><a href="#">CLI reference</a></li>
+              <li><a href="#">Hooks API</a></li>
+              <li><a href="#">Config reference</a></li>
+            </ul>
+          </div>
+          <div>
+            <p class="mono-up text-muted">§ Community</p>
+            <ul class="mt-3 space-y-1.5 text-[13.5px] text-parchment/80">
+              <li><a href="#">GitHub</a></li>
+              <li><a href="#">Discord</a></li>
+              <li><a href="#">Discussions</a></li>
+              <li><a href="#">RSS</a></li>
+            </ul>
+          </div>
+          <div>
+            <p class="mono-up text-muted">§ Colophon</p>
+            <p class="mt-3 text-[12.5px] text-muted leading-[1.65]">
+              Reasonix is an open-source coding agent licensed MIT. Typeset
+              in Newsreader, Inter, and JetBrains Mono. Built for terminals.
+              Set in Brooklyn &amp; Shenzhen. <span class="text-ember">●</span>
+              Server time 02:18:42 UTC.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-hearth pt-6">
+          <p class="mono-up text-muted">© 2026 REASONIX · NO COOKIES · NO TRACKERS</p>
+          <p class="mono-up text-muted">V0.51.0 · BUILD 4F2A · <span class="text-ember">●</span> ALL SYSTEMS LIVE</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
