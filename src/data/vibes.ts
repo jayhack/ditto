@@ -662,6 +662,66 @@ export const VIBES: Vibe[] = [
     },
   },
   {
+    slug: "tiki",
+    name: "Tiki",
+    tagline: "A carved-teal idol in an acid Hawaiian sunset — dark, minimalist, electric.",
+    description:
+      "The edgy, modern, dark cousin of the island themes. Where Oahu is cute-rounded plum and Surf's Up is 1970s screen-print cream, Tiki is volcanic-glass black with one electric teal that glows, a saturated Hawaiian sunset rationed to identity moments, and a psychedelic 'acid trip' kept strictly to thin swirls behind the hero. A geometric, original carved-tiki idol is the logo and signature glyph. Loud color, quiet surfaces — built to read as a real operational product (reservation floors, bar tickets, fire-show run-of-shows) first and a poster second.",
+    tags: ["island", "dark-mode", "minimal", "psychedelic"],
+    cardGradient:
+      "linear-gradient(155deg, #0B0712 0%, #7A2BE0 26%, #FF2E76 48%, #FF6A2C 66%, #FFC24A 84%, #16E6C4 100%)",
+    cardForeground: "light",
+    palette: [
+      { name: "Obsidian", hex: "#0B0712" },
+      { name: "Basalt", hex: "#17111F" },
+      { name: "Tiki Teal", hex: "#16E6C4" },
+      { name: "Solar", hex: "#FFC24A" },
+      { name: "Ember", hex: "#FF6A2C" },
+      { name: "Hibiscus", hex: "#FF2E76" },
+      { name: "Orchid", hex: "#7A2BE0" },
+      { name: "Moonlight", hex: "#F6ECDD" },
+    ],
+    fonts: {
+      display: '"Space Grotesk", "Helvetica Neue", Arial, sans-serif',
+      body: '"Inter", system-ui, sans-serif',
+      mono: '"JetBrains Mono", ui-monospace, monospace',
+    },
+    motifs: [
+      "The Tiki mark — a geometric, original carved-idol SVG (notched brow bar, concentric-disc eyes, trapezoid nose, bared-teeth mouth, stacked base notches) in Tiki Teal with one soft teal glow · the logo and only figurative glyph",
+      "Acid swirl — thin 1px concentric/spiral line ornament at 8–16% opacity drifting behind the hero · the entire 'trip', never on functional surfaces",
+      "Sun-burst — flat sun disc with thin 1px radiating lines, clipped by the horizon, one per page",
+      "Sunset ribbon — the Sunset gradient (Solar → Ember → Hibiscus → Orchid → Obsidian) as masthead wash and progress meter · the recurring color event",
+      "Carved notch row — a row of small teal tapa-style ticks replacing every <hr> · abstract carving, never a sacred pattern",
+      "Obsidian glass panel — Basalt fill, 1px Moonlight/12 hairline, 6px radius, optional 1px teal top-edge · no cartoon rounding, no blur",
+      "Teal Glow — the one neon: Tiki Teal + 0 0 28px halo on the mark, primary buttons, and focus rings, rationed so it stays electric",
+      "Mono telemetry beacon — JetBrains Mono uppercase, e.g. FIRE 21:00 · TORCH 14 · TIDE +1.2M",
+      "Respect rule — the tiki is an abstract, invented carving · never reproduce sacred ki'i, temple imagery, or copied tribal patterns",
+    ],
+    kits: [
+      { label: "Tailwind CSS", url: "https://tailwindcss.com" },
+      {
+        label: "Google Fonts: Space Grotesk, Inter, JetBrains Mono",
+        url: "https://fonts.google.com",
+      },
+      {
+        label: "No UI kit, no icon set — inline SVG tiki mark, acid swirls, sun-burst, notch rows only",
+      },
+    ],
+    shapes: [
+      "Logo mark = geometric carved-tiki SVG idol in Tiki Teal with a soft teal glow, on Obsidian",
+      "Square-ish geometry — 6px radii on cards/buttons/inputs · only the sun disc, acid swirls, and status dots are round · no full pills everywhere",
+      "Buttons: primary = Tiki Teal fill + Obsidian text + teal glow; secondary = transparent + 1px Tiki Teal/45 border; alert = Hibiscus fill",
+      "Inputs: Basalt fill, 1px Moonlight/14 hairline, 6px radius, focus = Tiki Teal border + 3px teal glow ring",
+      "Banned: sacred ki'i / real temple imagery, copied tribal patterns as authentic, cartoon pill-everything, glass/blur, pastel washes, neon beyond the single teal, emoji, lucide/heroicons",
+    ],
+    previewHtml: "vibes/tiki/preview.html",
+    promptMarkdown: "vibes/tiki/prompt.md",
+    author: {
+      name: "After a carved-tiki sunset painting",
+      url: "https://github.com/jayhack/ditto",
+    },
+  },
+  {
     slug: "prowler",
     name: "Prowler",
     tagline: "Garden-villa muscle — lacquer green, twin stripes, four cold haloes.",

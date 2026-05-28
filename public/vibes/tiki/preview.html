@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tiki — vibe preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --obsidian: #0b0712;
+        --basalt: #17111f;
+        --teal: #16e6c4;
+        --solar: #ffc24a;
+        --ember: #ff6a2c;
+        --hibiscus: #ff2e76;
+        --orchid: #7a2be0;
+        --moonlight: #f6ecdd;
+        --hairline: rgba(246, 236, 221, 0.12);
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background:
+          radial-gradient(circle at 84% 4%, rgba(255, 194, 74, 0.16), transparent 26rem),
+          radial-gradient(circle at 14% 2%, rgba(122, 43, 224, 0.22), transparent 30rem),
+          radial-gradient(circle at 60% 40%, rgba(255, 46, 118, 0.1), transparent 34rem),
+          var(--obsidian);
+        color: var(--moonlight);
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .display {
+        font-family: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 0.94;
+      }
+
+      .mono {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+      }
+
+      .label {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      /* ---- gradients ---- */
+      .sunset {
+        background: linear-gradient(180deg, #ffc24a 0%, #ff6a2c 30%, #ff2e76 56%, #7a2be0 80%, #0b0712 100%);
+      }
+      .acid-card {
+        background: linear-gradient(155deg, #0b0712 0%, #7a2be0 26%, #ff2e76 48%, #ff6a2c 66%, #ffc24a 84%, #16e6c4 100%);
+      }
+      .lava-panel {
+        background: linear-gradient(180deg, #17111f 0%, #0b0712 64%, #3a0f12 100%);
+      }
+
+      /* ---- surfaces ---- */
+      .panel {
+        background: var(--basalt);
+        border: 1px solid var(--hairline);
+        border-radius: 6px;
+      }
+      .panel-teal {
+        border-top: 1px solid rgba(22, 230, 196, 0.55);
+      }
+
+      /* ---- buttons ---- */
+      .btn-primary,
+      .btn-secondary,
+      .btn-acid {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        border-radius: 6px;
+        padding: 0.78rem 1.3rem;
+        font-weight: 700;
+        font-size: 0.95rem;
+        line-height: 1;
+        letter-spacing: 0.02em;
+        transition: transform 120ms ease, box-shadow 160ms ease, background 160ms ease, border-color 160ms ease;
+        cursor: pointer;
+      }
+      .btn-primary {
+        background: var(--teal);
+        color: var(--obsidian);
+        border: 1px solid var(--teal);
+        box-shadow: 0 0 26px rgba(22, 230, 196, 0.4);
+      }
+      .btn-primary:hover {
+        box-shadow: 0 0 34px rgba(22, 230, 196, 0.62);
+        transform: translateY(-1px);
+      }
+      .btn-secondary {
+        background: transparent;
+        color: var(--moonlight);
+        border: 1px solid rgba(22, 230, 196, 0.45);
+      }
+      .btn-secondary:hover {
+        border-color: var(--teal);
+        box-shadow: 0 0 22px rgba(22, 230, 196, 0.22);
+      }
+      .btn-acid {
+        background: var(--hibiscus);
+        color: var(--moonlight);
+        border: 1px solid var(--hibiscus);
+      }
+      .btn-acid:hover {
+        box-shadow: 0 0 26px rgba(255, 46, 118, 0.5);
+      }
+
+      /* ---- inputs ---- */
+      .input {
+        width: 100%;
+        border-radius: 6px;
+        border: 1px solid var(--hairline);
+        background: var(--basalt);
+        color: var(--moonlight);
+        padding: 0.78rem 0.9rem;
+        font-size: 0.95rem;
+        outline: none;
+        transition: border-color 140ms ease, box-shadow 140ms ease;
+      }
+      .input::placeholder {
+        color: rgba(246, 236, 221, 0.4);
+      }
+      .input:focus {
+        border-color: var(--teal);
+        box-shadow: 0 0 0 3px rgba(22, 230, 196, 0.25);
+      }
+
+      /* ---- badge / pill ---- */
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        border-radius: 999px;
+        padding: 0.32rem 0.7rem;
+        border: 1px solid var(--hairline);
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--moonlight);
+      }
+      .dot {
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 999px;
+        background: var(--teal);
+      }
+
+      /* ---- tiki mark glow ---- */
+      .glow {
+        filter: drop-shadow(0 0 10px rgba(22, 230, 196, 0.55));
+      }
+
+      /* ---- carved notch divider (tapa tick row) ---- */
+      .notch-row {
+        height: 9px;
+        background: var(--teal);
+        opacity: 0.85;
+        -webkit-mask: repeating-linear-gradient(90deg, #000 0 2px, transparent 2px 11px);
+        mask: repeating-linear-gradient(90deg, #000 0 2px, transparent 2px 11px);
+      }
+
+      /* ---- acid swirl rings (the only "trip") ---- */
+      .acid-rings {
+        background-image: repeating-radial-gradient(
+          circle at 50% 50%,
+          transparent 0 17px,
+          rgba(122, 43, 224, 0.5) 17px 18px,
+          transparent 18px 34px,
+          rgba(255, 46, 118, 0.4) 34px 35px,
+          transparent 35px 52px,
+          rgba(255, 106, 44, 0.35) 52px 53px,
+          transparent 53px
+        );
+      }
+
+      /* ---- sun-burst rays + disc ---- */
+      .sunburst {
+        background: repeating-conic-gradient(
+          from 0deg at 50% 50%,
+          rgba(255, 194, 74, 0.28) 0deg 0.55deg,
+          transparent 0.55deg 5deg
+        );
+        -webkit-mask: radial-gradient(circle at 50% 50%, #000 0 46%, transparent 62%);
+        mask: radial-gradient(circle at 50% 50%, #000 0 46%, transparent 62%);
+      }
+      .sun-disc {
+        background: radial-gradient(circle at 50% 50%, #ffc24a 0%, #ff6a2c 34%, #ff2e76 62%, rgba(122, 43, 224, 0) 76%);
+      }
+
+      .heat {
+        background-image: repeating-linear-gradient(0deg, transparent 0 5px, rgba(246, 236, 221, 0.04) 5px 6px);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="overflow-hidden">
+      <!-- ============ 1. IDENTITY ============ -->
+      <section class="relative px-5 pt-6 sm:px-8 lg:px-12">
+        <!-- hero background art -->
+        <div class="pointer-events-none absolute inset-0 overflow-hidden">
+          <div class="sun-disc absolute -right-24 -top-28 h-[34rem] w-[34rem] opacity-70"></div>
+          <div class="sunburst absolute -right-32 -top-36 h-[42rem] w-[42rem] opacity-60"></div>
+          <div class="acid-rings absolute -left-40 top-10 h-[40rem] w-[40rem] opacity-30"></div>
+          <div class="absolute inset-0 heat opacity-60"></div>
+        </div>
+
+        <nav class="relative mx-auto flex max-w-7xl items-center justify-between rounded-md border border-[var(--hairline)] bg-[rgba(11,7,18,0.66)] px-4 py-3 backdrop-blur-sm">
+          <div class="flex items-center gap-3">
+            <svg class="tiki-mark glow" width="30" height="46" viewBox="0 0 64 100" fill="none" aria-hidden="true">
+              <rect x="8" y="4" width="48" height="66" rx="9" stroke="#16e6c4" stroke-width="3" />
+              <path d="M13 27 L32 17 L51 27" stroke="#16e6c4" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" />
+              <circle cx="23" cy="40" r="7" stroke="#16e6c4" stroke-width="2.6" />
+              <circle cx="23" cy="40" r="2.4" fill="#16e6c4" />
+              <circle cx="41" cy="40" r="7" stroke="#16e6c4" stroke-width="2.6" />
+              <circle cx="41" cy="40" r="2.4" fill="#16e6c4" />
+              <path d="M32 44 L27 57 L37 57 Z" fill="#16e6c4" />
+              <rect x="18" y="60" width="28" height="9" rx="2" stroke="#16e6c4" stroke-width="2.4" />
+              <path d="M27 60 L27 69 M32 60 L32 69 M37 60 L37 69" stroke="#16e6c4" stroke-width="1.6" />
+              <path d="M16 78 H48 M16 86 H48 M16 94 H48" stroke="#16e6c4" stroke-width="2.4" stroke-linecap="round" />
+            </svg>
+            <div>
+              <p class="display text-2xl leading-none">Tiki</p>
+              <p class="label -mt-0.5 text-[var(--teal)]">After-dark island OS</p>
+            </div>
+          </div>
+          <div class="hidden items-center gap-1 md:flex">
+            <a class="rounded-md px-3 py-2 text-sm font-semibold text-[var(--moonlight)] [border-bottom:2px_solid_var(--teal)]" href="#spec">Spec</a>
+            <a class="rounded-md px-3 py-2 text-sm font-semibold text-[rgba(246,236,221,0.7)] hover:text-[var(--moonlight)]" href="#apps">Applications</a>
+            <a class="btn-primary ml-2 !py-2 !text-sm" href="#apps">Reserve a table</a>
+          </div>
+        </nav>
+
+        <div class="relative mx-auto grid max-w-7xl items-center gap-10 py-16 lg:grid-cols-[1.15fr_0.85fr] lg:py-24">
+          <div>
+            <span class="badge mb-6"><span class="dot"></span>Tiki · acid sunset · minimalist · dark</span>
+            <h1 class="display text-[clamp(4.5rem,15vw,12rem)] text-[var(--moonlight)]">
+              Ti<span class="text-[var(--teal)]">k</span>i
+            </h1>
+            <p class="mt-6 max-w-xl text-lg leading-relaxed text-[rgba(246,236,221,0.78)]">
+              A carved-teal idol staring out of an acid Hawaiian sunset, rebuilt as a real product UI.
+              Volcanic-glass black, one electric teal that glows, sunset color rationed to the moments
+              that matter — and the trip kept to the swirls behind the hero.
+            </p>
+            <div class="mt-8 flex flex-wrap gap-3">
+              <button class="btn-primary">Open the floor board</button>
+              <button class="btn-secondary">View the kit</button>
+            </div>
+            <div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-2">
+              <p class="mono text-xs text-[rgba(246,236,221,0.55)]">LUAU 19:30 · TABLE 06 · TIDE +1.2M · FIRE 21:00</p>
+            </div>
+          </div>
+
+          <!-- hero data card -->
+          <div class="panel panel-teal relative overflow-hidden p-6">
+            <div class="acid-rings absolute -right-24 -top-24 h-72 w-72 opacity-25"></div>
+            <div class="relative z-10 flex items-start justify-between">
+              <div>
+                <p class="label text-[var(--teal)]">Lehua Room · tonight</p>
+                <h2 class="display mt-2 text-4xl">Sunset seating</h2>
+              </div>
+              <span class="badge"><span class="dot"></span>Live</span>
+            </div>
+            <div class="notch-row my-6"></div>
+            <div class="grid grid-cols-3 gap-3 text-center">
+              <div class="rounded-md border border-[var(--hairline)] bg-[rgba(22,230,196,0.07)] p-4">
+                <p class="label text-[rgba(246,236,221,0.6)]">Covers</p>
+                <p class="display mt-2 text-3xl text-[var(--teal)]">142</p>
+              </div>
+              <div class="rounded-md border border-[var(--hairline)] bg-[rgba(255,194,74,0.08)] p-4">
+                <p class="label text-[rgba(246,236,221,0.6)]">Waitlist</p>
+                <p class="display mt-2 text-3xl text-[var(--solar)]">11</p>
+              </div>
+              <div class="rounded-md border border-[var(--hairline)] bg-[rgba(255,46,118,0.08)] p-4">
+                <p class="label text-[rgba(246,236,221,0.6)]">Open</p>
+                <p class="display mt-2 text-3xl text-[var(--hibiscus)]">3</p>
+              </div>
+            </div>
+            <div class="mt-5 space-y-2">
+              <div class="flex items-center justify-between rounded-md bg-[rgba(246,236,221,0.04)] px-4 py-3">
+                <span class="font-semibold">Volcano booth · 8 top</span>
+                <span class="mono text-sm text-[var(--teal)]">19:45</span>
+              </div>
+              <div class="flex items-center justify-between rounded-md border border-[rgba(22,230,196,0.3)] bg-[rgba(22,230,196,0.08)] px-4 py-3">
+                <span class="font-semibold">Lagoon window · 4 top</span>
+                <span class="mono text-sm text-[var(--teal)]">now</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 2. THEME SPECIFICATION ============ -->
+      <section id="spec" class="px-5 py-16 sm:px-8 lg:px-12">
+        <div class="mx-auto max-w-7xl">
+          <div class="mb-10 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p class="label text-[var(--teal)]">02 / Theme specification</p>
+              <h2 class="display mt-3 text-5xl sm:text-6xl">The kit, made visible</h2>
+            </div>
+            <p class="max-w-md text-[rgba(246,236,221,0.66)]">
+              Loud color is rationed; surfaces stay obsidian-quiet. Teal is the only neon, the sunset is
+              the only gradient event, and the acid swirl never touches a functional surface.
+            </p>
+          </div>
+
+          <!-- Palette -->
+          <div class="panel p-5 sm:p-7">
+            <div class="mb-5 flex items-center justify-between gap-4">
+              <h3 class="display text-3xl">Palette</h3>
+              <span class="label text-[var(--teal)]">Named hex swatches</span>
+            </div>
+            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div class="rounded-md border border-white/10 p-4" style="background:#0b0712"><b>Obsidian</b><br /><span class="mono text-sm text-[rgba(246,236,221,0.7)]">#0B0712</span></div>
+              <div class="rounded-md border border-white/10 p-4" style="background:#17111f"><b>Basalt</b><br /><span class="mono text-sm text-[rgba(246,236,221,0.7)]">#17111F</span></div>
+              <div class="rounded-md p-4 text-[var(--obsidian)]" style="background:#16e6c4"><b>Tiki Teal</b><br /><span class="mono text-sm">#16E6C4</span></div>
+              <div class="rounded-md p-4 text-[var(--obsidian)]" style="background:#ffc24a"><b>Solar</b><br /><span class="mono text-sm">#FFC24A</span></div>
+              <div class="rounded-md p-4 text-[var(--obsidian)]" style="background:#ff6a2c"><b>Ember</b><br /><span class="mono text-sm">#FF6A2C</span></div>
+              <div class="rounded-md p-4 text-white" style="background:#ff2e76"><b>Hibiscus</b><br /><span class="mono text-sm">#FF2E76</span></div>
+              <div class="rounded-md p-4 text-white" style="background:#7a2be0"><b>Orchid</b><br /><span class="mono text-sm">#7A2BE0</span></div>
+              <div class="rounded-md p-4 text-[var(--obsidian)]" style="background:#f6ecdd"><b>Moonlight</b><br /><span class="mono text-sm">#F6ECDD</span></div>
+            </div>
+          </div>
+
+          <div class="mt-6 grid gap-6 lg:grid-cols-2">
+            <!-- Gradients -->
+            <div class="panel p-5 sm:p-7">
+              <h3 class="display mb-5 text-3xl">Gradients</h3>
+              <div class="space-y-4">
+                <div>
+                  <div class="sunset h-16 rounded-md"></div>
+                  <p class="mono mt-2 text-xs text-[rgba(246,236,221,0.6)]">Sunset · 180° #FFC24A → #FF6A2C → #FF2E76 → #7A2BE0 → #0B0712</p>
+                </div>
+                <div>
+                  <div class="acid-card h-16 rounded-md"></div>
+                  <p class="mono mt-2 text-xs text-[rgba(246,236,221,0.6)]">Acid Card · 155° obsidian → orchid → hibiscus → ember → solar → teal</p>
+                </div>
+                <div>
+                  <div class="lava-panel h-16 rounded-md border border-[var(--hairline)]"></div>
+                  <p class="mono mt-2 text-xs text-[rgba(246,236,221,0.6)]">Lava Panel · 180° #17111F → #0B0712 → #3A0F12</p>
+                </div>
+                <div>
+                  <div class="h-16 rounded-md bg-[rgba(22,230,196,0.12)]" style="box-shadow: inset 0 0 30px rgba(22,230,196,0.5)"></div>
+                  <p class="mono mt-2 text-xs text-[rgba(246,236,221,0.6)]">Teal Glow · 0 0 28px rgba(22,230,196,0.45) — the only neon</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Typography -->
+            <div class="panel p-5 sm:p-7">
+              <h3 class="display mb-5 text-3xl">Typography</h3>
+              <div class="space-y-6">
+                <div>
+                  <p class="label text-[var(--teal)]">Display · Space Grotesk 700 · -0.02em</p>
+                  <p class="display mt-2 text-5xl">Carved, electric, calm.</p>
+                </div>
+                <div>
+                  <p class="label text-[var(--teal)]">Body · Inter 400–700</p>
+                  <p class="mt-2 leading-relaxed text-[rgba(246,236,221,0.82)]">Built for forms, floor plans, tickets, and dense reservation tables — legible at small sizes, never decorative.</p>
+                </div>
+                <div>
+                  <p class="label text-[var(--teal)]">Mono · JetBrains Mono 700 · 0.16em</p>
+                  <p class="mono mt-2 rounded-md border border-[var(--hairline)] bg-[rgba(22,230,196,0.06)] p-3 text-sm">FIRE 21:00 · TORCH 14 · TIDE +1.2M · WAIT 11</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Components -->
+          <div class="panel mt-6 p-5 sm:p-7">
+            <div class="mb-6 flex items-center justify-between gap-4">
+              <h3 class="display text-3xl">Components</h3>
+              <span class="badge"><span class="dot"></span>6px radii · hairline · one glow</span>
+            </div>
+            <div class="grid gap-7 lg:grid-cols-[0.85fr_1.15fr]">
+              <div class="space-y-5">
+                <div class="flex flex-wrap items-center gap-3">
+                  <button class="btn-primary">Primary</button>
+                  <button class="btn-secondary">Secondary</button>
+                  <button class="btn-acid">Alert</button>
+                </div>
+                <label class="block">
+                  <span class="label mb-2 block text-[var(--teal)]">Input · default + focus</span>
+                  <input class="input mb-3" placeholder="Search the floor…" />
+                  <input class="input" value="Lagoon window · 4 top · 19:45" />
+                </label>
+                <div class="flex flex-wrap gap-2">
+                  <span class="badge"><span class="dot"></span>Seated</span>
+                  <span class="badge"><span class="dot" style="background:var(--solar)"></span>Waitlist</span>
+                  <span class="badge"><span class="dot" style="background:var(--hibiscus)"></span>86’d</span>
+                  <span class="badge"><span class="dot" style="background:var(--orchid)"></span>VIP</span>
+                </div>
+              </div>
+
+              <div class="rounded-md border border-[var(--hairline)] bg-[rgba(11,7,18,0.55)] p-4">
+                <div class="grid grid-cols-[1.4fr_0.8fr_0.7fr] gap-2 border-b border-[var(--hairline)] pb-2 text-[0.66rem] font-bold uppercase tracking-[0.14em] text-[var(--teal)]">
+                  <span>Party</span><span>Status</span><span class="text-right">Quoted</span>
+                </div>
+                <div class="divide-y divide-[var(--hairline)] text-sm">
+                  <div class="grid grid-cols-[1.4fr_0.8fr_0.7fr] items-center gap-2 py-3">
+                    <span class="font-semibold">Akana · 2</span><span class="text-[rgba(246,236,221,0.7)]">Seated</span><span class="mono text-right text-[var(--teal)]">—</span>
+                  </div>
+                  <div class="grid grid-cols-[1.4fr_0.8fr_0.7fr] items-center gap-2 rounded-md bg-[rgba(22,230,196,0.08)] px-3 py-3">
+                    <span class="font-semibold">Reyes · 6</span><span class="text-[var(--teal)]">Ready</span><span class="mono text-right text-[var(--teal)]">now</span>
+                  </div>
+                  <div class="grid grid-cols-[1.4fr_0.8fr_0.7fr] items-center gap-2 py-3">
+                    <span class="font-semibold">Tanaka · 4</span><span class="text-[rgba(246,236,221,0.7)]">Waitlist</span><span class="mono text-right text-[var(--solar)]">25m</span>
+                  </div>
+                  <div class="grid grid-cols-[1.4fr_0.8fr_0.7fr] items-center gap-2 py-3">
+                    <span class="font-semibold">Okafor · 8</span><span class="text-[rgba(246,236,221,0.7)]">Waitlist</span><span class="mono text-right text-[var(--solar)]">40m</span>
+                  </div>
+                </div>
+                <div class="notch-row mt-4"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 3. UX APPLICATIONS ============ -->
+      <section id="apps" class="px-5 pb-16 sm:px-8 lg:px-12">
+        <div class="mx-auto max-w-7xl">
+          <div class="mb-10">
+            <p class="label text-[var(--teal)]">03 / UX applications</p>
+            <h2 class="display mt-3 text-5xl sm:text-6xl">On real surfaces</h2>
+          </div>
+
+          <div class="grid gap-6 lg:grid-cols-2">
+            <!-- App 1: floor / reservations board -->
+            <article class="panel overflow-hidden">
+              <div class="lava-panel relative overflow-hidden p-6">
+                <div class="acid-rings absolute -right-20 -top-16 h-56 w-56 opacity-25"></div>
+                <p class="relative label text-[var(--teal)]">Hostess · floor board</p>
+                <h3 class="relative display mt-2 text-4xl">Lehua Room · 19:30</h3>
+              </div>
+              <div class="p-6">
+                <div class="mb-5 grid grid-cols-3 gap-3">
+                  <div class="rounded-md border border-[var(--hairline)] p-4"><p class="label text-[rgba(246,236,221,0.6)]">Tables</p><p class="display mt-2 text-3xl text-[var(--teal)]">24</p></div>
+                  <div class="rounded-md border border-[var(--hairline)] p-4"><p class="label text-[rgba(246,236,221,0.6)]">Turn</p><p class="display mt-2 text-3xl text-[var(--solar)]">86m</p></div>
+                  <div class="rounded-md border border-[var(--hairline)] p-4"><p class="label text-[rgba(246,236,221,0.6)]">No-show</p><p class="display mt-2 text-3xl text-[var(--hibiscus)]">2</p></div>
+                </div>
+                <div class="space-y-2.5">
+                  <div class="flex items-center justify-between rounded-md border border-[rgba(22,230,196,0.3)] bg-[rgba(22,230,196,0.08)] p-3.5">
+                    <div><b>Reyes party · 6</b><p class="text-sm text-[rgba(246,236,221,0.6)]">Volcano booth · anniversary</p></div>
+                    <button class="btn-primary !py-2 !text-sm">Seat</button>
+                  </div>
+                  <div class="flex items-center justify-between rounded-md bg-[rgba(246,236,221,0.04)] p-3.5">
+                    <div><b>Tanaka party · 4</b><p class="text-sm text-[rgba(246,236,221,0.6)]">Lagoon window · quoted 25m</p></div>
+                    <span class="mono text-sm text-[var(--solar)]">19:55</span>
+                  </div>
+                  <div class="flex items-center justify-between rounded-md bg-[rgba(246,236,221,0.04)] p-3.5">
+                    <div><b>Okafor party · 8</b><p class="text-sm text-[rgba(246,236,221,0.6)]">Fire-pit deck · high chair ×1</p></div>
+                    <span class="mono text-sm text-[var(--solar)]">20:10</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- App 2: bar POS / order ticket -->
+            <article class="panel overflow-hidden">
+              <div class="lava-panel p-6">
+                <p class="label text-[var(--teal)]">Bar · open ticket</p>
+                <h3 class="display mt-2 text-4xl">Order #2207</h3>
+              </div>
+              <div class="p-6">
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between rounded-md bg-[rgba(246,236,221,0.04)] p-3.5">
+                    <div><b>Obsidian Mai Tai</b><p class="text-sm text-[rgba(246,236,221,0.6)]">aged rum · orgeat · lime</p></div>
+                    <span class="mono text-[var(--moonlight)]">$16</span>
+                  </div>
+                  <div class="flex items-center justify-between rounded-md bg-[rgba(246,236,221,0.04)] p-3.5">
+                    <div><b>Orchid Colada ×2</b><p class="text-sm text-[rgba(246,236,221,0.6)]">butterfly pea · coconut</p></div>
+                    <span class="mono text-[var(--moonlight)]">$30</span>
+                  </div>
+                  <div class="flex items-center justify-between rounded-md border border-[rgba(255,46,118,0.35)] bg-[rgba(255,46,118,0.08)] p-3.5">
+                    <div><b>Ember Zombie</b><p class="text-sm text-[rgba(246,236,221,0.6)]">overproof · flagged: limit 2</p></div>
+                    <span class="mono text-[var(--hibiscus)]">$18</span>
+                  </div>
+                </div>
+                <div class="notch-row my-5"></div>
+                <div class="space-y-1.5 text-sm">
+                  <div class="flex justify-between text-[rgba(246,236,221,0.7)]"><span>Subtotal</span><span class="mono">$64.00</span></div>
+                  <div class="flex justify-between text-[rgba(246,236,221,0.7)]"><span>Service · 18%</span><span class="mono">$11.52</span></div>
+                  <div class="flex justify-between text-lg font-bold"><span>Total</span><span class="mono text-[var(--teal)]">$75.52</span></div>
+                </div>
+                <div class="mt-5 flex gap-3">
+                  <button class="btn-primary flex-1">Send to bar</button>
+                  <button class="btn-secondary">Split</button>
+                </div>
+              </div>
+            </article>
+
+            <!-- App 3: full-width fire & tide show timeline -->
+            <article class="panel overflow-hidden lg:col-span-2">
+              <div class="grid gap-0 lg:grid-cols-[0.9fr_1.1fr]">
+                <div class="acid-card relative overflow-hidden p-7 text-[var(--moonlight)]">
+                  <div class="absolute inset-0 bg-[rgba(11,7,18,0.34)]"></div>
+                  <div class="relative">
+                    <p class="label text-[var(--moonlight)]">Live · tonight</p>
+                    <h3 class="display mt-2 text-5xl">Fire &amp; tide show</h3>
+                    <p class="mt-4 max-w-sm leading-relaxed text-[rgba(246,236,221,0.92)]">
+                      The torch-lighting run-of-show, synced to sunset and tide. The sunset ribbon tracks
+                      how far the night has burned down.
+                    </p>
+                    <div class="mt-6">
+                      <p class="label mb-2">Sunset → blue hour</p>
+                      <div class="h-3 w-full overflow-hidden rounded-full bg-[rgba(11,7,18,0.5)]">
+                        <div class="sunset h-full w-[62%] rounded-full" style="filter:saturate(1.1)"></div>
+                      </div>
+                      <p class="mono mt-2 text-xs text-[rgba(246,236,221,0.85)]">62% · NEXT CUE 21:00</p>
+                    </div>
+                    <div class="mt-7 flex gap-3">
+                      <button class="btn-primary">Trigger torch run</button>
+                      <button class="btn-secondary !border-[rgba(246,236,221,0.5)]">Hold</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-7">
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-4 rounded-md bg-[rgba(246,236,221,0.04)] p-4">
+                      <span class="mono text-sm text-[var(--teal)]">20:38</span>
+                      <div class="flex-1"><b>Conch call &amp; house lights down</b><p class="text-sm text-[rgba(246,236,221,0.6)]">Stage left · Kai</p></div>
+                      <span class="badge"><span class="dot"></span>Done</span>
+                    </div>
+                    <div class="flex items-center gap-4 rounded-md border border-[rgba(22,230,196,0.3)] bg-[rgba(22,230,196,0.08)] p-4">
+                      <span class="mono text-sm text-[var(--teal)]">21:00</span>
+                      <div class="flex-1"><b>Torch lighting · 14 stations</b><p class="text-sm text-[rgba(246,236,221,0.6)]">Perimeter · fire team A</p></div>
+                      <span class="badge" style="border-color:rgba(22,230,196,0.5)"><span class="dot"></span>Now</span>
+                    </div>
+                    <div class="flex items-center gap-4 rounded-md bg-[rgba(246,236,221,0.04)] p-4">
+                      <span class="mono text-sm text-[var(--solar)]">21:25</span>
+                      <div class="flex-1"><b>Fire-knife set</b><p class="text-sm text-[rgba(246,236,221,0.6)]">Center pit · 6 min</p></div>
+                      <span class="badge"><span class="dot" style="background:var(--solar)"></span>Cued</span>
+                    </div>
+                    <div class="flex items-center gap-4 rounded-md bg-[rgba(246,236,221,0.04)] p-4">
+                      <span class="mono text-sm text-[var(--orchid)]">21:50</span>
+                      <div class="flex-1"><b>Acid-wave projection finale</b><p class="text-sm text-[rgba(246,236,221,0.6)]">Lagoon wall · mapped</p></div>
+                      <span class="badge"><span class="dot" style="background:var(--orchid)"></span>Cued</span>
+                    </div>
+                  </div>
+                  <div class="notch-row mt-5"></div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 4. FOOTER / COLOPHON ============ -->
+      <footer class="lava-panel border-t border-[var(--hairline)] px-5 py-10 sm:px-8 lg:px-12">
+        <div class="mx-auto flex max-w-7xl flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div class="flex items-center gap-3">
+            <svg class="tiki-mark glow" width="26" height="40" viewBox="0 0 64 100" fill="none" aria-hidden="true">
+              <rect x="8" y="4" width="48" height="66" rx="9" stroke="#16e6c4" stroke-width="3" />
+              <path d="M13 27 L32 17 L51 27" stroke="#16e6c4" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" />
+              <circle cx="23" cy="40" r="7" stroke="#16e6c4" stroke-width="2.6" />
+              <circle cx="23" cy="40" r="2.4" fill="#16e6c4" />
+              <circle cx="41" cy="40" r="7" stroke="#16e6c4" stroke-width="2.6" />
+              <circle cx="41" cy="40" r="2.4" fill="#16e6c4" />
+              <path d="M32 44 L27 57 L37 57 Z" fill="#16e6c4" />
+              <rect x="18" y="60" width="28" height="9" rx="2" stroke="#16e6c4" stroke-width="2.4" />
+              <path d="M27 60 L27 69 M32 60 L32 69 M37 60 L37 69" stroke="#16e6c4" stroke-width="1.6" />
+              <path d="M16 78 H48 M16 86 H48 M16 94 H48" stroke="#16e6c4" stroke-width="2.4" stroke-linecap="round" />
+            </svg>
+            <div>
+              <p class="display text-2xl">Tiki</p>
+              <p class="label text-[var(--teal)]">Loud color, quiet surfaces.</p>
+            </div>
+          </div>
+          <p class="max-w-lg text-sm text-[rgba(246,236,221,0.7)]">
+            Built from Obsidian, Basalt, Tiki Teal, Solar, Ember, Hibiscus, Orchid, and Moonlight.
+            Motifs: the carved tiki mark, acid swirls, the sun-burst, the sunset ribbon, and carved
+            notch rows — abstract and original, never sacred imagery.
+          </p>
+        </div>
+      </footer>
+    </main>
+  </body>
+</html>
