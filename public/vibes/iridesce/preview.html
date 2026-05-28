@@ -1,0 +1,825 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iridesce — vibe preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Archivo Black = carved monumental caps; Fraunces = the one italic insert;
+         Inter = body + buttons; JetBrains Mono = telemetry / stamps. -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --smoke:   #E9E9E7;
+        --smoke-2: #DEDEDB;
+        --ink:     #0A0A0A;
+        --flare:   #FF2D1E;
+        --fuchsia: #FF3D9A;
+        --lilac:   #B6A4F0;
+        --aqua:    #57DED6;
+        --acid:    #B4EE3C;
+        --cobalt:  #2E3BE6;
+      }
+      html, body {
+        background: var(--smoke);
+        color: var(--ink);
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* === TYPE ========================================================= */
+      .display {
+        font-family: "Archivo Black", "Helvetica Neue", Arial, sans-serif;
+        font-weight: 900;
+        letter-spacing: -0.045em;
+        line-height: 0.82;
+        text-transform: uppercase;
+      }
+      .ital {
+        font-family: "Fraunces", Georgia, serif;
+        font-style: italic;
+        font-weight: 600;
+        text-transform: none;
+        letter-spacing: -0.01em;
+      }
+      .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+      .mono-label {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.24em;
+        font-size: 10px;
+      }
+
+      /* === HOLOGRAPHIC FOIL — the signature surface ===================== */
+      .foil {
+        background: linear-gradient(115deg,
+          #FF2D1E 0%, #FF3D9A 18%, #B6A4F0 38%,
+          #57DED6 56%, #B4EE3C 74%, #FF3D9A 100%);
+        background-size: 220% 220%;
+        animation: foilShift 14s ease-in-out infinite;
+      }
+      .oilslick {
+        background: conic-gradient(from 210deg at 50% 50%,
+          #FF3D9A, #B6A4F0, #2E3BE6, #57DED6,
+          #B4EE3C, #FF2D1E, #FF3D9A);
+        animation: slickSpin 22s linear infinite;
+      }
+      .chrome {
+        background: linear-gradient(160deg,
+          #FFFFFF 0%, #FF3D9A 16%, #B6A4F0 34%, #FFFFFF 50%,
+          #57DED6 64%, #B4EE3C 82%, #FFFFFF 100%);
+        background-size: 200% 200%;
+        animation: foilShift 10s ease-in-out infinite;
+      }
+      @keyframes foilShift {
+        0%   { background-position: 0% 0%; }
+        50%  { background-position: 100% 100%; }
+        100% { background-position: 0% 0%; }
+      }
+      @keyframes slickSpin {
+        to { transform: rotate(360deg); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .foil, .oilslick, .chrome { animation: none; }
+      }
+
+      /* === MELTING BLOB — liquid holographic mass ====================== */
+      .blob {
+        border-radius: 47% 53% 62% 38% / 55% 42% 58% 45%;
+        filter: drop-shadow(0 10px 22px rgba(10,10,10,0.18));
+      }
+      .blob.b2 { border-radius: 63% 37% 41% 59% / 38% 56% 44% 62%; }
+      .blob.b3 { border-radius: 38% 62% 57% 43% / 60% 38% 62% 40%; }
+
+      /* === HALFTONE FLARE — the red dot sun ============================ */
+      .halftone {
+        background-color: transparent;
+        background-image: radial-gradient(var(--dot, var(--flare)) 31%, transparent 34%);
+        background-size: 9px 9px;
+        -webkit-mask-image: radial-gradient(circle at 50% 48%, #000 36%, transparent 72%);
+                mask-image: radial-gradient(circle at 50% 48%, #000 36%, transparent 72%);
+      }
+
+      /* === STITCH FIELD — scattered white tick marks =================== */
+      .stitch {
+        background-image: repeating-linear-gradient(118deg,
+          rgba(255,255,255,0.92) 0 2px, transparent 2px 9px);
+        -webkit-mask-image: repeating-linear-gradient(26deg,
+          #000 0 6px, transparent 6px 15px);
+                mask-image: repeating-linear-gradient(26deg,
+          #000 0 6px, transparent 6px 15px);
+      }
+
+      /* === CHROMATIC ABERRATION TYPE =================================== */
+      .aberrate {
+        text-shadow:
+          0.045em 0 0 rgba(255,61,154,0.85),
+         -0.045em 0 0 rgba(87,222,214,0.85);
+      }
+
+      /* === GALLERY PAPER GRAIN ========================================= */
+      .paper {
+        background-color: var(--smoke);
+        background-image:
+          radial-gradient(rgba(10,10,10,0.05) 1px, transparent 1px),
+          radial-gradient(rgba(46,59,230,0.035) 1px, transparent 1px);
+        background-size: 8px 8px, 13px 13px;
+        background-position: 0 0, 4px 5px;
+      }
+
+      /* === FRAMED CARD (gallery mat) =================================== */
+      .mat {
+        background: var(--smoke);
+        border: 1.5px solid var(--ink);
+        position: relative;
+      }
+      .mat-2 { background: #F4F4F2; border: 1.5px solid var(--ink); position: relative; }
+      .ink-rule { border-top: 1.5px solid var(--ink); }
+
+      /* === BUTTONS ===================================================== */
+      .btn-ink {
+        display: inline-flex; align-items: center; gap: 10px;
+        background: var(--ink); color: var(--smoke);
+        font-family: "Inter", sans-serif; font-weight: 600;
+        text-transform: uppercase; letter-spacing: 0.18em; font-size: 12px;
+        padding: 13px 22px; border: 1.5px solid var(--ink);
+        transition: gap .15s ease;
+      }
+      .btn-ink:hover { gap: 14px; }
+      .btn-ink .seed {
+        width: 11px; height: 11px; border-radius: 999px; flex: 0 0 auto;
+        background: conic-gradient(from 200deg, #FF3D9A, #B6A4F0, #57DED6, #B4EE3C, #FF3D9A);
+      }
+      .btn-line {
+        display: inline-flex; align-items: center; gap: 8px;
+        background: transparent; color: var(--ink);
+        font-family: "Inter", sans-serif; font-weight: 600;
+        text-transform: uppercase; letter-spacing: 0.18em; font-size: 12px;
+        padding: 12px 20px; border: 1.5px solid var(--ink);
+      }
+      .btn-line:hover { background: #fff; }
+      .btn-foil {
+        display: inline-flex; align-items: center; gap: 10px;
+        position: relative; isolation: isolate;
+        color: var(--ink);
+        font-family: "Inter", sans-serif; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.16em; font-size: 12px;
+        padding: 13px 24px; border: 1.5px solid var(--ink);
+      }
+      .btn-foil::before {
+        content: ""; position: absolute; inset: 0; z-index: -1;
+        background: linear-gradient(115deg, #FF2D1E, #FF3D9A 30%, #B6A4F0 52%, #57DED6 72%, #B4EE3C 100%);
+        background-size: 200% 200%; animation: foilShift 9s ease-in-out infinite;
+      }
+
+      /* === PILLS / BADGES ============================================== */
+      .pill {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 5px 12px; border: 1.5px solid var(--ink);
+        background: var(--smoke);
+        font-family: "JetBrains Mono", monospace; font-weight: 500;
+        text-transform: uppercase; letter-spacing: 0.18em; font-size: 10px;
+        color: var(--ink);
+      }
+      .pill .seed { width: 9px; height: 9px; border-radius: 999px; flex: 0 0 auto; }
+
+      /* === INPUTS ====================================================== */
+      .input-line {
+        background: transparent; border: none;
+        border-bottom: 1.5px solid var(--ink);
+        padding: 10px 2px; color: var(--ink);
+        font-family: "Inter", sans-serif; font-size: 14px; width: 100%; outline: none;
+      }
+      .input-line:focus { border-bottom-color: var(--fuchsia); }
+      .input-line::placeholder { color: rgba(10,10,10,0.4); }
+
+      /* === DIVIDER WITH SEED =========================================== */
+      .seed-rule { position: relative; height: 1.5px; background: var(--ink); margin: 24px 0; }
+      .seed-rule::before {
+        content: ""; position: absolute; top: 50%; left: 50%;
+        width: 16px; height: 16px; transform: translate(-50%, -50%);
+        border-radius: 999px;
+        background: conic-gradient(from 200deg, #FF3D9A, #B6A4F0, #2E3BE6, #57DED6, #B4EE3C, #FF2D1E, #FF3D9A);
+      }
+    </style>
+  </head>
+
+  <body class="paper relative min-h-screen overflow-x-hidden">
+
+    <!-- ============================================================== -->
+    <!-- § IDENTITY                                                      -->
+    <!-- ============================================================== -->
+    <header class="relative">
+      <div class="border-b border-[var(--ink)]">
+        <div class="mx-auto max-w-7xl px-6 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <div class="mono-label">Iridesce · Foil Print Studio</div>
+            <div class="mono-label hidden sm:block opacity-60">Edition · Spring MMXXVI</div>
+          </div>
+          <div class="mono-label hidden md:flex items-center gap-5 opacity-80">
+            <span>Shop</span><span>Editions</span><span>Studio</span>
+            <span class="inline-flex items-center gap-2">
+              <span class="seed" style="width:9px;height:9px;border-radius:999px;background:conic-gradient(from 200deg,#FF3D9A,#57DED6,#B4EE3C,#FF3D9A);"></span>
+              On view
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero: holo art slab + overlapping black caps -->
+      <section class="relative isolate overflow-hidden">
+        <div class="mx-auto max-w-7xl px-6 pt-10 pb-16 grid grid-cols-12 gap-6 items-center">
+          <!-- LEFT: poster artwork -->
+          <div class="col-span-12 lg:col-span-6 relative">
+            <div class="mat relative h-[440px] md:h-[520px] overflow-hidden">
+              <!-- oil-slick base -->
+              <div class="oilslick absolute" style="width:150%;height:150%;left:-25%;top:-25%;opacity:0.95;"></div>
+              <!-- melting blobs -->
+              <div class="blob foil absolute" style="width:230px;height:260px;left:-40px;bottom:-50px;opacity:0.95;"></div>
+              <div class="blob b2 chrome absolute" style="width:180px;height:170px;right:-30px;top:30px;opacity:0.9;"></div>
+              <div class="blob b3 foil absolute" style="width:150px;height:150px;right:40px;bottom:20px;opacity:0.92;"></div>
+              <!-- halftone flare sun -->
+              <div class="halftone absolute" style="--dot:var(--flare);width:240px;height:240px;right:-30px;top:-40px;"></div>
+              <!-- stitch field -->
+              <div class="stitch absolute inset-0 opacity-70"></div>
+              <!-- overlapping caps -->
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="display aberrate text-[7rem] md:text-[9rem] text-[var(--ink)] leading-[0.78] text-center">
+                  IRI<br/>DES<br/>CE
+                </div>
+              </div>
+              <!-- corner tag -->
+              <div class="absolute left-3 top-3 mono-label bg-[var(--smoke)] border border-[var(--ink)] px-2 py-1">№ 01 / FOIL</div>
+            </div>
+          </div>
+
+          <!-- RIGHT: masthead copy -->
+          <div class="col-span-12 lg:col-span-6">
+            <div class="mono-label opacity-70">Holographic risograph · oil-slick foil · halftone</div>
+            <h1 class="display text-6xl md:text-7xl mt-3">
+              Light that<br/>
+              <span class="ital text-[var(--ink)]" style="font-size:0.82em;">refuses</span> to<br/>
+              sit still.
+            </h1>
+            <p class="mt-6 text-[15px] leading-relaxed max-w-md opacity-90">
+              Heavy carved black type pinned over melting chromatic foil,
+              halftone suns, and scattered stitch marks. Iridesce is a print
+              studio's whole identity — quiet smoke-gray paper, one ruthless
+              black, and a rainbow that never lands on a single color.
+            </p>
+            <div class="mt-7 flex flex-wrap items-center gap-3">
+              <a href="#" class="btn-foil">Shop the Drop</a>
+              <a href="#" class="btn-line">View Editions →</a>
+              <span class="pill">
+                <span class="seed" style="background:conic-gradient(from 200deg,#FF3D9A,#57DED6,#B4EE3C,#FF3D9A);"></span>
+                12 plates pulled
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="absolute right-6 bottom-4 mono-label opacity-60 hidden md:block text-right">
+          Iridesce<br/>Foil Print Studio<br/>Est. MMXXVI
+        </div>
+      </section>
+    </header>
+
+    <!-- ============================================================== -->
+    <!-- § 01 / THEME SPECIFICATION                                     -->
+    <!-- ============================================================== -->
+    <section class="mx-auto max-w-7xl px-6 pt-16 pb-6">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <div class="mono-label">§ 01 / Theme specification</div>
+          <h2 class="display text-5xl md:text-6xl mt-2">
+            The <span class="ital" style="font-size:0.82em;">iridescent</span> kit
+          </h2>
+        </div>
+        <p class="mono max-w-md text-xs opacity-70" style="line-height:1.7">
+          &gt; Palette · gradients · type · components — exactly what prompt.md
+          prescribes, rendered.
+        </p>
+      </div>
+      <div class="seed-rule"></div>
+    </section>
+
+    <!-- 01.1 — PALETTE ------------------------------------------------ -->
+    <section class="mx-auto max-w-7xl px-6 pb-14">
+      <div class="mb-4 flex items-center justify-between">
+        <div class="mono-label">◆ 01.1 / Palette</div>
+        <span class="mono-label opacity-60">08 swatches</span>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 border border-[var(--ink)]" style="background:var(--ink);">
+        <div class="p-4" style="background:#E9E9E7;color:var(--ink);border-right:1.5px solid var(--ink);">
+          <div class="display text-base">Smoke</div>
+          <div class="mono text-[11px] mt-1 opacity-70">#E9E9E7</div>
+          <div class="mono-label mt-3 opacity-50">PAGE BG</div>
+        </div>
+        <div class="p-4" style="background:#0A0A0A;color:var(--smoke);border-right:1.5px solid var(--ink);">
+          <div class="display text-base">Ink</div>
+          <div class="mono text-[11px] mt-1 opacity-70">#0A0A0A</div>
+          <div class="mono-label mt-3 opacity-50">TYPE · BORDER</div>
+        </div>
+        <div class="p-4" style="background:#FF2D1E;color:#fff;border-right:1.5px solid var(--ink);">
+          <div class="display text-base">Flare</div>
+          <div class="mono text-[11px] mt-1 opacity-80">#FF2D1E</div>
+          <div class="mono-label mt-3 opacity-70">HALFTONE · ALERT</div>
+        </div>
+        <div class="p-4" style="background:#FF3D9A;color:var(--ink);border-right:1.5px solid var(--ink);">
+          <div class="display text-base">Fuchsia</div>
+          <div class="mono text-[11px] mt-1 opacity-80">#FF3D9A</div>
+          <div class="mono-label mt-3 opacity-70">FOIL · FOCUS</div>
+        </div>
+        <div class="p-4" style="background:#B6A4F0;color:var(--ink);border-right:1.5px solid var(--ink);">
+          <div class="display text-base">Lilac</div>
+          <div class="mono text-[11px] mt-1 opacity-80">#B6A4F0</div>
+          <div class="mono-label mt-3 opacity-70">FOIL MID</div>
+        </div>
+        <div class="p-4" style="background:#57DED6;color:var(--ink);border-right:1.5px solid var(--ink);">
+          <div class="display text-base">Aqua</div>
+          <div class="mono text-[11px] mt-1 opacity-80">#57DED6</div>
+          <div class="mono-label mt-3 opacity-70">FOIL · ABERRATION</div>
+        </div>
+        <div class="p-4" style="background:#B4EE3C;color:var(--ink);border-right:1.5px solid var(--ink);">
+          <div class="display text-base">Acid</div>
+          <div class="mono text-[11px] mt-1 opacity-80">#B4EE3C</div>
+          <div class="mono-label mt-3 opacity-70">FOIL HIGH</div>
+        </div>
+        <div class="p-4" style="background:#2E3BE6;color:#fff;">
+          <div class="display text-base">Cobalt</div>
+          <div class="mono text-[11px] mt-1 opacity-80">#2E3BE6</div>
+          <div class="mono-label mt-3 opacity-70">OIL-SLICK DEEP</div>
+        </div>
+      </div>
+      <div class="mt-3 mono-label opacity-60">The six chroma never sit flat — they only live inside foil, oil-slick, blobs, halftone, and 1px seeds.</div>
+    </section>
+
+    <!-- 01.2 — GRADIENTS --------------------------------------------- -->
+    <section class="mx-auto max-w-7xl px-6 pb-14">
+      <div class="mb-4 mono-label">◆ 01.2 / Gradients & textures</div>
+      <div class="grid gap-4 md:grid-cols-3">
+        <div class="mat">
+          <div class="foil h-28"></div>
+          <div class="p-3 border-t border-[var(--ink)]">
+            <div class="mono-label">Foil · linear 115°</div>
+            <div class="mono text-[10px] mt-1 opacity-70">linear-gradient(115deg, flare→fuchsia→lilac→aqua→acid→fuchsia)</div>
+          </div>
+        </div>
+        <div class="mat">
+          <div class="oilslick h-28"></div>
+          <div class="p-3 border-t border-[var(--ink)]">
+            <div class="mono-label">Oil slick · conic</div>
+            <div class="mono text-[10px] mt-1 opacity-70">conic-gradient(from 210deg, all six + cobalt, looping)</div>
+          </div>
+        </div>
+        <div class="mat">
+          <div class="chrome h-28"></div>
+          <div class="p-3 border-t border-[var(--ink)]">
+            <div class="mono-label">Chrome melt · linear 160°</div>
+            <div class="mono text-[10px] mt-1 opacity-70">white sheen injected between fuchsia / aqua / acid stops</div>
+          </div>
+        </div>
+        <div class="mat">
+          <div class="h-28 flex items-center justify-center bg-[var(--smoke-2)]">
+            <div class="halftone" style="--dot:var(--flare);width:96px;height:96px;"></div>
+          </div>
+          <div class="p-3 border-t border-[var(--ink)]">
+            <div class="mono-label">Halftone flare · dot disc</div>
+            <div class="mono text-[10px] mt-1 opacity-70">radial dot tile (9px) masked to a faded sun disc</div>
+          </div>
+        </div>
+        <div class="mat">
+          <div class="h-28 relative bg-[var(--smoke-2)] overflow-hidden">
+            <div class="stitch absolute inset-0"></div>
+          </div>
+          <div class="p-3 border-t border-[var(--ink)]">
+            <div class="mono-label">Stitch field · white ticks</div>
+            <div class="mono text-[10px] mt-1 opacity-70">repeating 118° lines chopped by a 26° mask</div>
+          </div>
+        </div>
+        <div class="mat">
+          <div class="h-28 flex items-center justify-center bg-[var(--smoke-2)]">
+            <div class="blob foil" style="width:92px;height:96px;"></div>
+          </div>
+          <div class="p-3 border-t border-[var(--ink)]">
+            <div class="mono-label">Melting blob · organic radius</div>
+            <div class="mono text-[10px] mt-1 opacity-70">foil fill + organic border-radius + soft drop shadow</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 01.3 — TYPOGRAPHY -------------------------------------------- -->
+    <section class="mx-auto max-w-7xl px-6 pb-14">
+      <div class="mb-4 mono-label">◆ 01.3 / Typography</div>
+      <div class="grid gap-4 md:grid-cols-12">
+        <div class="mat md:col-span-7 p-6">
+          <div class="mono-label opacity-60">Display · Archivo Black 900 · -0.045em · l-h 0.82</div>
+          <div class="display text-7xl md:text-8xl mt-2 aberrate">Iridesce</div>
+          <div class="mt-5 mono-label opacity-60">Italic insert · Fraunces italic 600 (≤3 words, max once)</div>
+          <div class="ital text-4xl mt-2">refuses to sit still</div>
+        </div>
+        <div class="mat md:col-span-5 p-6">
+          <div class="mono-label opacity-60">Body · Inter 400 / 600</div>
+          <p class="mt-2 text-[15px] leading-relaxed">
+            Iridesce is what happens when a foil-print studio ships software.
+            Smoke-gray paper holds the page; a carved black letter holds the
+            eye; oil-slick gradients do the singing. Everything flat stays
+            grayscale.
+          </p>
+          <div class="mt-5 mono-label opacity-60">Mono telemetry · JetBrains Mono · 0.24em</div>
+          <div class="mono text-[10px] mt-2 uppercase" style="letter-spacing:0.24em;">
+            &gt; Plate pulled 02:14 UTC · 6 inks · 1 black · ∞ angles
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 01.4 — COMPONENTS -------------------------------------------- -->
+    <section class="mx-auto max-w-7xl px-6 pb-16">
+      <div class="mb-4 mono-label">◆ 01.4 / Components</div>
+      <div class="grid gap-4 md:grid-cols-12">
+        <div class="mat md:col-span-5 p-6">
+          <div class="mono-label opacity-60">Buttons</div>
+          <div class="mt-4 flex flex-wrap items-center gap-3">
+            <a href="#" class="btn-foil">Shop the Drop</a>
+            <a href="#" class="btn-ink"><span class="seed"></span>Subscribe</a>
+            <a href="#" class="btn-line">Editions →</a>
+          </div>
+          <div class="mt-6 mono-label opacity-60">Pills · seed = one chroma</div>
+          <div class="mt-3 flex flex-wrap items-center gap-2">
+            <span class="pill"><span class="seed" style="background:var(--fuchsia);"></span>Fuchsia</span>
+            <span class="pill"><span class="seed" style="background:var(--lilac);"></span>Lilac</span>
+            <span class="pill"><span class="seed" style="background:var(--aqua);"></span>Aqua</span>
+            <span class="pill"><span class="seed" style="background:var(--acid);"></span>Acid</span>
+            <span class="pill"><span class="seed" style="background:var(--cobalt);"></span>Cobalt</span>
+          </div>
+        </div>
+
+        <div class="mat md:col-span-4 p-6">
+          <div class="mono-label opacity-60">Inputs · bottom-rule only</div>
+          <div class="mt-4">
+            <div class="mono-label">— Email</div>
+            <input class="input-line mt-1" placeholder="you@studio.example" />
+          </div>
+          <div class="mt-5">
+            <div class="mono-label">— Edition size</div>
+            <input class="input-line mt-1" placeholder="Open · numbered / 50" />
+          </div>
+          <div class="mt-5 flex items-center gap-2">
+            <span class="pill"><span class="seed" style="background:var(--fuchsia);"></span>Focus = Fuchsia rule</span>
+          </div>
+        </div>
+
+        <div class="mat md:col-span-3 p-5 relative overflow-hidden">
+          <div class="absolute -top-6 -right-6 blob foil" style="width:80px;height:84px;"></div>
+          <div class="mono-label opacity-60">— Edition / Card</div>
+          <div class="display text-2xl mt-3 leading-tight">Spectra<br/>№ 04</div>
+          <div class="ital mt-2 text-sm">foil on smoke, hand-pulled</div>
+          <div class="mt-4 mono text-[10px] opacity-70">50 × 70 CM · ED. 50 · $180</div>
+        </div>
+
+        <div class="mat md:col-span-12 p-6">
+          <div class="mono-label opacity-60">Badges & tags</div>
+          <div class="mt-4 flex flex-wrap items-center gap-3">
+            <span class="pill" style="border-color:var(--flare);color:var(--flare);"><span class="seed" style="background:var(--flare);"></span>Sold Out</span>
+            <span class="pill"><span class="seed" style="background:conic-gradient(from 200deg,#FF3D9A,#57DED6,#B4EE3C,#FF3D9A);"></span>New Plate</span>
+            <span class="pill">Numbered / 50</span>
+            <span class="pill">Foil · Riso</span>
+            <span class="pill"><span class="seed" style="background:var(--acid);"></span>In stock · 12</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- § 02 / UX APPLICATIONS                                          -->
+    <!-- ============================================================== -->
+    <section class="mx-auto max-w-7xl px-6 pt-10 pb-6">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <div class="mono-label">§ 02 / Applications</div>
+          <h2 class="display text-5xl md:text-6xl mt-2">
+            Pasted <span class="ital" style="font-size:0.82em;">onto</span> real surfaces
+          </h2>
+        </div>
+        <p class="mono max-w-md text-xs opacity-70" style="line-height:1.7">
+          &gt; Three concrete products built with the kit. No lorem ipsum.
+        </p>
+      </div>
+      <div class="seed-rule"></div>
+    </section>
+
+    <!-- =============== 02.1 — PRINT DROP SHOP ======================== -->
+    <section class="mx-auto max-w-7xl px-6 pb-16">
+      <div class="mb-4 flex items-center justify-between">
+        <div class="mono-label">◆ 02.1 / Iridesce Shop — Spring foil drop</div>
+        <span class="mono-label opacity-60">FOIL PRINT STUDIO</span>
+      </div>
+
+      <div class="mat p-8">
+        <div class="grid grid-cols-12 gap-4 items-start">
+          <div class="col-span-12 md:col-span-8">
+            <div class="mono-label opacity-70">Drop № 04 · pulled in studio · Brooklyn</div>
+            <div class="display text-6xl md:text-7xl mt-2 aberrate">Oil &amp; Light</div>
+            <p class="ital text-xl mt-3 max-w-xl">six plates, each chasing a different angle of the same rainbow</p>
+          </div>
+          <div class="col-span-12 md:col-span-4 flex md:justify-end">
+            <a href="#" class="btn-foil">Buy the Full Set · $940</a>
+          </div>
+        </div>
+
+        <div class="ink-rule mt-8 pt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <!-- Card 1 -->
+          <a href="#" class="mat-2 overflow-hidden group">
+            <div class="relative h-52 overflow-hidden">
+              <div class="oilslick absolute" style="width:160%;height:160%;left:-30%;top:-30%;"></div>
+              <div class="halftone absolute" style="--dot:var(--flare);width:140px;height:140px;right:-20px;top:-20px;"></div>
+              <div class="stitch absolute inset-0 opacity-60"></div>
+              <div class="absolute left-3 top-3 pill" style="background:var(--smoke);">№ 01</div>
+            </div>
+            <div class="p-4 border-t border-[var(--ink)]">
+              <div class="display text-xl">Spectra I</div>
+              <div class="ital text-sm mt-1 opacity-80">conic foil, 7 passes</div>
+              <div class="mt-3 flex items-center justify-between mono text-[11px]"><span>ED. 50 · 50×70</span><span class="font-bold">$180</span></div>
+            </div>
+          </a>
+          <!-- Card 2 -->
+          <a href="#" class="mat-2 overflow-hidden group">
+            <div class="relative h-52 overflow-hidden bg-[var(--smoke-2)]">
+              <div class="blob foil absolute" style="width:200px;height:220px;left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+              <div class="stitch absolute inset-0 opacity-50"></div>
+              <div class="absolute left-3 top-3 pill" style="background:var(--smoke);">№ 02</div>
+            </div>
+            <div class="p-4 border-t border-[var(--ink)]">
+              <div class="display text-xl">Molten</div>
+              <div class="ital text-sm mt-1 opacity-80">single blob, foil pull</div>
+              <div class="mt-3 flex items-center justify-between mono text-[11px]"><span>ED. 30 · 50×70</span><span class="font-bold">$220</span></div>
+            </div>
+          </a>
+          <!-- Card 3 -->
+          <a href="#" class="mat-2 overflow-hidden group">
+            <div class="relative h-52 overflow-hidden bg-[var(--ink)] flex items-center justify-center">
+              <div class="chrome absolute" style="width:160%;height:160%;left:-30%;top:-30%;opacity:0.92;"></div>
+              <div class="display text-5xl text-[var(--ink)] aberrate relative">A</div>
+              <div class="absolute left-3 top-3 pill" style="background:var(--smoke);">№ 03</div>
+            </div>
+            <div class="p-4 border-t border-[var(--ink)]">
+              <div class="display text-xl">Chrome A</div>
+              <div class="ital text-sm mt-1 opacity-80">letterform, chrome melt</div>
+              <div class="mt-3 flex items-center justify-between mono text-[11px]"><span>ED. 50 · 40×40</span><span class="font-bold">$140</span></div>
+            </div>
+          </a>
+          <!-- Card 4 -->
+          <a href="#" class="mat-2 overflow-hidden group">
+            <div class="relative h-52 overflow-hidden bg-[var(--smoke-2)] flex items-center justify-center">
+              <div class="halftone" style="--dot:var(--cobalt);width:170px;height:170px;"></div>
+              <div class="absolute left-3 top-3 pill" style="background:var(--smoke);">№ 04</div>
+            </div>
+            <div class="p-4 border-t border-[var(--ink)]">
+              <div class="display text-xl">Cobalt Sun</div>
+              <div class="ital text-sm mt-1 opacity-80">halftone, single ink</div>
+              <div class="mt-3 flex items-center justify-between mono text-[11px]"><span>ED. 50 · 50×50</span><span class="font-bold">$120</span></div>
+            </div>
+          </a>
+          <!-- Card 5 -->
+          <a href="#" class="mat-2 overflow-hidden group">
+            <div class="relative h-52 overflow-hidden">
+              <div class="foil absolute inset-0"></div>
+              <div class="stitch absolute inset-0 opacity-70"></div>
+              <div class="absolute inset-0 flex items-center justify-center display text-4xl text-[var(--ink)] aberrate">77</div>
+              <div class="absolute left-3 top-3 pill" style="background:var(--smoke);">№ 05</div>
+            </div>
+            <div class="p-4 border-t border-[var(--ink)]">
+              <div class="display text-xl">Seventy-Seven</div>
+              <div class="ital text-sm mt-1 opacity-80">foil + stitch field</div>
+              <div class="mt-3 flex items-center justify-between mono text-[11px]"><span>ED. 50 · 50×70</span><span class="font-bold">$180</span></div>
+            </div>
+          </a>
+          <!-- Card 6 (sold out) -->
+          <a href="#" class="mat-2 overflow-hidden group relative">
+            <div class="relative h-52 overflow-hidden bg-[var(--smoke-2)]">
+              <div class="blob b2 chrome absolute" style="width:150px;height:150px;left:20px;top:20px;opacity:0.7;"></div>
+              <div class="blob b3 foil absolute" style="width:130px;height:130px;right:10px;bottom:10px;opacity:0.7;"></div>
+              <div class="absolute left-3 top-3 pill" style="border-color:var(--flare);color:var(--flare);background:var(--smoke);"><span class="seed" style="background:var(--flare);"></span>Sold Out</div>
+            </div>
+            <div class="p-4 border-t border-[var(--ink)]">
+              <div class="display text-xl">Twin Melt</div>
+              <div class="ital text-sm mt-1 opacity-80">two blobs, last pull</div>
+              <div class="mt-3 flex items-center justify-between mono text-[11px] opacity-50"><span>ED. 25 · 50×70</span><span class="font-bold line-through">$260</span></div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== 02.2 — PRISM FM BROADCAST ===================== -->
+    <section class="mx-auto max-w-7xl px-6 pb-16">
+      <div class="mb-4 flex items-center justify-between">
+        <div class="mono-label">◆ 02.2 / Prism FM — holographic broadcast</div>
+        <span class="mono-label opacity-60">NOW ON AIR · 21:48</span>
+      </div>
+
+      <div class="mat overflow-hidden">
+        <div class="grid grid-cols-12">
+          <!-- Cover art -->
+          <div class="col-span-12 md:col-span-5 relative border-b md:border-b-0 md:border-r border-[var(--ink)] p-8 min-h-[460px] overflow-hidden">
+            <div class="oilslick absolute" style="width:170%;height:170%;left:-35%;top:-35%;opacity:0.9;"></div>
+            <div class="halftone absolute" style="--dot:var(--flare);width:220px;height:220px;right:-40px;top:-30px;"></div>
+            <div class="stitch absolute inset-0 opacity-50"></div>
+            <div class="relative">
+              <div class="mono-label">Side A · 03 of 08</div>
+              <div class="display text-5xl mt-2 leading-none aberrate">Holo<br/>Drift</div>
+              <div class="ital text-lg mt-2">— Nadia Vey, ’26 foil press</div>
+            </div>
+            <div class="relative mt-8 flex items-center gap-3 flex-wrap">
+              <a class="btn-foil" href="#">▶ Tune In</a>
+              <a class="btn-line" href="#" style="background:var(--smoke);">Queue</a>
+            </div>
+          </div>
+
+          <!-- Now playing -->
+          <div class="col-span-12 md:col-span-7 p-8">
+            <div class="flex items-end justify-between flex-wrap gap-3">
+              <div>
+                <div class="mono-label opacity-60">— Now playing</div>
+                <div class="display text-4xl mt-2">Refraction</div>
+                <div class="ital mt-1 text-lg">Nadia Vey · from “Holo Drift”, 2026</div>
+              </div>
+              <div class="text-right">
+                <div class="mono-label">02:51 / 05:12</div>
+                <div class="mono-label mt-1 opacity-60">Bitrate · 320</div>
+              </div>
+            </div>
+
+            <!-- scrubber -->
+            <div class="relative mt-6">
+              <div class="h-1.5 w-full bg-[var(--smoke-2)] border border-[var(--ink)] overflow-hidden">
+                <div class="foil h-full" style="width:55%;"></div>
+              </div>
+            </div>
+
+            <div class="ink-rule mt-8"></div>
+
+            <div class="mt-6 mono-label opacity-60">— Side A · queue</div>
+            <ul class="mt-3 divide-y divide-[var(--ink)] border-y border-[var(--ink)]">
+              <li class="grid grid-cols-12 items-center py-3 gap-x-3 hover:bg-[#F4F4F2]">
+                <div class="col-span-1 mono text-[12px]">01</div>
+                <div class="col-span-1"><span class="seed" style="display:inline-block;width:14px;height:14px;border-radius:999px;background:var(--fuchsia);"></span></div>
+                <div class="col-span-7"><div class="font-semibold text-[15px]">Prismatic</div><div class="ital text-[12px] opacity-80">Nadia Vey</div></div>
+                <div class="col-span-2 mono text-[11px] opacity-70">04:02</div>
+                <div class="col-span-1 text-right mono text-[11px] opacity-70">22.1k</div>
+              </li>
+              <li class="grid grid-cols-12 items-center py-3 gap-x-3 hover:bg-[#F4F4F2]">
+                <div class="col-span-1 mono text-[12px]">02</div>
+                <div class="col-span-1"><span class="seed" style="display:inline-block;width:14px;height:14px;border-radius:999px;background:var(--aqua);"></span></div>
+                <div class="col-span-7"><div class="font-semibold text-[15px]">Thin Film</div><div class="ital text-[12px] opacity-80">Vey · Orin (rmx)</div></div>
+                <div class="col-span-2 mono text-[11px] opacity-70">05:33</div>
+                <div class="col-span-1 text-right mono text-[11px] opacity-70">41.8k</div>
+              </li>
+              <li class="grid grid-cols-12 items-center py-3 gap-x-3" style="background:#F4F4F2;">
+                <div class="col-span-1 display text-base">▶</div>
+                <div class="col-span-1"><span class="seed" style="display:inline-block;width:18px;height:18px;border-radius:999px;background:conic-gradient(from 200deg,#FF3D9A,#57DED6,#B4EE3C,#FF3D9A);"></span></div>
+                <div class="col-span-7"><div class="font-semibold text-[15px]">Refraction</div><div class="ital text-[12px] opacity-80">Nadia Vey · now playing</div></div>
+                <div class="col-span-2 mono text-[11px] opacity-70">05:12</div>
+                <div class="col-span-1 text-right mono text-[11px] opacity-70">108.7k</div>
+              </li>
+              <li class="grid grid-cols-12 items-center py-3 gap-x-3 hover:bg-[#F4F4F2]">
+                <div class="col-span-1 mono text-[12px]">04</div>
+                <div class="col-span-1"><span class="seed" style="display:inline-block;width:14px;height:14px;border-radius:999px;background:var(--acid);"></span></div>
+                <div class="col-span-7"><div class="font-semibold text-[15px]">Soap Bubble</div><div class="ital text-[12px] opacity-80">Theo Lune</div></div>
+                <div class="col-span-2 mono text-[11px] opacity-70">03:41</div>
+                <div class="col-span-1 text-right mono text-[11px] opacity-70">9.4k</div>
+              </li>
+              <li class="grid grid-cols-12 items-center py-3 gap-x-3 hover:bg-[#F4F4F2]">
+                <div class="col-span-1 mono text-[12px]">05</div>
+                <div class="col-span-1"><span class="seed" style="display:inline-block;width:14px;height:14px;border-radius:999px;background:var(--cobalt);"></span></div>
+                <div class="col-span-7"><div class="font-semibold text-[15px]">Cobalt Hours</div><div class="ital text-[12px] opacity-80">Nadia Vey &amp; Sol</div></div>
+                <div class="col-span-2 mono text-[11px] opacity-70">06:18</div>
+                <div class="col-span-1 text-right mono text-[11px] opacity-70">14.0k</div>
+              </li>
+            </ul>
+
+            <div class="mt-5 flex items-center justify-between mono text-[10px] opacity-70">
+              <span>Listeners online · 6,204</span>
+              <span>Next set · 23:00 · DJ Aurora</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== 02.3 — OPENING NIGHT (event) ================= -->
+    <section class="mx-auto max-w-7xl px-6 pb-20">
+      <div class="mb-4 flex items-center justify-between">
+        <div class="mono-label">◆ 02.3 / Opening Night — Iridesce x Foley Gallery</div>
+        <span class="mono-label opacity-60">FRI 17 APR · 19:00</span>
+      </div>
+
+      <div class="mat p-8">
+        <div class="grid grid-cols-12 gap-6 items-start">
+          <div class="col-span-12 md:col-span-7">
+            <div class="mono-label">Group show · 9 artists · Lower East Side</div>
+            <div class="display text-6xl md:text-7xl mt-2">
+              Surfaces<br/><span class="ital" style="font-size:0.82em;">that</span> Shimmer
+            </div>
+            <p class="ital text-lg mt-3 max-w-lg">
+              an evening of foil, halftone, and oil-slick prints — doors at
+              seven, plates pulled live until eleven.
+            </p>
+            <div class="mt-5 flex flex-wrap items-center gap-3">
+              <a href="#" class="btn-foil">RSVP · Free</a>
+              <a href="#" class="btn-line">Map →</a>
+              <span class="pill"><span class="seed" style="background:var(--acid);"></span>184 / 220 going</span>
+            </div>
+          </div>
+          <div class="col-span-12 md:col-span-5">
+            <div class="mat-2 p-5">
+              <div class="mono-label opacity-60">— Run of show</div>
+              <ul class="mt-3 divide-y divide-[var(--ink)] border-y border-[var(--ink)]">
+                <li class="flex items-center justify-between py-2.5 text-[13px]"><span>19:00 · Doors</span><span class="mono text-[11px]">Floor 1</span></li>
+                <li class="flex items-center justify-between py-2.5 text-[13px]"><span>19:30 · Live foil pull</span><span class="mono text-[11px]">Press room</span></li>
+                <li class="flex items-center justify-between py-2.5 text-[13px]"><span>20:30 · Artist talk · N. Vey</span><span class="mono text-[11px]">45 min</span></li>
+                <li class="flex items-center justify-between py-2.5 text-[13px]"><span>21:30 · Prism FM live</span><span class="mono text-[11px]">DJ Aurora</span></li>
+                <li class="flex items-center justify-between py-2.5 text-[13px]"><span>23:00 · Last call</span><span class="mono text-[11px]">until 01:00</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="seed-rule"></div>
+
+        <!-- Featured artists strip -->
+        <div class="mono-label opacity-60 mb-4">— On view</div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div class="mat-2 p-3 text-center"><div class="halftone mx-auto" style="--dot:var(--flare);width:54px;height:54px;"></div><div class="mono text-[11px] mt-2 font-semibold">N. Vey</div><div class="mono-label opacity-60">FOIL</div></div>
+          <div class="mat-2 p-3 text-center"><div class="blob foil mx-auto" style="width:54px;height:54px;"></div><div class="mono text-[11px] mt-2 font-semibold">T. Lune</div><div class="mono-label opacity-60">BLOB</div></div>
+          <div class="mat-2 p-3 text-center"><div class="oilslick mx-auto" style="width:54px;height:54px;border-radius:999px;"></div><div class="mono text-[11px] mt-2 font-semibold">S. Orin</div><div class="mono-label opacity-60">SLICK</div></div>
+          <div class="mat-2 p-3 text-center"><div class="chrome mx-auto" style="width:54px;height:54px;border-radius:999px;"></div><div class="mono text-[11px] mt-2 font-semibold">M. Kade</div><div class="mono-label opacity-60">CHROME</div></div>
+          <div class="mat-2 p-3 text-center"><div class="halftone mx-auto" style="--dot:var(--cobalt);width:54px;height:54px;"></div><div class="mono text-[11px] mt-2 font-semibold">A. Sol</div><div class="mono-label opacity-60">DOT</div></div>
+          <div class="mat-2 p-3 text-center"><div class="blob b2 chrome mx-auto" style="width:54px;height:54px;"></div><div class="mono text-[11px] mt-2 font-semibold">R. Vale</div><div class="mono-label opacity-60">MELT</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- § FOOTER / COLOPHON                                             -->
+    <!-- ============================================================== -->
+    <footer class="border-t border-[var(--ink)]">
+      <div class="mx-auto max-w-7xl px-6 py-10 grid grid-cols-12 gap-6 items-start">
+        <div class="col-span-12 md:col-span-5">
+          <div class="flex items-center gap-3">
+            <div class="blob foil" style="width:44px;height:46px;"></div>
+            <div>
+              <div class="display text-2xl leading-none aberrate">Iridesce</div>
+              <div class="ital mt-1 text-sm">a foil print studio</div>
+            </div>
+          </div>
+          <p class="mt-4 text-sm max-w-md opacity-80">
+            Pulled by hand in Brooklyn · numbered, signed, and never the same
+            angle twice. Smoke-gray paper, one black, six inks, infinite light.
+          </p>
+        </div>
+        <div class="col-span-6 md:col-span-3">
+          <div class="mono-label opacity-60">— Shop</div>
+          <ul class="mt-2 space-y-1 text-sm">
+            <li>Drop № 04 · Oil &amp; Light</li>
+            <li>Open editions</li>
+            <li>Foil commissions</li>
+            <li>Gift cards</li>
+          </ul>
+        </div>
+        <div class="col-span-6 md:col-span-2">
+          <div class="mono-label opacity-60">— Studio</div>
+          <ul class="mt-2 space-y-1 text-sm">
+            <li>About</li>
+            <li>Process</li>
+            <li>Stockists</li>
+            <li>Contact</li>
+          </ul>
+        </div>
+        <div class="col-span-12 md:col-span-2">
+          <div class="mono-label opacity-70" style="line-height:1.8;">
+            Iridesce<br/>Foil Print Studio<br/>Brooklyn · MMXXVI<br/>6 inks · 1 black
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-[var(--ink)]">
+        <div class="mx-auto max-w-7xl px-6 py-3 flex items-center justify-between mono-label opacity-70">
+          <div>© Iridesce 2026 · No reuse without a signed plate.</div>
+          <div class="flex items-center gap-2">
+            <span>Built with smoke paper · ink · six inks of light</span>
+            <span class="seed" style="display:inline-block;width:9px;height:9px;border-radius:999px;background:conic-gradient(from 200deg,#FF3D9A,#57DED6,#B4EE3C,#FF3D9A);"></span>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </body>
+</html>

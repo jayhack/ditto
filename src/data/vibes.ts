@@ -14,6 +14,67 @@ import type { Vibe } from "./types";
  */
 export const VIBES: Vibe[] = [
   {
+    slug: "iridesce",
+    name: "Iridesce",
+    tagline: "Carved black caps over melting oil-slick foil and halftone suns.",
+    description:
+      "A holographic foil-print studio's identity, applied to software. Heavy carved Archivo Black caps sit directly on top of melting oil-slick gradients, halftone dot suns, and scattered white stitch marks — all floating on a quiet smoke-gray gallery paper. The dialectic is the whole vibe: monumental black-and-gray restraint versus a rainbow that refuses to land on a single color. Chromatic aberration on the hero type, conic oil-slick seeds as the only bullet, melting blobs as the one organic shape, and square smoke mats framing everything. Best for print-drop shops, holographic music broadcasts, gallery openings, iridescent product pages, edition archives — loud art in a quiet frame.",
+    tags: ["holographic", "poster", "chromatic", "risograph"],
+    cardGradient:
+      "linear-gradient(115deg, #FF2D1E 0%, #FF3D9A 18%, #B6A4F0 38%, #57DED6 56%, #B4EE3C 74%, #FF3D9A 100%)",
+    cardForeground: "dark",
+    palette: [
+      { name: "Smoke", hex: "#E9E9E7" },
+      { name: "Ink", hex: "#0A0A0A" },
+      { name: "Flare", hex: "#FF2D1E" },
+      { name: "Fuchsia", hex: "#FF3D9A" },
+      { name: "Lilac", hex: "#B6A4F0" },
+      { name: "Aqua", hex: "#57DED6" },
+      { name: "Acid", hex: "#B4EE3C" },
+      { name: "Cobalt", hex: "#2E3BE6" },
+    ],
+    fonts: {
+      display: '"Archivo Black", "Helvetica Neue", Arial, sans-serif',
+      body: '"Inter", system-ui, sans-serif',
+      mono: '"JetBrains Mono", ui-monospace, monospace',
+    },
+    motifs: [
+      "Carved Archivo Black caps laid directly over a holographic art slab — the overlap IS the page",
+      "Chromatic aberration on hero type — text-shadow fuchsia +0.045em / aqua -0.045em",
+      "Foil gradient — linear-gradient(115deg, flare→fuchsia→lilac→aqua→acid→fuchsia), 220% size, 14s shimmer",
+      "Oil slick — looping conic(from 210deg, all six + cobalt) on slowly rotating elements",
+      "Chrome melt — linear 160° with white sheen injected between fuchsia / aqua / acid stops",
+      "Halftone flare — single-chroma radial dot tile (9px) masked into a faded sun disc",
+      "Stitch field — repeating 118° white ticks chopped by a 26° mask, layered at 50–70% over art",
+      "Melting blob — Foil fill + organic border-radius + soft drop shadow (the one organic shape)",
+      "The seed — tiny conic oil-slick dot as the universal bullet, button prefix, and divider center",
+      "Gallery mat — square smoke panels, 1.5px Ink border, no shadow (only blobs get shadows)",
+    ],
+    kits: [
+      { label: "Tailwind CSS", url: "https://tailwindcss.com" },
+      {
+        label: "Google Fonts: Archivo Black, Fraunces, Inter, JetBrains Mono",
+        url: "https://fonts.google.com",
+      },
+      {
+        label: "No UI kit, no icon set — foil, oil-slick, halftone, blobs, seeds only",
+      },
+    ],
+    shapes: [
+      "Logo = one ~44px Foil melting blob + IRIDESCE wordmark (Archivo Black, -0.045em, aberration)",
+      "Square corners everywhere — only seeds, melting blobs, and the halftone disc are round",
+      "Buttons: square, 1.5px Ink border · primary = Foil gradient behind Ink text; ink-fill with conic seed; line = transparent → white on hover",
+      "Inputs: bottom-border-only 1.5px Ink, transparent, focus = Fuchsia rule",
+      "Icon system is exactly: the seed, the melting blob, the halftone disc, № · → ▶ · banned: emoji, lucide/heroicons, glass/blur, neon, chrome bevels, any flat chroma fill",
+    ],
+    previewHtml: "vibes/iridesce/preview.html",
+    promptMarkdown: "vibes/iridesce/prompt.md",
+    author: {
+      name: "After a holographic foil-print poster",
+      url: "https://github.com/jayhack/ditto",
+    },
+  },
+  {
     slug: "automata",
     name: "Automata",
     tagline: "A Game of Life humming behind thick-cut black type.",
