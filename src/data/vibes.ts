@@ -543,6 +543,64 @@ export const VIBES: Vibe[] = [
     },
   },
   {
+    slug: "oahu",
+    name: "Oahu",
+    tagline: "Dark Oahu sunset, lava-burst energy, and usable island UX.",
+    description:
+      "A dark-mode island design system with saturated Polynesian-inspired sunset color, rounded cartoon tactility, and practical surfaces for schedules, rentals, alerts, shuttles, and concierge ordering. Lava-burst rosettes, surf fins, palm shadows, moonlit ocean lines, hibiscus sparks, and abstract tiki-torch notches appear as hinted motifs while Moonfoam text, Volcanic Plum panels, and clear focus states keep the UX readable and operational.",
+    tags: ["island", "dark-mode", "lava", "usable"],
+    cardGradient:
+      "linear-gradient(135deg, #170B24 0%, #2A1238 28%, #E93F6F 55%, #FF4E1F 76%, #FFC857 100%)",
+    cardForeground: "light",
+    palette: [
+      { name: "Nightfall", hex: "#170B24" },
+      { name: "Volcanic Plum", hex: "#2A1238" },
+      { name: "Lava Burst", hex: "#FF4E1F" },
+      { name: "Ember", hex: "#FF8A2A" },
+      { name: "Torchlight", hex: "#FFC857" },
+      { name: "Hibiscus", hex: "#E93F6F" },
+      { name: "Palm Deep", hex: "#1F6F45" },
+      { name: "Moonfoam", hex: "#FFF0D6" },
+    ],
+    fonts: {
+      display: '"Baloo 2", system-ui, sans-serif',
+      body: '"Nunito Sans", system-ui, sans-serif',
+      mono: '"JetBrains Mono", ui-monospace, monospace',
+    },
+    motifs: [
+      "Oahu sunset gradient - Nightfall to Volcanic Plum to Hibiscus to Lava Burst to Torchlight, used for identity moments",
+      "Lava burst rosette - radial Torchlight/Ember/Lava Burst heat circles with short rounded rays",
+      "Moonlit ocean line - one thin teal contour so surf is implied without turning the palette turquoise",
+      "Surf-fin marker - rounded triangular Lava Burst fin with Torchlight outline, used for logo, pins, and tabs",
+      "Palm shadow bands - translucent Palm Deep diagonal leaf silhouettes, abstract and never photorealistic",
+      "Abstract tiki-torch notches - stacked rounded rectangles and carved notch patterns, never sacred masks or copied motifs",
+      "Usability rule - dense data lives on Volcanic Plum or Moonfoam cards with JetBrains Mono numerics and clear selected states",
+    ],
+    kits: [
+      { label: "Tailwind CSS", url: "https://tailwindcss.com" },
+      {
+        label: "Google Fonts: Baloo 2, Nunito Sans, JetBrains Mono",
+        url: "https://fonts.google.com",
+      },
+      {
+        label: "No full UI kit - inline SVG and CSS motifs for fins, lava bursts, torch notches, ocean lines, and palm shadows",
+      },
+    ],
+    shapes: [
+      "Logo mark = rounded Lava Burst surf-fin triangle rising from a Torchlight lava rosette with two tiki-torch notches at the base",
+      "Rounded tactile surfaces - 16px inputs, 24px cards, full-pill buttons and chips",
+      "Buttons: Lava Burst fill, Nightfall text, 3px Torchlight hard shadow; secondary = transparent + 2px Ember border",
+      "Inputs: Nightfall fill, 16px radius, 2px Ember/35 border, focus = Lava Burst border + Ember focus ring",
+      "Banned: sacred iconography, copied tribal patterns, real temple imagery, flags, mascots, photorealistic palms, novelty fonts, neon nightclub palettes",
+    ],
+    previewHtml: "vibes/oahu/preview.html",
+    promptMarkdown: "vibes/oahu/prompt.md",
+    author: {
+      name: "Ditto",
+      url: "https://github.com/jayhack/ditto",
+    },
+  },
+  {
     slug: "surfs-up",
     name: "Surf's Up",
     tagline: "1970s screen-print poster — sun setting through wave-cut type.",

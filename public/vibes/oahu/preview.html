@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oahu - vibe preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --nightfall: #170B24;
+        --plum: #2A1238;
+        --lava-burst: #FF4E1F;
+        --ember: #FF8A2A;
+        --torchlight: #FFC857;
+        --hibiscus: #E93F6F;
+        --palm-deep: #1F6F45;
+        --moonfoam: #FFF0D6;
+        --ocean-line: #4FB6C1;
+        --coconut: var(--moonfoam);
+        --reef: var(--lava-burst);
+        --lagoon: var(--ember);
+        --sunset: var(--torchlight);
+        --lava: var(--nightfall);
+        --palm: var(--palm-deep);
+        --plumeria: #5A234B;
+        --deep-reef: #7A1E16;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background:
+          radial-gradient(circle at 80% 6%, rgba(255, 200, 87, 0.22), transparent 22rem),
+          radial-gradient(circle at 24% 0%, rgba(233, 63, 111, 0.20), transparent 26rem),
+          radial-gradient(circle at 48% 32%, rgba(255, 78, 31, 0.16), transparent 30rem),
+          var(--nightfall);
+        color: var(--moonfoam);
+        font-family: "Nunito Sans", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .display {
+        font-family: "Baloo 2", system-ui, sans-serif;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 0.95;
+      }
+
+      .mono {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+      }
+
+      .label {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .shoreline {
+        background: linear-gradient(135deg, #170B24 0%, #2A1238 28%, #E93F6F 55%, #FF4E1F 76%, #FFC857 100%);
+      }
+
+      .lava-ember {
+        background: linear-gradient(135deg, #170B24 0%, #451520 34%, #FF4E1F 72%, #FFC857 100%);
+      }
+
+      .reef-shelf {
+        background: linear-gradient(180deg, #2A1238 0%, #170B24 70%, #3B160F 100%);
+      }
+
+      .plumeria-wash {
+        background: linear-gradient(135deg, #2A1238 0%, #5A234B 46%, #E93F6F 100%);
+      }
+
+      .card {
+        background: rgba(42, 18, 56, 0.92);
+        border: 1.5px solid rgba(255, 240, 214, 0.14);
+        border-radius: 24px;
+        box-shadow: 0 18px 36px rgba(0, 0, 0, 0.22);
+      }
+
+      .dark-card {
+        background: var(--nightfall);
+        color: var(--moonfoam);
+        border: 1.5px solid rgba(255, 200, 87, 0.18);
+        border-radius: 24px;
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.34);
+      }
+
+      .btn-primary,
+      .btn-secondary,
+      .btn-danger {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.55rem;
+        border-radius: 999px;
+        padding: 0.88rem 1.38rem;
+        font-weight: 800;
+        line-height: 1;
+        transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+      }
+
+      .btn-primary {
+        background: var(--lava-burst);
+        color: var(--nightfall);
+        box-shadow: 3px 3px 0 var(--torchlight);
+      }
+
+      .btn-primary:hover {
+        background: var(--ember);
+      }
+
+      .btn-primary:active,
+      .btn-danger:active {
+        transform: translate(2px, 2px);
+        box-shadow: 1px 1px 0 var(--torchlight);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        border: 2px solid var(--ember);
+        color: var(--moonfoam);
+      }
+
+      .btn-danger {
+        background: var(--hibiscus);
+        color: var(--moonfoam);
+        box-shadow: 3px 3px 0 var(--torchlight);
+      }
+
+      .input {
+        width: 100%;
+        border-radius: 16px;
+        border: 2px solid rgba(255, 138, 42, 0.35);
+        background: var(--nightfall);
+        color: var(--moonfoam);
+        padding: 0.9rem 1rem;
+        outline: none;
+      }
+
+      .input:focus {
+        border-color: var(--lava-burst);
+        box-shadow: 0 0 0 4px rgba(255, 138, 42, 0.30);
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        border-radius: 999px;
+        padding: 0.42rem 0.72rem;
+        background: rgba(255, 78, 31, 0.18);
+        color: var(--moonfoam);
+        font-weight: 800;
+        font-size: 0.78rem;
+      }
+
+      .motif-dot {
+        width: 0.56rem;
+        height: 0.56rem;
+        border-radius: 999px;
+        background: var(--hibiscus);
+        box-shadow:
+          7px 0 0 var(--torchlight),
+          -7px 0 0 var(--torchlight),
+          0 7px 0 var(--ember),
+          0 -7px 0 var(--ember);
+      }
+
+      .fin {
+        width: 2.7rem;
+        height: 2.7rem;
+        background: var(--lava-burst);
+        border: 3px solid var(--torchlight);
+        border-radius: 58% 42% 56% 44%;
+        clip-path: polygon(50% 5%, 95% 92%, 12% 74%);
+        box-shadow: 4px 4px 0 rgba(23, 11, 36, 0.55);
+      }
+
+      .palm-shadow {
+        position: absolute;
+        inset: -5rem -2rem auto auto;
+        width: 24rem;
+        height: 18rem;
+        opacity: 0.16;
+        background:
+          linear-gradient(38deg, transparent 0 42%, var(--palm-deep) 43% 48%, transparent 49% 100%),
+          linear-gradient(68deg, transparent 0 46%, var(--palm-deep) 47% 51%, transparent 52% 100%),
+          linear-gradient(98deg, transparent 0 46%, var(--palm-deep) 47% 51%, transparent 52% 100%),
+          linear-gradient(128deg, transparent 0 43%, var(--palm-deep) 44% 49%, transparent 50% 100%);
+        transform: rotate(-10deg);
+        pointer-events: none;
+      }
+
+      .scallop {
+        height: 18px;
+        background:
+          radial-gradient(circle at 12px -2px, transparent 14px, var(--ocean-line) 15px 18px, transparent 19px) 0 0 / 32px 18px repeat-x;
+      }
+
+      .contours {
+        background-image:
+          radial-gradient(ellipse at 20% 20%, rgba(255, 200, 87, 0.30) 0 2px, transparent 3px),
+          repeating-radial-gradient(ellipse at 50% 50%, rgba(79, 182, 193, 0.18) 0 2px, transparent 2px 18px);
+      }
+
+      .lava-pebbles::before,
+      .lava-pebbles::after {
+        content: "";
+        position: absolute;
+        border-radius: 999px;
+        background: var(--lava-burst);
+      }
+
+      .lava-pebbles::before {
+        width: 16px;
+        height: 16px;
+        right: 28px;
+        bottom: 28px;
+        box-shadow: -22px -8px 0 -3px var(--hibiscus), 20px -14px 0 -5px var(--torchlight), -8px 18px 0 -4px var(--ember);
+      }
+
+      .lava-pebbles::after {
+        width: 10px;
+        height: 10px;
+        right: 76px;
+        bottom: 46px;
+        box-shadow: -20px 10px 0 -2px var(--torchlight), 28px 8px 0 -3px var(--hibiscus);
+      }
+
+      .lava-burst {
+        background:
+          radial-gradient(circle at 48% 54%, #FFC857 0%, #FF8A2A 18%, #FF4E1F 38%, #7A1E16 62%, transparent 63%),
+          repeating-conic-gradient(from 8deg, rgba(255, 200, 87, 0.22) 0deg 8deg, transparent 8deg 18deg);
+      }
+
+      .tiki-notch {
+        background:
+          linear-gradient(90deg, transparent 0 10px, rgba(255, 200, 87, 0.34) 10px 16px, transparent 16px 26px) 0 0 / 26px 100% repeat-x,
+          rgba(255, 138, 42, 0.12);
+        border: 1px solid rgba(255, 200, 87, 0.22);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="overflow-hidden">
+      <!-- 1. Identity -->
+      <section class="relative shoreline px-5 py-6 sm:px-8 lg:px-12">
+        <div class="palm-shadow"></div>
+        <nav class="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-[rgba(255,240,214,0.16)] bg-[rgba(42,18,56,0.76)] px-4 py-3 shadow-[0_18px_46px_rgba(0,0,0,0.28)] backdrop-blur-sm">
+          <div class="flex items-center gap-3">
+            <div class="fin"></div>
+            <div>
+              <p class="display text-2xl">Oahu</p>
+              <p class="label -mt-1 text-[var(--torchlight)]">Dark sunset UX kit</p>
+            </div>
+          </div>
+          <div class="hidden items-center gap-2 md:flex">
+            <a class="rounded-full bg-[var(--lava-burst)] px-4 py-2 text-sm font-extrabold text-[var(--nightfall)]" href="#spec">Spec</a>
+            <a class="rounded-full px-4 py-2 text-sm font-extrabold text-[var(--moonfoam)]" href="#apps">Applications</a>
+          </div>
+        </nav>
+
+        <div class="mx-auto grid max-w-7xl items-center gap-8 py-16 lg:grid-cols-[1.1fr_0.9fr] lg:py-24">
+          <div>
+            <span class="badge mb-5"><span class="motif-dot"></span>Sunset, lava burst, torchline, usable first</span>
+            <h1 class="display max-w-4xl text-[clamp(4.8rem,13vw,12rem)] text-[var(--moonfoam)] drop-shadow-[0_10px_0_rgba(23,11,36,0.45)]">Oahu</h1>
+            <p class="mt-5 max-w-2xl text-xl font-bold leading-relaxed text-[rgba(255,240,214,0.82)]">
+              A dark-mode island design system with Polynesian-inspired sunset color, cartoon lava-burst energy, abstract tiki-torch cues, and practical product surfaces for night operations.
+            </p>
+            <div class="mt-8 flex flex-wrap gap-3">
+              <button class="btn-primary">Book sunset surf</button>
+              <button class="btn-secondary">View torchline board</button>
+            </div>
+          </div>
+
+          <div class="relative">
+            <div class="dark-card lava-pebbles relative overflow-hidden p-6">
+              <div class="lava-burst absolute -right-10 -top-10 h-56 w-56 rounded-full opacity-90"></div>
+              <div class="tiki-notch absolute left-6 right-6 top-6 h-8 rounded-full"></div>
+              <div class="relative z-10 flex items-start justify-between">
+                <div>
+                  <p class="label text-[var(--sunset)]">Ala Moana / 06:40</p>
+                  <h2 class="display mt-3 text-5xl text-[var(--coconut)]">Sunset heat window</h2>
+                </div>
+                <div class="rounded-full bg-[var(--sunset)] px-4 py-2 font-extrabold text-[var(--nightfall)]">4-6 ft</div>
+              </div>
+              <div class="contours relative z-10 mt-8 rounded-[24px] border border-[rgba(255,200,87,0.18)] bg-[rgba(42,18,56,0.76)] p-5 text-[var(--coconut)]">
+                <div class="scallop -mx-5 -mt-5 mb-5"></div>
+                <div class="grid grid-cols-3 gap-3 text-center">
+                  <div class="rounded-2xl bg-white/18 p-4">
+                    <p class="label text-white/80">Swell</p>
+                    <p class="display mt-2 text-3xl">11s</p>
+                  </div>
+                  <div class="rounded-2xl bg-white/18 p-4">
+                    <p class="label text-white/80">Wind</p>
+                    <p class="display mt-2 text-3xl">ENE</p>
+                  </div>
+                  <div class="rounded-2xl bg-white/18 p-4">
+                    <p class="label text-white/80">Guard</p>
+                    <p class="display mt-2 text-3xl">On</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Theme specification -->
+      <section id="spec" class="px-5 py-16 sm:px-8 lg:px-12">
+        <div class="mx-auto max-w-7xl">
+          <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p class="label text-[var(--torchlight)]">02 / Theme specification</p>
+              <h2 class="display mt-2 text-5xl sm:text-6xl">The visible kit</h2>
+            </div>
+            <p class="max-w-xl font-semibold text-[rgba(255,240,214,0.68)]">The palette moves to dark sunset and lava heat, while typography, state, and dense data patterns remain predictable.</p>
+          </div>
+
+          <!-- Palette -->
+          <div class="card p-5 sm:p-7">
+            <div class="mb-5 flex items-center justify-between gap-4">
+              <h3 class="display text-3xl">Palette</h3>
+              <span class="label text-[var(--torchlight)]">Named hex swatches</span>
+            </div>
+            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div class="rounded-2xl border border-white/10 p-4 text-[var(--moonfoam)]" style="background:#170B24"><b>Nightfall</b><br /><span class="mono text-sm">#170B24</span></div>
+              <div class="rounded-2xl border border-white/10 p-4 text-[var(--moonfoam)]" style="background:#2A1238"><b>Volcanic Plum</b><br /><span class="mono text-sm">#2A1238</span></div>
+              <div class="rounded-2xl p-4 text-[var(--nightfall)]" style="background:#FF4E1F"><b>Lava Burst</b><br /><span class="mono text-sm">#FF4E1F</span></div>
+              <div class="rounded-2xl p-4 text-[var(--nightfall)]" style="background:#FF8A2A"><b>Ember</b><br /><span class="mono text-sm">#FF8A2A</span></div>
+              <div class="rounded-2xl p-4 text-[var(--nightfall)]" style="background:#FFC857"><b>Torchlight</b><br /><span class="mono text-sm">#FFC857</span></div>
+              <div class="rounded-2xl p-4 text-white" style="background:#E93F6F"><b>Hibiscus</b><br /><span class="mono text-sm">#E93F6F</span></div>
+              <div class="rounded-2xl p-4 text-white" style="background:#1F6F45"><b>Palm Deep</b><br /><span class="mono text-sm">#1F6F45</span></div>
+              <div class="rounded-2xl p-4 text-[var(--nightfall)]" style="background:#FFF0D6"><b>Moonfoam</b><br /><span class="mono text-sm">#FFF0D6</span></div>
+            </div>
+          </div>
+
+          <!-- Gradients -->
+          <div class="mt-6 grid gap-6 lg:grid-cols-2">
+            <div class="card p-5 sm:p-7">
+              <h3 class="display mb-5 text-3xl">Gradients</h3>
+              <div class="space-y-4">
+                <div><div class="shoreline h-16 rounded-2xl"></div><p class="mono mt-2 text-xs">Oahu sunset - linear-gradient(135deg, #170B24, #2A1238, #E93F6F, #FF4E1F, #FFC857)</p></div>
+                <div><div class="lava-burst h-16 rounded-2xl"></div><p class="mono mt-2 text-xs">Lava burst - radial-gradient(circle, #FFC857, #FF8A2A, #FF4E1F, #7A1E16, transparent)</p></div>
+                <div><div class="reef-shelf h-16 rounded-2xl"></div><p class="mono mt-2 text-xs">Torch panel - linear-gradient(180deg, #2A1238, #170B24, #3B160F)</p></div>
+                <div><div class="h-16 rounded-2xl" style="background:linear-gradient(90deg,#170B24 0%,#1B4B5A 42%,#4FB6C1 52%,#1B4B5A 62%,#170B24 100%)"></div><p class="mono mt-2 text-xs">Moonlit ocean line - a thin teal contour, not a turquoise field</p></div>
+              </div>
+            </div>
+
+            <!-- Typography -->
+            <div class="card p-5 sm:p-7">
+              <h3 class="display mb-5 text-3xl">Typography</h3>
+              <div class="space-y-5">
+                <div>
+                  <p class="label text-[var(--torchlight)]">Display / Baloo 2 800 / -0.03em</p>
+                  <p class="display mt-1 text-5xl">Island service, clear flow.</p>
+                </div>
+                <div>
+                  <p class="text-base font-semibold leading-relaxed">Body / Nunito Sans 400-800. Friendly enough for travel and surf experiences, sturdy enough for forms, schedules, and inventory tools.</p>
+                </div>
+                <div>
+                  <p class="label text-[var(--torchlight)]">Mono / JetBrains Mono 700 / 0.14em</p>
+                  <p class="mono mt-2 rounded-2xl bg-[rgba(255,78,31,0.16)] p-3 text-sm font-bold">TIDE 18:42 - TORCH 12 - BOARD #A17</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Components -->
+          <div class="card mt-6 p-5 sm:p-7">
+            <div class="mb-5 flex items-center justify-between gap-4">
+              <h3 class="display text-3xl">Components</h3>
+              <span class="badge"><span class="motif-dot"></span>Rounded, legible, tactile</span>
+            </div>
+            <div class="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+              <div class="space-y-4">
+                <div class="flex flex-wrap gap-3">
+                  <button class="btn-primary">Primary</button>
+                  <button class="btn-secondary">Secondary</button>
+                  <button class="btn-danger">Alert</button>
+                </div>
+                <label class="block">
+                  <span class="label mb-2 block text-[var(--torchlight)]">Input focus</span>
+                  <input class="input" value="Waikiki sunset lesson - 2 guests" />
+                </label>
+                <div class="flex flex-wrap gap-2">
+                  <span class="badge"><span class="motif-dot"></span>Lava burst</span>
+                  <span class="badge bg-[rgba(255,200,87,0.16)]">Tiki notch</span>
+                  <span class="badge bg-[rgba(31,111,69,0.20)]">Palm shadow</span>
+                </div>
+              </div>
+              <div class="rounded-[24px] border-2 border-[rgba(255,138,42,0.20)] bg-[rgba(23,11,36,0.42)] p-4">
+                <div class="grid grid-cols-[1.2fr_0.8fr_0.8fr] gap-2 border-b border-[rgba(255,138,42,0.18)] pb-2 text-xs font-extrabold uppercase tracking-[0.14em] text-[var(--torchlight)]">
+                  <span>Resource</span><span>Status</span><span class="text-right">ETA</span>
+                </div>
+                <div class="divide-y divide-[rgba(255,138,42,0.16)] text-sm font-bold">
+                  <div class="grid grid-cols-[1.2fr_0.8fr_0.8fr] gap-2 py-3"><span>Soft-top boards</span><span>Ready</span><span class="mono text-right">07:10</span></div>
+                  <div class="grid grid-cols-[1.2fr_0.8fr_0.8fr] gap-2 rounded-2xl bg-[rgba(255,78,31,0.18)] px-3 py-3"><span>Torchline lane</span><span>Open</span><span class="mono text-right">Now</span></div>
+                  <div class="grid grid-cols-[1.2fr_0.8fr_0.8fr] gap-2 py-3"><span>Shuttle 3</span><span>Loading</span><span class="mono text-right">08:05</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. UX applications -->
+      <section id="apps" class="px-5 pb-16 sm:px-8 lg:px-12">
+        <div class="mx-auto max-w-7xl">
+          <div class="mb-8">
+            <p class="label text-[var(--torchlight)]">03 / UX applications</p>
+            <h2 class="display mt-2 text-5xl sm:text-6xl">Product surfaces</h2>
+          </div>
+
+          <div class="grid gap-6 lg:grid-cols-2">
+            <article class="card overflow-hidden">
+              <div class="reef-shelf contours p-6 text-[var(--coconut)]">
+                <p class="label text-[var(--torchlight)]">Surf school dispatch</p>
+                <h3 class="display mt-2 text-4xl">Sunset lesson board</h3>
+              </div>
+              <div class="p-6">
+                <div class="mb-5 grid grid-cols-3 gap-3">
+                  <div class="rounded-3xl bg-[rgba(255,78,31,0.18)] p-4"><p class="label text-[var(--torchlight)]">Guests</p><p class="display text-4xl">28</p></div>
+                  <div class="rounded-3xl bg-[rgba(255,200,87,0.16)] p-4"><p class="label text-[var(--torchlight)]">Boards</p><p class="display text-4xl">34</p></div>
+                  <div class="rounded-3xl bg-[rgba(233,63,111,0.18)] p-4"><p class="label text-[var(--torchlight)]">Coaches</p><p class="display text-4xl">7</p></div>
+                </div>
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between rounded-3xl bg-[rgba(255,240,214,0.08)] p-4"><div><b>Kapiolani family intro</b><p class="text-sm text-[rgba(255,240,214,0.62)]">Malia K. - 4 guests - beginner lane</p></div><span class="mono font-bold text-[var(--torchlight)]">18:45</span></div>
+                  <div class="flex items-center justify-between rounded-3xl bg-[rgba(255,78,31,0.18)] p-4"><div><b>Reef-safe rental pickup</b><p class="text-sm text-[rgba(255,240,214,0.62)]">A17-A22 soft tops, torchline check</p></div><span class="mono font-bold text-[var(--torchlight)]">19:20</span></div>
+                  <div class="flex items-center justify-between rounded-3xl bg-[rgba(255,240,214,0.08)] p-4"><div><b>South shore progression</b><p class="text-sm text-[rgba(255,240,214,0.62)]">Waikiki wall - Coach Noa - 6 guests</p></div><span class="mono font-bold text-[var(--torchlight)]">20:10</span></div>
+                </div>
+              </div>
+            </article>
+
+            <article class="card overflow-hidden">
+              <div class="lava-ember p-6 text-[var(--coconut)]">
+                <p class="label text-[var(--sunset)]">Park shuttle ops</p>
+                <h3 class="display mt-2 text-4xl">Windward route control</h3>
+              </div>
+              <div class="p-6">
+                <div class="relative mb-5 h-56 overflow-hidden rounded-[24px] bg-[rgba(23,11,36,0.56)]">
+                  <div class="lava-burst absolute -left-10 top-2 h-40 w-40 rounded-full opacity-70"></div>
+                  <div class="absolute right-6 top-10 h-28 w-28 rounded-full border-[8px] border-[rgba(255,200,87,0.34)]"></div>
+                  <div class="tiki-notch absolute left-8 right-8 top-24 h-8 rounded-full"></div>
+                  <div class="absolute bottom-8 left-12 right-10 h-4 rounded-full" style="background:linear-gradient(90deg,#170B24 0%,#1B4B5A 42%,#4FB6C1 52%,#1B4B5A 62%,#170B24 100%)"></div>
+                  <div class="absolute bottom-6 left-[24%] h-9 w-9 rounded-full border-4 border-[var(--nightfall)] bg-[var(--torchlight)]"></div>
+                  <div class="absolute bottom-5 left-[58%] h-11 w-11 rounded-full border-4 border-[var(--nightfall)] bg-[var(--hibiscus)]"></div>
+                  <div class="absolute bottom-6 left-[78%] h-9 w-9 rounded-full border-4 border-[var(--nightfall)] bg-[var(--palm-deep)]"></div>
+                  <p class="absolute left-6 top-6 rounded-full bg-[var(--moonfoam)] px-4 py-2 font-extrabold text-[var(--nightfall)]">Kualoa stop clear</p>
+                </div>
+                <div class="grid gap-3 sm:grid-cols-2">
+                  <div class="rounded-3xl bg-[rgba(255,240,214,0.08)] p-4"><p class="label text-[var(--torchlight)]">Next shuttle</p><p class="display mt-2 text-4xl">12 min</p><p class="text-sm font-semibold">Vehicle N-04, 18 seats open</p></div>
+                  <div class="rounded-3xl bg-[rgba(255,240,214,0.08)] p-4"><p class="label text-[var(--torchlight)]">Lava glow view</p><p class="display mt-2 text-4xl">Open</p><p class="text-sm font-semibold">Torch markers active until 22:30</p></div>
+                </div>
+              </div>
+            </article>
+
+            <article class="card overflow-hidden lg:col-span-2">
+              <div class="grid gap-0 lg:grid-cols-[0.85fr_1.15fr]">
+                <div class="plumeria-wash p-6">
+                  <p class="label text-[var(--torchlight)]">Night market pre-order</p>
+                  <h3 class="display mt-2 text-5xl">Dinner after the break</h3>
+                  <p class="mt-4 font-semibold leading-relaxed text-[rgba(255,240,214,0.76)]">A resort concierge ordering flow with clear options, allergy notes, pickup timing, and lava-burst visuals that stay readable.</p>
+                  <div class="mt-6 flex gap-3">
+                    <button class="btn-primary">Send order</button>
+                    <button class="btn-secondary">Edit cart</button>
+                  </div>
+                </div>
+                <div class="p-6">
+                  <div class="grid gap-3 md:grid-cols-3">
+                    <div class="rounded-[24px] border-2 border-[rgba(255,240,214,0.12)] bg-[rgba(255,240,214,0.08)] p-4"><span class="badge mb-3 bg-[rgba(255,200,87,0.18)]">Popular</span><h4 class="display text-3xl">Ahi bowl</h4><p class="mt-2 text-sm font-semibold text-[rgba(255,240,214,0.64)]">Ginger rice, cucumber, reef-safe packaging.</p><p class="mono mt-4 font-bold">$18.50</p></div>
+                    <div class="rounded-[24px] border-2 border-[rgba(255,240,214,0.12)] bg-[rgba(255,78,31,0.16)] p-4"><span class="badge mb-3">Vegetarian</span><h4 class="display text-3xl">Taro tacos</h4><p class="mt-2 text-sm font-semibold text-[rgba(255,240,214,0.64)]">Palm slaw, mango salsa, lava salt.</p><p class="mono mt-4 font-bold">$14.00</p></div>
+                    <div class="rounded-[24px] border-2 border-[rgba(255,240,214,0.12)] bg-[rgba(255,240,214,0.08)] p-4"><span class="badge mb-3 bg-[rgba(233,63,111,0.18)]">Kids</span><h4 class="display text-3xl">Mini plate</h4><p class="mt-2 text-sm font-semibold text-[rgba(255,240,214,0.64)]">Fruit cup, rice, grilled chicken.</p><p class="mono mt-4 font-bold">$9.75</p></div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Footer / colophon -->
+      <footer class="lava-ember px-5 py-10 text-[var(--coconut)] sm:px-8 lg:px-12">
+        <div class="mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div class="flex items-center gap-3">
+            <div class="fin !h-10 !w-10"></div>
+            <div>
+              <p class="display text-3xl">Oahu</p>
+              <p class="label text-[var(--sunset)]">Cartoon warmth, operational clarity.</p>
+            </div>
+          </div>
+          <p class="max-w-lg text-sm font-semibold text-white/78">Built from Nightfall, Volcanic Plum, Lava Burst, Ember, Torchlight, Hibiscus, Palm Deep, and Moonfoam. Motifs are hints: surf fin, lava burst, palm shadow, moonlit ocean line, hibiscus spark, and abstract tiki-torch notches.</p>
+        </div>
+      </footer>
+    </main>
+  </body>
+</html>
